@@ -639,14 +639,14 @@
       <div class="brand">
         <div class="brand-icon">X</div>
         <div class="brand-info">
-          <h1>XAU/USD QUANT AI ENGINE <span id="header-version">v6.5 INTRADAY CLOSE</span></h1>
-          <span id="header-sub">Rocket 10h VN M15 • Bỏ SL (Né Bão Giá) • Đóng Lệnh Cứng 12:00 Trưa VN • Lot An Toàn 5K = 0.01</span>
+          <h1>XAU/USD QUANT AI ENGINE <span id="header-version">VOLATILITY GUARD</span></h1>
+          <span id="header-sub">Rocket 10h VN M15 • DCA Min = 0.5 x ATR14 • TP Cố Định = 1.0 x ATR14 • Cắt Lỗ Ép Buộc 12:00 Trưa VN</span>
         </div>
       </div>
       <div class="nav-badges">
-        <span class="badge badge-live" id="badge-exit-hour">12:00 TRƯA VN HARD EXIT</span>
-        <span class="badge badge-info">MAX 8 LAYERS</span>
-        <span class="badge" id="badge-pnl-status" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">KIỂM ĐỊNH MÙ 5 NĂM</span>
+        <span class="badge badge-live">CẮT LỖ: 12:00 TRƯA VN</span>
+        <span class="badge badge-info">DCA: 0.5 ATR14 | TP: 1.0 ATR14</span>
+        <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">LỌC RỦI RO LỚN</span>
       </div>
     </header>
 
@@ -827,28 +827,34 @@
         </div>
       </div>
 
-      <!-- Intraday Exit Hours AI Scan Table -->
+      <!-- Volatility Guard Inspector: Filtered Days Analysis -->
       <div style="margin-top: 24px;">
-        <h4 style="font-size: 14px; color: #38BDF8; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-          <span>🤖 BẢNG SO SÁNH TOÁN HỌC: CÁC MỐC GIỜ ĐÓNG LỆNH CỨNG TRONG NGÀY (AI SCAN REPORT)</span>
+        <h4 style="font-size: 14px; color: #38BDF8; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            🛡️ BẢNG THEO DÕI CÁC NGÀY BIẾN ĐỘNG MẠNH BỊ BỘ LỌC LOẠI BỎ (RISK DAYS INSPECTOR)
+          </span>
+          <span id="filter-summary-badge" style="font-size: 12px; color: #F59E0B; font-weight: normal;">
+            Đang phân tích tác động bộ lọc...
+          </span>
         </h4>
         <div class="loss-table-wrapper">
           <table class="trade-table">
             <thead>
               <tr>
-                <th>MỐC GIỜ ĐÓNG CỨNG</th>
-                <th>TỶ LỆ THẮNG</th>
-                <th>LỢI NHUẬN RÒNG</th>
-                <th>MAX DRAWDOWN</th>
-                <th>PROFIT FACTOR</th>
-                <th>LỖ TRUNG BÌNH/LỆNH</th>
-                <th>ĐÁNH GIÁ AI</th>
+                <th>NGÀY BỊ LỌC</th>
+                <th>LÝ DO NHẬN DIỆN NGUY HIỂM</th>
+                <th>BIÊN ĐỘ SÁNG (07H-10H)</th>
+                <th>ATR14 LÚC 10H</th>
+                <th>NẾU VÀO LỆNH (BASELINE): SỐ LỆNH DCA</th>
+                <th>NẾU VÀO LỆNH (BASELINE): LÃI/LỖ ($)</th>
+                <th>SỤT GIẢM SÂU NHẤT ($)</th>
+                <th>ĐÁNH GIÁ BỘ LỌC</th>
               </tr>
             </thead>
-            <tbody id="scan-exit-body">
+            <tbody id="filtered-days-body">
               <tr>
-                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">
-                  Đang tải bảng so sánh các mốc giờ...
+                <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 20px;">
+                  Đang tải danh sách các ngày biến động mạnh bị loại bỏ...
                 </td>
               </tr>
             </tbody>
@@ -1149,12 +1155,53 @@
         trades: []
       };
 
+      const filteredDaysMock = [
+        {
+          date: '2022-03-08',
+          toxic_reason: 'Biên độ sáng giãn lớn (38.5 giá = 4.2x ATR) | Sóng Nga-Ukraine',
+          morning_range: 38.5,
+          atr_val: 9.15,
+          baseline_layers: 28,
+          baseline_pnl: -14820.50,
+          baseline_worst_dd: -16200.0,
+          baseline_is_win: false,
+          baseline_close_reason: 'Kẹt bão chiến sự Nga-Ukraine 1 chiều, quá hạn 10 ngày'
+        },
+        {
+          date: '2024-04-12',
+          toxic_reason: 'ATR14 tại 10h vọt cao (22.4 giá) | Nến 10h quét cực đại (18.6 giá)',
+          morning_range: 45.2,
+          atr_val: 22.40,
+          baseline_layers: 24,
+          baseline_pnl: -15120.88,
+          baseline_worst_dd: -17500.0,
+          baseline_is_win: false,
+          baseline_close_reason: 'Kẹt bão chiến sự Trung Đông tăng 100 giá 1 chiều'
+        },
+        {
+          date: '2024-10-30',
+          toxic_reason: 'Sóng sáng 1 chiều quá dốc (28.4 giá = 3.6x ATR) | Bão bầu cử Mỹ & Fed',
+          morning_range: 34.0,
+          atr_val: 7.80,
+          baseline_layers: 31,
+          baseline_pnl: -13900.00,
+          baseline_worst_dd: -15400.0,
+          baseline_is_win: false,
+          baseline_close_reason: 'Bão bầu cử Mỹ tăng dốc 1 chiều, quá hạn 10 ngày'
+        }
+      ];
+
       return {
         test: { baseline: baseData, ai: testData },
         train: { baseline: baseData, ai: testData },
         all_time: { baseline: baseData, ai: testData },
-        intraday_exit_analysis: exitScan,
-        best_exit_hour: exitScan[0],
+        volatility_filter_analysis: {
+          test_total_days: 1261,
+          test_normal_days: 1115,
+          test_filtered_days_count: 146,
+          filter_rate_percent: 11.6,
+          filtered_days: filteredDaysMock
+        },
         losing_trades: losingTrades,
         recent_trades: mockTrades
       };
@@ -1179,14 +1226,13 @@
     function render() {
       if (!rawData) return;
 
-      if (rawData.metadata && rawData.metadata.stop_loss_rule) {
-        const exitRule = rawData.metadata.stop_loss_rule;
+      if (rawData.metadata) {
+        const dcaRule = rawData.metadata.dca_min_step_rule || '0.5 x ATR(14)';
+        const tpRule = rawData.metadata.tp_rule || 'Cố định 1.0 x ATR(14)';
+        const slRule = rawData.metadata.stop_loss_rule || 'Cắt lỗ ép buộc vào 12:00 trưa VN';
         const sub = document.getElementById('header-sub');
-        if (sub) sub.textContent = `Rocket 10h VN M15 • Bỏ SL (Né Bão Giá) • ${exitRule} • Lot An Toàn 5K = 0.01`;
-        const badge = document.getElementById('badge-exit-hour');
-        if (badge) {
-          const label = rawData.chosen_exit_hour ? rawData.chosen_exit_hour.label : exitRule;
-          badge.textContent = `${label.toUpperCase()} HARD EXIT`;
+        if (sub) {
+          sub.textContent = `Rocket 10h VN M15 • DCA Min = ${dcaRule} • TP = ${tpRule} • ${slRule}`;
         }
       }
 
@@ -1233,7 +1279,7 @@
 
       renderEquityChart(pData.baseline.equity_curve, pData.ai.equity_curve);
       renderLayersChart();
-      renderExitHourScan();
+      renderFilteredDays();
       renderLossAnalysis();
       renderTradeLog();
     }
@@ -1376,68 +1422,61 @@
       return rawData.recent_trades || [];
     }
 
-    function renderExitHourScan() {
-      const tbody = document.getElementById('scan-exit-body');
+    function renderFilteredDays() {
+      const tbody = document.getElementById('filtered-days-body');
+      const badge = document.getElementById('filter-summary-badge');
       if (!tbody) return;
 
-      const scanData = rawData.intraday_exit_analysis || [
-        { label: "18:00 VN (Trước phiên Mỹ, né tin sốc)", win_rate: 92.5, net_pnl: 14200.0, max_dd_percent: 18.2, profit_factor: 2.15, avg_loss: -180.0, badge: "An Toàn" },
-        { label: "20:00 VN (Đầu phiên Mỹ)", win_rate: 94.2, net_pnl: 16800.0, max_dd_percent: 22.5, profit_factor: 2.45, avg_loss: -240.0, badge: "Khá Tốt" },
-        { label: "22:00 VN (Giữa phiên Mỹ)", win_rate: 95.8, net_pnl: 21500.0, max_dd_percent: 25.1, profit_factor: 2.90, avg_loss: -310.0, badge: "Tốt" },
-        { label: "23:30 VN (London Close - Đóng phiên Âu)", win_rate: 97.6, net_pnl: 28450.0, max_dd_percent: 19.8, profit_factor: 3.85, avg_loss: -320.0, badge: "🏆 TỐI ƯU NHẤT" },
-        { label: "03:45 VN (Sát giờ đóng cửa ngày)", win_rate: 98.4, net_pnl: 24100.0, max_dd_percent: 28.5, profit_factor: 3.10, avg_loss: -480.0, badge: "Khá Tốt" },
-        { label: "Không đóng (Gồng 10 ngày - Cũ)", win_rate: 99.58, net_pnl: -28941.38, max_dd_percent: 324.71, profit_factor: 0.34, avg_loss: -14600.0, badge: "❌ NGUY HIỂM" }
-      ];
+      const filterInfo = rawData.volatility_filter_analysis;
+      if (filterInfo && badge) {
+        badge.innerHTML = `Đã loại bỏ <b style="color: #EF4444;">${filterInfo.test_filtered_days_count}</b> / ${filterInfo.test_total_days} ngày (${filterInfo.filter_rate_percent}% số ngày biến động mạnh)`;
+      }
 
-      const rows = scanData.map(item => {
-        const isBest = rawData.best_exit_hour && rawData.best_exit_hour.label === item.label;
-        const isChosen = rawData.chosen_exit_hour && (
-          rawData.chosen_exit_hour.label === item.label || 
-          (rawData.chosen_exit_hour.time_tuple && item.time_tuple && 
-           rawData.chosen_exit_hour.time_tuple[0] === item.time_tuple[0] && 
-           rawData.chosen_exit_hour.time_tuple[1] === item.time_tuple[1])
-        );
-        const isDangerous = item.label.includes("Không đóng") || item.net_pnl < 0;
-        const pnlColor = item.net_pnl >= 0 ? '#10B981' : '#EF4444';
-        const pnlPrefix = item.net_pnl >= 0 ? '+' : '';
+      const filteredList = (filterInfo && filterInfo.filtered_days) ? filterInfo.filtered_days : [];
 
-        let badgeHtml = '';
-        if (isChosen && isBest) {
-          badgeHtml = '<span class="badge badge-live">🏆 TỐI ƯU & ĐANG CHỌN</span>';
-        } else if (isChosen) {
-          badgeHtml = '<span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6;">📌 ĐANG CHỌN</span>';
-        } else if (isBest) {
-          badgeHtml = '<span class="badge badge-live">🏆 AI KHUYÊN DÙNG</span>';
-        } else if (isDangerous) {
-          badgeHtml = '<span class="badge badge-sell">❌ NGUY HIỂM</span>';
+      if (!filteredList || filteredList.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; color: #10B981; padding: 20px;">
+              🎉 Không có ngày nào bị đánh dấu rủi ro cực đoan trong tập dữ liệu này.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const rows = filteredList.map(d => {
+        const isLoss = d.baseline_pnl < 0;
+        const isDeepDca = d.baseline_layers >= 5;
+        const pnlColor = isLoss ? '#EF4444' : '#10B981';
+        const pnlPrefix = d.baseline_pnl >= 0 ? '+' : '';
+
+        let assessmentBadge = '';
+        if (isLoss && isDeepDca) {
+          assessmentBadge = '<span class="badge badge-sell">🚨 NÉ THUA NẶNG & KẸT LỆNH</span>';
+        } else if (isLoss) {
+          assessmentBadge = '<span class="badge badge-sell">🛡️ NÉ LỖ THÀNH CÔNG</span>';
+        } else if (isDeepDca) {
+          assessmentBadge = '<span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid #F59E0B;">⚠️ NÉ RỦI RO SỤT VỐN SÂU</span>';
         } else {
-          badgeHtml = '<span class="badge badge-info">ĐẠT CHUẨN</span>';
+          assessmentBadge = '<span class="badge badge-info">BỎ QUA AN TOÀN</span>';
         }
 
-        const bgStyle = isChosen 
-          ? 'background: rgba(59, 130, 246, 0.12); border-left: 3px solid #3B82F6;'
-          : (isBest ? 'background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10B981;' : (isDangerous ? 'background: rgba(239, 68, 68, 0.08);' : ''));
-
         return `
-          <tr style="${bgStyle}">
-            <td style="font-weight: 700; color: ${isChosen ? '#60A5FA' : (isBest ? '#10B981' : (isDangerous ? '#FCA5A5' : '#F8FAFC'))};">
-              ${item.label}
-            </td>
-            <td style="color: #94A3B8;">${item.win_rate}%</td>
+          <tr style="background: rgba(239, 68, 68, 0.04);">
+            <td style="font-weight: 700; color: #FCA5A5;">${d.date}</td>
+            <td style="font-size: 12px; color: #F8FAFC; max-width: 260px;">${d.toxic_reason}</td>
+            <td style="color: #F59E0B; font-weight: 600;">$${d.morning_range}</td>
+            <td style="color: #38BDF8;">$${d.atr_val}</td>
+            <td><b style="color: ${d.baseline_layers >= 5 ? '#EF4444' : '#F59E0B'}; font-size: 14px;">${d.baseline_layers}</b> lệnh</td>
             <td style="color: ${pnlColor}; font-weight: 800; font-size: 14px;">
-              ${pnlPrefix}$${item.net_pnl.toLocaleString('en-US', {minimumFractionDigits: 2})}
+              ${pnlPrefix}$${d.baseline_pnl.toLocaleString('en-US', {minimumFractionDigits: 2})}
             </td>
-            <td style="color: ${item.max_dd_percent <= 25 ? '#10B981' : '#EF4444'};">
-              ${item.max_dd_percent}%
-            </td>
-            <td style="color: ${item.profit_factor >= 2 ? '#38BDF8' : '#94A3B8'}; font-weight: 600;">
-              ${item.profit_factor >= 90 ? '99.0+' : item.profit_factor.toFixed(2)}
-            </td>
-            <td style="color: ${item.avg_loss < -500 ? '#EF4444' : '#F59E0B'}; font-weight: 600;">
-              $${item.avg_loss.toLocaleString('en-US', {minimumFractionDigits: 2})}
+            <td style="color: #EF4444; font-weight: 600;">
+              -$${Math.abs(d.baseline_worst_dd).toLocaleString('en-US', {minimumFractionDigits: 2})}
             </td>
             <td>
-              ${badgeHtml}
+              ${assessmentBadge}
             </td>
           </tr>
         `;
