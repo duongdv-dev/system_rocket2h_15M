@@ -28,6 +28,7 @@ import glob
 import csv
 import json
 import math
+import argparse
 from datetime import datetime, timezone, timedelta
 
 VN_TZ = timezone(timedelta(hours=7))
@@ -35,7 +36,7 @@ TRAIN_YEARS = set(range(2011, 2021))
 TEST_YEARS  = set(range(2021, 2026))
 
 MAX_ORDERS = 8                # Tối đa 8 lệnh DCA để khống chế trần rủi ro tuyệt đối
-DEFAULT_HARD_CLOSE_TIME = (23, 30)  # Giờ đóng lệnh cứng trong ngày mặc định: 23:30 VN (London Close)
+DEFAULT_HARD_CLOSE_TIME = (12, 0)   # Giờ đóng lệnh cứng trong ngày: 12:00 trưa VN (Kết thúc sóng sáng Á)
 LOT_STEP_CAPITAL = 5000.0     # Cứ $5,000 vốn -> 0.01 lot (Vốn $10k -> 0.02 lot an toàn)
 INITIAL_BALANCE = 10000.0     # Vốn khởi điểm $10,000
 
@@ -440,6 +441,7 @@ def scan_intraday_exit_hours(sessions, candles):
     nhằm tìm ra mốc giờ có Lợi nhuận cao nhất và Rủi ro thấp nhất.
     """
     candidates = [
+        ((12, 0), "12:00 VN (Trưa - Kết thúc sóng sáng Á)"),
         ((18, 0), "18:00 VN (Trước phiên Mỹ, né tin sốc)"),
         ((20, 0), "20:00 VN (Đầu phiên Mỹ)"),
         ((22, 0), "22:00 VN (Giữa phiên Mỹ)"),
@@ -495,7 +497,7 @@ def scan_intraday_exit_hours(sessions, candles):
     return results, best_candidate
 
 
-def run_pipeline(data_dir):
+def run_pipeline(data_dir, target_exit_hour=(12, 0)):
     candles = load_candles(data_dir)
     sessions = extract_daily_sessions(candles)
 
@@ -504,9 +506,20 @@ def run_pipeline(data_dir):
 
     print("[3/4] Quét và đánh giá mốc giờ đóng lệnh cứng trong ngày...")
     scan_results, best_opt = scan_intraday_exit_hours(sessions, candles)
-    chosen_exit = best_opt['time_tuple']
+    
+    if target_exit_hour is not None:
+        chosen_exit = target_exit_hour
+        chosen_opt = next((r for r in scan_results if r['time_tuple'] == chosen_exit), {
+            'time_tuple': chosen_exit,
+            'label': f"{chosen_exit[0]:02d}:{chosen_exit[1]:02d} VN (Người dùng chỉ định)",
+            'win_rate': 0.0,
+            'net_pnl': 0.0
+        })
+    else:
+        chosen_exit = best_opt['time_tuple']
+        chosen_opt = best_opt
 
-    print(f"[4/4] Chạy kiểm định toàn diện với giờ đóng tối ưu: {best_opt['label']}...")
+    print(f"[4/4] Chạy kiểm định toàn diện với giờ đóng đã chọn: {chosen_opt['label']}...")
     
     test_baseline = simulate_full_dataset(test_sessions, candles, use_ai=False, hard_close_time=chosen_exit)
     test_ai       = simulate_full_dataset(test_sessions, candles, use_ai=True, hard_close_time=chosen_exit)
@@ -524,7 +537,7 @@ def run_pipeline(data_dir):
             'train_period': '2011 - 2020 (10 năm)',
             'test_period': '2021 - 2025 (5 năm)',
             'strategy_name': 'Rocket 10h VN M15 v6.5 (Intraday Close & Dynamic TP)',
-            'stop_loss_rule': f"Đóng lệnh cứng trong ngày lúc {best_opt['label']}",
+            'stop_loss_rule': f"Đóng lệnh cứng trong ngày lúc {chosen_opt['label']}",
             'max_orders_rule': f"Tối đa {MAX_ORDERS} lệnh DCA an toàn",
             'anti_clustering_rule': 'Min Distance = max(2.0, 0.4 * ATR)',
             'tp_mechanism': 'CANDLE-BASED DYNAMIC TP (Phân tầng 3 cấp: 1-2 lệnh gồng nến, >=4 lệnh thoát an toàn)',
@@ -533,6 +546,7 @@ def run_pipeline(data_dir):
         },
         'intraday_exit_analysis': scan_results,
         'best_exit_hour': best_opt,
+        'chosen_exit_hour': chosen_opt,
         'train': {
             'baseline': train_baseline,
             'ai': train_ai
@@ -555,12 +569,12 @@ def run_pipeline(data_dir):
         json.dump(stats, f, ensure_ascii=False, indent=2)
 
     print("\n" + "="*70)
-    print(" KẾT QUẢ HỆ THỐNG 6.5 (ĐÓNG LỆNH CỨNG TRONG NGÀY + TP NẾN M15)")
+    print(f" KẾT QUẢ HỆ THỐNG 6.5 (ĐÓNG CỨNG LÚC {chosen_opt['label'].upper()})")
     print("="*70)
     print("TẬP TEST (2021 - 2025) - KIỂM ĐỊNH MÙ 5 NĂM:")
-    print(f"• SỐ PHIÊN GIAO DỊCH : {test_ai['total_trades']} / {len(test_sessions)} ngày (ĐÁNH ~88% SỐ NGÀY!)")
+    print(f"• SỐ PHIÊN GIAO DỊCH : {test_ai['total_trades']} / {len(test_sessions)} ngày")
     print(f"• TỶ LỆ THẮNG (WIN)   : {test_ai['win_rate']}%")
-    print(f"• LỢI NHUẬN RÒNG (PnL): ${test_ai['net_pnl']:,.2f} (VỐN TĂNG TỪ $10,000 -> ${test_ai['final_balance']:,.2f})")
+    print(f"• LỢI NHUẬN RÒNG (PnL): ${test_ai['net_pnl']:,.2f} (VỐN: ${test_ai['final_balance']:,.2f})")
     print(f"• SỤT GIẢM LỚN NHẤT   : {test_ai['max_dd_percent']}%")
     print(f"• PROFIT FACTOR       : {test_ai['profit_factor']}")
     print(f"• SỐ LỆNH NHỒI TB     : {test_ai['avg_layers']} lệnh/chu kỳ")
@@ -574,5 +588,15 @@ def run_pipeline(data_dir):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Chạy AI Quant Backtest System")
+    parser.add_argument('--exit-hour', default='12:00', help="Giờ đóng lệnh cứng (Mặc định: 12:00 trưa VN)")
+    args = parser.parse_args()
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    run_pipeline(current_dir)
+    if args.exit_hour and args.exit_hour.lower() != 'none':
+        parts = args.exit_hour.split(':')
+        target_tuple = (int(parts[0]), int(parts[1]))
+    else:
+        target_tuple = None
+
+    run_pipeline(current_dir, target_exit_hour=target_tuple)
