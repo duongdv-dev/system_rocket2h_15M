@@ -15,7 +15,7 @@ Hệ thống giao dịch định lượng kết hợp Trí tuệ Nhân tạo (Ma
    - $\ge 3$ lệnh: Tự động co target lại ($0.5 \times ATR$, chỉ cần lãi 3.5 - 7 giá) để thoát sạch rổ lệnh ngay nến hồi đầu tiên.
    - Khóa lãi sớm theo nến M15 đảo chiều khi đã có lãi an toàn.
 4. **Bảo Hiểm Rủi Ro (Circuit Breaker):**
-   - Cắt lỗ cứng toàn bộ rổ lệnh khi chạm ngưỡng **$-15\%$ Balance** (bảo vệ tuyệt đối 85% tài sản còn lại).
+   - Cắt lỗ cứng toàn bộ rổ lệnh khi chạm ngưỡng **$-50\%$ Balance** (cho rổ lệnh biên độ chịu rung lắc lớn để chờ nhịp hồi).
 5. **Quản Lý Vốn Lãi Kép (Compounding):**
    - Cứ mỗi **$2,000 vốn** đi **0.01 lot** ($10k$ vốn khởi điểm 0.05 lot).
 

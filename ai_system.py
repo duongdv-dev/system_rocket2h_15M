@@ -21,7 +21,7 @@ Bộ quy tắc:
      - 1 lệnh: Ăn dày theo sóng lớn (10 - 20 giá).
      - >= 3 lệnh: Tự động hạ target còn 3.5 - 7 giá để thoát hiểm ngay nến hồi đầu tiên.
      - Khóa lãi sớm theo nến M15 đảo chiều khi đã có lãi an toàn.
-  4. Bảo hiểm rủi ro: Stop Loss tuyệt đối = 15% VỐN (Không cứng số giá).
+  4. Bảo hiểm rủi ro: Stop Loss tuyệt đối = 50% VỐN (Không cứng số giá).
   5. Quản lý vốn Lãi kép (Compounding): Cứ mỗi $2,000 vốn -> Đi 0.01 lot ($10k vốn -> 0.05 lot).
 """
 
@@ -36,7 +36,7 @@ VN_TZ = timezone(timedelta(hours=7))
 TRAIN_YEARS = set(range(2011, 2021))
 TEST_YEARS  = set(range(2021, 2026))
 
-MAX_LOSS_PCT = 0.15           # Cắt lỗ cứng = 15% Balance
+MAX_LOSS_PCT = 0.50           # Cắt lỗ cứng = 50% Balance
 DEFAULT_MAX_ORDERS = 8        # Tối đa 8 lệnh DCA
 LOT_STEP_CAPITAL = 2000.0     # Cứ $2,000 vốn -> 0.01 lot
 INITIAL_BALANCE = 10000.0     # Vốn khởi điểm $10,000
@@ -410,7 +410,7 @@ def run_pipeline(data_dir):
             'train_period': '2011 - 2020 (10 năm)',
             'test_period': '2021 - 2025 (5 năm)',
             'strategy_name': 'Rocket 10h VN M15 v5.0 (Dynamic Wave Regime)',
-            'stop_loss_rule': '15% Balance Hard Stop Loss',
+            'stop_loss_rule': '50% Balance Hard Stop Loss',
             'anti_clustering_rule': 'Min Distance = max(2.0, 0.4 * ATR)',
             'tp_mechanism': 'HYBRID DYNAMIC TP (M15 Reversal Trailing + Target Decay)',
             'compounding_rule': '$2,000 vốn ứng với 0.01 lot',
@@ -442,7 +442,7 @@ def run_pipeline(data_dir):
     print(f"• SỐ PHIÊN GIAO DỊCH : {test_ai['total_trades']} / {len(test_sessions)} ngày (ĐÁNH 90% SỐ NGÀY!)")
     print(f"• TỶ LỆ THẮNG (WIN)   : {test_ai['win_rate']}%")
     print(f"• LỢI NHUẬN RÒNG (PnL): ${test_ai['net_pnl']:,.2f} (VỐN TĂNG TỪ $10,000 -> ${test_ai['final_balance']:,.2f})")
-    print(f"• SỤT GIẢM LỚN NHẤT   : {test_ai['max_dd_percent']}% (KHỐNG CHẾ TRONG HẠN MỨC 15% VỐN!)")
+    print(f"• SỤT GIẢM LỚN NHẤT   : {test_ai['max_dd_percent']}% (KHỐNG CHẾ TRONG HẠN MỨC 50% VỐN!)")
     print(f"• PROFIT FACTOR       : {test_ai['profit_factor']}")
     print(f"• SỐ LỆNH NHỒI TB     : {test_ai['avg_layers']} lệnh/chu kỳ")
     print("-" * 70)
