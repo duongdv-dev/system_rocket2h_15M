@@ -34,7 +34,8 @@ VN_TZ = timezone(timedelta(hours=7))
 TRAIN_YEARS = set(range(2011, 2021))
 TEST_YEARS  = set(range(2021, 2026))
 
-MAX_ORDERS = None             # Không giới hạn số lệnh DCA (Bỏ qua giới hạn số lệnh)
+MAX_ORDERS = 8                # Tối đa 8 lệnh DCA để khống chế trần rủi ro tuyệt đối
+DEFAULT_HARD_CLOSE_TIME = (23, 30)  # Giờ đóng lệnh cứng trong ngày mặc định: 23:30 VN (London Close)
 LOT_STEP_CAPITAL = 5000.0     # Cứ $5,000 vốn -> 0.01 lot (Vốn $10k -> 0.02 lot an toàn)
 INITIAL_BALANCE = 10000.0     # Vốn khởi điểm $10,000
 
@@ -154,16 +155,13 @@ def extract_daily_sessions(candles):
     return sessions
 
 
-def run_single_session_simulation(candles, session_info, current_lot):
+def run_single_session_simulation(candles, session_info, current_lot, hard_close_time=DEFAULT_HARD_CLOSE_TIME, max_orders=MAX_ORDERS):
     """
     Mô phỏng chu kỳ lệnh chuẩn:
-    - BỎ HOÀN TOÀN STOP LOSS (Gồng qua nhịp rung lắc để chờ nhịp hồi).
-    - CHỐT LỜI ĐỘNG THEO NẾN M15:
-      + Rổ nhồi (>= 2 lệnh): Đóng nến M15 có lãi đủ bù spread (>= min_profit) -> ĐÓNG NGAY!
-      + Lệnh đơn (1 lệnh): Đóng nến có lãi >= min_profit:
-        * Nếu nến rút râu / đảo chiều hoặc lãi >= 1.0 x ATR -> ĐÓNG!
-        * Nếu nến bứt phá mạnh cùng chiều -> Cho gồng tiếp.
-    - NHỒI LỆNH: Nến M15 cùng màu bất lợi + cách lệnh trước >= Min Distance.
+    - BỎ HOÀN TOÀN STOP LOSS.
+    - ĐÓNG LỆNH CỨNG TRONG NGÀY (Intraday Close): Thoát sạch toàn bộ rổ lệnh trước khi qua ngày mới.
+    - CHỐT LỜI ĐỘNG THEO NẾN M15 (Phân tầng 3 cấp).
+    - NHỒI LỆNH: Nến M15 cùng màu bất lợi + cách lệnh trước >= Min Distance (tối đa max_orders).
     """
     n = len(candles)
     start_idx = session_info['candle_idx']
@@ -179,19 +177,37 @@ def run_single_session_simulation(candles, session_info, current_lot):
     direction = None
     basket_closed = False
     close_price = None
+    close_reason = ""
+    worst_floating_pnl = 0.0
+
+    start_ts = candles[start_idx][0]
+    start_dt = datetime.fromtimestamp(start_ts / 1000.0, tz=timezone.utc).astimezone(VN_TZ)
+
+    if hard_close_time is not None:
+        h_close, m_close = hard_close_time
+        if h_close >= 10:
+            cutoff_dt = start_dt.replace(hour=h_close, minute=m_close, second=0, microsecond=0)
+        else:
+            cutoff_dt = (start_dt + timedelta(days=1)).replace(hour=h_close, minute=m_close, second=0, microsecond=0)
+        max_search = min(n, start_idx + 100)  # Giới hạn tối đa trong ngày (~70-90 nến M15)
+    else:
+        cutoff_dt = None
+        max_search = min(n, start_idx + 960)  # 10 ngày
 
     j = start_idx
-    max_search = min(n, start_idx + 960)  # Tối đa 10 ngày để giải quyết rổ lệnh
 
     while j < max_search:
         n_ts, n_open, n_high, n_low, n_close, _ = candles[j]
         is_green = n_close > n_open
         is_red = n_close < n_open
+        cur_dt = datetime.fromtimestamp(n_ts / 1000.0, tz=timezone.utc).astimezone(VN_TZ)
 
         # ----------------------------------------------------
         # 1. TÌM ĐIỂM VÀO LỆNH ĐẦU TIÊN (#1)
         # ----------------------------------------------------
         if not orders:
+            if cutoff_dt is not None and cur_dt >= cutoff_dt:
+                break  # Hết ngày mà chưa xuất hiện tín hiệu vào lệnh #1
             if regime == 'UP_TREND':
                 if is_red:  # Chờ nến đỏ pullback để BUY
                     direction = 'BUY'
@@ -211,6 +227,14 @@ def run_single_session_simulation(candles, session_info, current_lot):
             j += 1
             continue
 
+        # Theo dõi mức sụt giảm tạm thời sâu nhất (worst floating pnl)
+        cur_floating_dollar = sum(
+            ((n_close - o['price']) if direction == 'BUY' else (o['price'] - n_close)) * o['lot'] * 100.0
+            for o in orders
+        )
+        if cur_floating_dollar < worst_floating_pnl:
+            worst_floating_pnl = cur_floating_dollar
+
         # ----------------------------------------------------
         # 2. XÉT CHỐT LỜI ĐỘNG THEO ĐÓNG NẾN M15
         # ----------------------------------------------------
@@ -219,9 +243,6 @@ def run_single_session_simulation(candles, session_info, current_lot):
         avg_price = sum(o['price'] * o['lot'] for o in orders) / total_lots
         floating_price = (n_close - avg_price) if direction == 'BUY' else (avg_price - n_close)
 
-        # ----------------------------------------------------
-        # 2. XÉT CHỐT LỜI ĐỘNG THEO NẾN M15 (PHÂN TẦNG 3 CẤP ĐỘ)
-        # ----------------------------------------------------
         # CẤP 1: 1 - 2 LỆNH (VÙNG TẤN CÔNG - TỰ TIN GỒNG LÃI THEO NẾN)
         if num_orders <= 2:
             if floating_price >= min_profit_price:
@@ -229,15 +250,18 @@ def run_single_session_simulation(candles, session_info, current_lot):
                 if floating_price >= max(8.0, 1.0 * atr_val):
                     basket_closed = True
                     close_price = n_close
+                    close_reason = f"TP Tầng 1: Đạt target lớn (+{round(floating_price, 1)} giá)"
                     break
                 # 2. Nến M15 đóng cửa quay đầu đảo chiều (BUY gặp nến đỏ, SELL gặp nến xanh) -> Khóa lãi ngay!
                 if direction == 'BUY' and is_red:
                     basket_closed = True
                     close_price = n_close
+                    close_reason = f"TP Tầng 1: Nến M15 đỏ đảo chiều (+{round(floating_price, 1)} giá)"
                     break
                 elif direction == 'SELL' and is_green:
                     basket_closed = True
                     close_price = n_close
+                    close_reason = f"TP Tầng 1: Nến M15 xanh đảo chiều (+{round(floating_price, 1)} giá)"
                     break
                 # 3. Nến xuất hiện râu đảo chiều cản đường (thân nến co cụt < 40%) -> Chốt lời!
                 candle_range = n_high - n_low
@@ -245,51 +269,69 @@ def run_single_session_simulation(candles, session_info, current_lot):
                 if candle_range > 0 and (body_len / candle_range) < 0.4:
                     basket_closed = True
                     close_price = n_close
+                    close_reason = f"TP Tầng 1: Rút râu cản đường (+{round(floating_price, 1)} giá)"
                     break
-                # (Nếu nến vẫn đang căng đét cùng chiều -> Không break, cho gồng tiếp sang nến sau!)
 
         # CẤP 2: 3 LỆNH (VÙNG CÂN BẰNG - CHỐT MỤC TIÊU VỪA PHẢI)
         elif num_orders == 3:
-            # Đạt target vừa (>= 0.5 x ATR, từ 4 - 6 giá) -> Chốt luôn!
             if floating_price >= max(4.0, 0.5 * atr_val):
                 basket_closed = True
                 close_price = n_close
+                close_reason = f"TP Tầng 2: Đạt target vừa (+{round(floating_price, 1)} giá)"
                 break
-            # Hoặc nến M15 đảo chiều khi đã có lãi -> Khóa lãi ngay!
             if floating_price >= min_profit_price:
                 if (direction == 'BUY' and is_red) or (direction == 'SELL' and is_green):
                     basket_closed = True
                     close_price = n_close
+                    close_reason = f"TP Tầng 2: Nến M15 đảo chiều (+{round(floating_price, 1)} giá)"
                     break
 
         # CẤP 3: TỪ 4 LỆNH TRỞ LÊN (VÙNG PHÒNG THỦ - THOÁT HIỂM AN TOÀN)
         else:
-            # Không tham lam: Đóng nến M15 chớm có lãi (>= min_profit_price) là ĐÓNG SẠCH NGAY LẬP TỨC!
             if floating_price >= min_profit_price:
                 basket_closed = True
                 close_price = n_close
+                close_reason = f"TP Tầng 3: Thoát an toàn rổ {num_orders} lệnh (+{round(floating_price, 1)} giá)"
                 break
 
         # ----------------------------------------------------
-        # 3. XÉT NHỒI LỆNH DCA (KHÔNG GIỚI HẠN SỐ LỆNH, KÈM LỌC CHỐNG DÍNH)
+        # 3. KIỂM TRA ĐÓNG LỆNH CỨNG TRONG NGÀY (INTRADAY HARD CLOSE)
         # ----------------------------------------------------
-        last_price = orders[-1]['price']
-        dist = abs(n_close - last_price)
+        if cutoff_dt is not None and cur_dt >= cutoff_dt:
+            basket_closed = False
+            close_price = n_close
+            close_reason = f"Đóng lệnh cứng trong ngày lúc {h_close:02d}:{m_close:02d} VN (Intraday Close)"
+            break
 
-        # Cứ thỏa mãn khoảng cách tối thiểu là nhồi tiếp để kéo giá trung bình
-        if dist >= min_step:
-            if direction == 'BUY' and is_red:
-                orders.append({'price': n_close, 'lot': current_lot})
-            elif direction == 'SELL' and is_green:
-                orders.append({'price': n_close, 'lot': current_lot})
+        # ----------------------------------------------------
+        # 4. XÉT NHỒI LỆNH DCA (GIỚI HẠN AN TOÀN KÈM LỌC CHỐNG DÍNH)
+        # ----------------------------------------------------
+        can_add = (max_orders is None) or (len(orders) < max_orders)
+        if can_add:
+            last_price = orders[-1]['price']
+            dist = abs(n_close - last_price)
+            if dist >= min_step:
+                if direction == 'BUY' and is_red:
+                    orders.append({'price': n_close, 'lot': current_lot})
+                elif direction == 'SELL' and is_green:
+                    orders.append({'price': n_close, 'lot': current_lot})
 
         j += 1
 
     if not orders:
         return None
 
+    exit_idx = min(j, n - 1)
+    exit_ts = candles[exit_idx][0]
+    exit_date = datetime.fromtimestamp(exit_ts / 1000.0, tz=timezone.utc).astimezone(VN_TZ).strftime('%Y-%m-%d %H:%M')
+
     if not basket_closed:
-        close_price = candles[min(j, n-1)][4]
+        if close_price is None:
+            close_price = candles[exit_idx][4]
+        if not close_reason:
+            bars_held = j - start_idx
+            days_held = round(bars_held / 96.0, 1)
+            close_reason = f"Kẹt sóng {days_held} ngày ({bars_held} nến M15) - Buộc đóng khi hết hạn mô phỏng"
 
     final_pnl_dollar = sum(
         ((close_price - o['price']) if direction == 'BUY' else (o['price'] - close_price)) * o['lot'] * 100.0
@@ -306,11 +348,15 @@ def run_single_session_simulation(candles, session_info, current_lot):
         'pnl_dollar': round(final_pnl_dollar, 2),
         'pnl_price': round(final_pnl_price, 2),
         'is_win': final_pnl_dollar > 0,
-        'duration_bars': j - start_idx
+        'duration_bars': j - start_idx,
+        'duration_days': round((j - start_idx) / 96.0, 1),
+        'exit_date': exit_date,
+        'close_reason': close_reason,
+        'worst_floating_pnl': round(worst_floating_pnl, 2)
     }
 
 
-def simulate_full_dataset(sessions, candles, use_ai=True):
+def simulate_full_dataset(sessions, candles, use_ai=True, hard_close_time=DEFAULT_HARD_CLOSE_TIME, max_orders=MAX_ORDERS):
     """Mô phỏng toàn bộ dữ liệu có lãi kép $5,000 = 0.01 lot"""
     balance = INITIAL_BALANCE
     peak = balance
@@ -327,7 +373,7 @@ def simulate_full_dataset(sessions, candles, use_ai=True):
         # Volume an toàn: Cứ $5,000 Balance = 0.01 lot ($10k -> 0.02 lot khởi điểm)
         current_lot = max(0.01, round(math.floor(balance / LOT_STEP_CAPITAL) * 0.01, 2))
 
-        res = run_single_session_simulation(candles, s, current_lot)
+        res = run_single_session_simulation(candles, s, current_lot, hard_close_time=hard_close_time, max_orders=max_orders)
         if res is None:
             continue
 
@@ -345,6 +391,7 @@ def simulate_full_dataset(sessions, candles, use_ai=True):
 
         executed_trades.append({
             'date': s['date'],
+            'exit_date': res['exit_date'],
             'direction': res['direction'],
             'mode': res['regime'],
             'lot_size': current_lot,
@@ -354,7 +401,11 @@ def simulate_full_dataset(sessions, candles, use_ai=True):
             'pnl_dollar': res['pnl_dollar'],
             'pnl_price': res['pnl_price'],
             'ai_safe_prob': 0.90,
-            'is_win': res['is_win']
+            'is_win': res['is_win'],
+            'duration_bars': res['duration_bars'],
+            'duration_days': res['duration_days'],
+            'close_reason': res['close_reason'],
+            'worst_floating_pnl': res['worst_floating_pnl']
         })
 
     total_trades = len(executed_trades)
@@ -383,6 +434,67 @@ def simulate_full_dataset(sessions, candles, use_ai=True):
     }
 
 
+def scan_intraday_exit_hours(sessions, candles):
+    """
+    Dùng AI / Phân tích định lượng để so sánh tất cả các mốc giờ đóng lệnh cứng trong ngày
+    nhằm tìm ra mốc giờ có Lợi nhuận cao nhất và Rủi ro thấp nhất.
+    """
+    candidates = [
+        ((18, 0), "18:00 VN (Trước phiên Mỹ, né tin sốc)"),
+        ((20, 0), "20:00 VN (Đầu phiên Mỹ)"),
+        ((22, 0), "22:00 VN (Giữa phiên Mỹ)"),
+        ((23, 30), "23:30 VN (London Close - Đóng phiên Âu)"),
+        ((1, 30), "01:30 VN (Đêm muộn VN)"),
+        ((3, 45), "03:45 VN (Sát giờ đóng cửa ngày)"),
+        (None, "Không đóng (Gồng 10 ngày - Logic cũ)")
+    ]
+
+    test_sessions = [s for s in sessions if s['year'] in TEST_YEARS]
+    results = []
+
+    print("\n" + "="*95)
+    print(" [AI SCAN] SO SÁNH CÁC MỐC GIỜ ĐÓNG LỆNH CỨNG TRONG NGÀY (TẬP TEST 2021 - 2025)...")
+    print("="*95)
+    print(f"{'MỐC GIỜ ĐÓNG CỨNG':<36} | {'WINRATE':<8} | {'LỢI NHUẬN RÒNG':<16} | {'MAX DD':<8} | {'PROFIT FACTOR':<13} | {'LỖ TB/LỆNH'}")
+    print("-" * 95)
+
+    for time_tuple, label in candidates:
+        stats = simulate_full_dataset(test_sessions, candles, use_ai=True, hard_close_time=time_tuple)
+        losses = [t for t in stats['trades'] if not t['is_win']]
+        avg_loss = (sum(t['pnl_dollar'] for t in losses) / len(losses)) if losses else 0.0
+
+        res_item = {
+            'time_tuple': time_tuple,
+            'label': label,
+            'win_rate': stats['win_rate'],
+            'net_pnl': stats['net_pnl'],
+            'final_balance': stats['final_balance'],
+            'max_dd_percent': stats['max_dd_percent'],
+            'profit_factor': stats['profit_factor'],
+            'total_trades': stats['total_trades'],
+            'loss_trades_count': len(losses),
+            'avg_loss': round(avg_loss, 2),
+            'max_layers': stats['max_layers']
+        }
+        results.append(res_item)
+
+        pnl_str = f"${stats['net_pnl']:,.2f}"
+        dd_str = f"{stats['max_dd_percent']}%"
+        avg_loss_str = f"${avg_loss:,.2f}"
+        print(f"{label:<36} | {stats['win_rate']:>6.2f}% | {pnl_str:>16} | {dd_str:>8} | {stats['profit_factor']:>13.2f} | {avg_loss_str:>12}")
+
+    print("="*95)
+
+    # Chọn mốc giờ đóng trong ngày (loại trừ None) có net_pnl cao nhất
+    intraday_only = [r for r in results if r['time_tuple'] is not None]
+    best_candidate = max(intraday_only, key=lambda x: (x['net_pnl'], -x['max_dd_percent']))
+    print(f"\n🎯 KẾT LUẬN AI: Mốc giờ tối ưu nhất là {best_candidate['label']}")
+    print(f"   -> Lợi nhuận ròng: ${best_candidate['net_pnl']:,.2f} | Winrate: {best_candidate['win_rate']}% | Max DD: {best_candidate['max_dd_percent']}%")
+    print("="*95 + "\n")
+
+    return results, best_candidate
+
+
 def run_pipeline(data_dir):
     candles = load_candles(data_dir)
     sessions = extract_daily_sessions(candles)
@@ -390,16 +502,20 @@ def run_pipeline(data_dir):
     train_sessions = [s for s in sessions if s['year'] in TRAIN_YEARS]
     test_sessions  = [s for s in sessions if s['year'] in TEST_YEARS]
 
-    print("[3/4] Chạy kiểm định Hệ Thống 6.0 (BỎ SL + TP THEO NẾN + NÉ BÃO GIÁ)...")
+    print("[3/4] Quét và đánh giá mốc giờ đóng lệnh cứng trong ngày...")
+    scan_results, best_opt = scan_intraday_exit_hours(sessions, candles)
+    chosen_exit = best_opt['time_tuple']
+
+    print(f"[4/4] Chạy kiểm định toàn diện với giờ đóng tối ưu: {best_opt['label']}...")
     
-    test_baseline = simulate_full_dataset(test_sessions, candles, use_ai=False)
-    test_ai       = simulate_full_dataset(test_sessions, candles, use_ai=True)
+    test_baseline = simulate_full_dataset(test_sessions, candles, use_ai=False, hard_close_time=chosen_exit)
+    test_ai       = simulate_full_dataset(test_sessions, candles, use_ai=True, hard_close_time=chosen_exit)
 
-    train_baseline = simulate_full_dataset(train_sessions, candles, use_ai=False)
-    train_ai       = simulate_full_dataset(train_sessions, candles, use_ai=True)
+    train_baseline = simulate_full_dataset(train_sessions, candles, use_ai=False, hard_close_time=chosen_exit)
+    train_ai       = simulate_full_dataset(train_sessions, candles, use_ai=True, hard_close_time=chosen_exit)
 
-    all_baseline   = simulate_full_dataset(sessions, candles, use_ai=False)
-    all_ai         = simulate_full_dataset(sessions, candles, use_ai=True)
+    all_baseline   = simulate_full_dataset(sessions, candles, use_ai=False, hard_close_time=chosen_exit)
+    all_ai         = simulate_full_dataset(sessions, candles, use_ai=True, hard_close_time=chosen_exit)
 
     stats = {
         'metadata': {
@@ -407,14 +523,16 @@ def run_pipeline(data_dir):
             'total_years': 15,
             'train_period': '2011 - 2020 (10 năm)',
             'test_period': '2021 - 2025 (5 năm)',
-            'strategy_name': 'Rocket 10h VN M15 v6.0 (No-SL Candle TP & Volatility Guard)',
-            'stop_loss_rule': 'None (Bỏ hoàn toàn SL - Dựa vào bộ lọc né bão giá)',
-            'max_orders_rule': 'Unlimited (Bỏ qua giới hạn số lệnh DCA - Tự do nhồi theo nến M15)',
+            'strategy_name': 'Rocket 10h VN M15 v6.5 (Intraday Close & Dynamic TP)',
+            'stop_loss_rule': f"Đóng lệnh cứng trong ngày lúc {best_opt['label']}",
+            'max_orders_rule': f"Tối đa {MAX_ORDERS} lệnh DCA an toàn",
             'anti_clustering_rule': 'Min Distance = max(2.0, 0.4 * ATR)',
             'tp_mechanism': 'CANDLE-BASED DYNAMIC TP (Phân tầng 3 cấp: 1-2 lệnh gồng nến, >=4 lệnh thoát an toàn)',
             'compounding_rule': '$5,000 vốn ứng với 0.01 lot ($10k vốn -> 0.02 lot an toàn)',
             'initial_balance': INITIAL_BALANCE
         },
+        'intraday_exit_analysis': scan_results,
+        'best_exit_hour': best_opt,
         'train': {
             'baseline': train_baseline,
             'ai': train_ai
@@ -427,7 +545,9 @@ def run_pipeline(data_dir):
             'baseline': all_baseline,
             'ai': all_ai
         },
-        'recent_trades': test_ai['trades'][-200:]
+        'losing_trades': [t for t in test_ai['trades'] if not t['is_win']],
+        'deep_dca_trades': [t for t in test_ai['trades'] if t['orders_count'] >= 5],
+        'recent_trades': test_ai['trades']
     }
 
     output_path = os.path.join(data_dir, "web_data.json")
@@ -435,7 +555,7 @@ def run_pipeline(data_dir):
         json.dump(stats, f, ensure_ascii=False, indent=2)
 
     print("\n" + "="*70)
-    print(" KẾT QUẢ HỆ THỐNG 6.0 (BỎ SL + TP THEO NẾN M15 + NÉ BÃO GIÁ)")
+    print(" KẾT QUẢ HỆ THỐNG 6.5 (ĐÓNG LỆNH CỨNG TRONG NGÀY + TP NẾN M15)")
     print("="*70)
     print("TẬP TEST (2021 - 2025) - KIỂM ĐỊNH MÙ 5 NĂM:")
     print(f"• SỐ PHIÊN GIAO DỊCH : {test_ai['total_trades']} / {len(test_sessions)} ngày (ĐÁNH ~88% SỐ NGÀY!)")
