@@ -1,23 +1,26 @@
-# Hệ Thống AI Quantitative Trading: Rocket 10h M15 (XAU/USD) v5.0 WAVE REGIME
+# Hệ Thống AI Quantitative Trading: Rocket 10h M15 (XAU/USD) v6.0 NO-SL CANDLE TP
 
 Hệ thống giao dịch định lượng kết hợp Trí tuệ Nhân tạo (Machine Learning) dành cho Vàng (XAU/USD), được tối ưu hóa toàn diện trên **15 năm dữ liệu nến M15 (2011 – 2025)**.
 
-### Bộ Quy Tắc Giao Dịch v5.0 (Pullback Trend + Breakout Sideway):
-1. **Nhận Diện Sóng 07:00 – 10:00 Sáng VN ($\Delta P = \text{Price}_{10h} - \text{Open}_{07h}$):**
-   - **Kịch bản SÓNG TĂNG ($\Delta P > 1.0 \times ATR$):** Xác định chiều **BUY**. Chờ nến M15 đầu tiên đóng **ĐỎ** (Pullback giá hồi giảm) mới vào BUY 1 để được giá chiết khấu; các nến sau tiếp tục Đỏ $\rightarrow$ Nhồi thêm BUY.
-   - **Kịch bản SÓNG GIẢM ($\Delta P < -1.0 \times ATR$):** Xác định chiều **SELL**. Chờ nến M15 đầu tiên đóng **XANH** (Pullback giật lên) mới vào SELL 1 để được giá cao; các nến sau tiếp tục Xanh $\rightarrow$ Nhồi thêm SELL.
-   - **Kịch bản SIDEWAY ($\lvert \Delta P \rvert \le 1.0 \times ATR$):** Đánh thuận theo nến bứt phá 10:15: nến 10:15 XANH $\rightarrow$ Mở BUY 1; nến 10:15 ĐỎ $\rightarrow$ Mở SELL 1. Nhồi DCA khi nến sau đi ngược chiều.
-2. **Bộ Lọc Chống Dính Lệnh (Anti-Clustering):**
-   - Khoảng cách tối thiểu giữa 2 lệnh: $\text{Min Distance} = \max(2.0, 0.4 \times ATR_{15M})$.
-   - Ngăn chặn việc gom 2 - 3 lệnh đè lên nhau tại các nến Doji/thân ngắn đi ngang.
-3. **Cơ Chế Chốt Lời HYBRID Đa Tầng:**
-   - 1 lệnh: Ăn dày theo con sóng ($1.0 - 1.5 \times ATR$, dao động 10 - 20 giá).
-   - $\ge 3$ lệnh: Tự động co target lại ($0.5 \times ATR$, chỉ cần lãi 3.5 - 7 giá) để thoát sạch rổ lệnh ngay nến hồi đầu tiên.
-   - Khóa lãi sớm theo nến M15 đảo chiều khi đã có lãi an toàn.
-4. **Bảo Hiểm Rủi Ro (Circuit Breaker):**
-   - Cắt lỗ cứng toàn bộ rổ lệnh khi chạm ngưỡng **$-50\%$ Balance** (cho rổ lệnh biên độ chịu rung lắc lớn để chờ nhịp hồi).
-5. **Quản Lý Vốn Lãi Kép (Compounding):**
-   - Cứ mỗi **$2,000 vốn** đi **0.01 lot** ($10k$ vốn khởi điểm 0.05 lot).
+### Bộ Quy Tắc Giao Dịch v6.0 (No-SL Candle TP & Volatility Guard):
+1. **Bỏ Hoàn Toàn Stop Loss (No SL):**
+   - Không cắt lỗ non; cho phép rổ lệnh hấp thụ rung lắc để chờ nhịp hồi tự nhiên của Vàng.
+2. **Bộ Lọc Bão Giá Cực Đoan (Extreme Volatility Guard):**
+   - Bắt buộc né 10% - 15% những ngày có tin tức sốc, ATR tăng vọt bất thường hoặc biên độ sáng giãn quá dài.
+   - Đánh ~85% - 90% số ngày bình thường khi thị trường luôn có sóng hồi quy.
+3. **Chốt Lời Động Theo Đóng Nến M15 (Candle-based TP):**
+   - Không chờ cứng 10 giá; chốt ngay tại đóng nến M15 khi có lãi ròng đủ bù spread ($\ge 1.5 - 2.5$ giá).
+   - Rổ nhồi ($\ge 2$ lệnh): Chỉ cần đóng nến M15 có lãi là đóng sạch toàn bộ rổ lệnh để bảo toàn vốn!
+   - Lệnh đơn: Cho phép gồng tiếp nếu nến M15 đang bứt phá mạnh cùng chiều; chốt ngay khi nến rút râu hoặc đảo chiều.
+4. **Hệ Số Volume Cơ Sở An Toàn:**
+   - Cứ mỗi **$5,000 vốn** đi **0.01 lot** ($10k$ vốn đi $0.02$ lot khởi điểm; volume phân bổ nhẹ nhàng, tài khoản chịu được các đợt rung lắc mạnh).
+5. **Bỏ Qua Giới Hạn Số Lệnh (Unlimited DCA Layers):**
+   - Không giới hạn số lệnh tối đa, cho phép rổ lệnh tự do DCA theo đóng nến M15 ngược màu để kéo giá trung bình nhanh nhất.
+6. **Nhận Diện Sóng 07h-10h & Bộ Lọc Chống Dính Lệnh (Anti-Clustering):**
+   - Sóng tăng: Chờ nến đỏ pullback để BUY.
+   - Sóng giảm: Chờ nến xanh pullback để SELL.
+   - Sideway: Đánh theo nến 10:15 (Xanh Buy, Đỏ Sell).
+   - Khoảng cách nhồi tối thiểu: $\text{Min Distance} = \max(2.0, 0.4 \times ATR)$.
 
 ---
 

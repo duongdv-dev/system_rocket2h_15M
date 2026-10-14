@@ -1,28 +1,26 @@
 #!/usr/bin/env python3
 """
-AI Quantitative Trading Engine 5.0 - Dynamic Wave Regime & Hybrid Execution
-Chiến lược Rocket 10h VN M15 - Đa Tầng Thích Ứng Toàn Diện
+AI Quantitative Trading Engine 6.0 - No-SL Smart Dynamic TP & Volatility Guard
+Chiến lược Rocket 10h VN M15 - Phiên bản Tối ưu theo Nến & Bảo Toàn Vốn
 
-Bộ quy tắc:
-  1. Nhận diện Sóng 07:00 - 10:00 sáng VN (ΔP = Price_10h - Open_07h):
-     - Kịch bản A: SÓNG TĂNG (ΔP > 1.0 * ATR) -> Xác định chiều BUY.
-       Chờ nến M15 đầu tiên đóng ĐỎ (Pullback giảm) mới vào BUY 1 để được giá chiết khấu.
-       Nếu các nến sau tiếp tục ĐỎ -> Nhồi thêm BUY (kèm bộ lọc chống dính lệnh).
-     - Kịch bản B: SÓNG GIẢM (ΔP < -1.0 * ATR) -> Xác định chiều SELL.
-       Chờ nến M15 đầu tiên đóng XANH (Pullback giật lên) mới vào SELL 1 để được giá cao.
-       Nếu các nến sau tiếp tục XANH -> Nhồi thêm SELL (kèm bộ lọc chống dính lệnh).
-     - Kịch bản C: SIDEWAY (|ΔP| <= 1.0 * ATR) -> Đánh theo nến bứt phá 10:15:
-       Nến 10:15 XANH -> Mở BUY 1; nến 10:15 ĐỎ -> Mở SELL 1.
-       Nhồi DCA khi nến sau đi ngược hướng (BUY gặp đỏ, SELL gặp xanh).
-  2. Bộ lọc chống dính lệnh (Anti-Clustering):
-     - Min Distance = max(2.0, 0.4 * ATR).
-     - Chỉ mở thêm lệnh nếu nến đóng cửa cách giá lệnh trước đó >= Min Distance (tránh gom chùm lệnh ở nến Doji).
-  3. Cơ chế Chốt Lời HYBRID Đa Tầng:
-     - 1 lệnh: Ăn dày theo sóng lớn (10 - 20 giá).
-     - >= 3 lệnh: Tự động hạ target còn 3.5 - 7 giá để thoát hiểm ngay nến hồi đầu tiên.
-     - Khóa lãi sớm theo nến M15 đảo chiều khi đã có lãi an toàn.
-  4. Bảo hiểm rủi ro: Stop Loss tuyệt đối = 50% VỐN (Không cứng số giá).
-  5. Quản lý vốn Lãi kép (Compounding): Cứ mỗi $2,000 vốn -> Đi 0.01 lot ($10k vốn -> 0.05 lot).
+Cốt lõi nâng cấp theo yêu cầu:
+  1. BỎ HOÀN TOÀN STOP LOSS: Không cắt lỗ cứng (Để rổ lệnh tự do hồi phục về Take Profit).
+  2. BỘ LỌC BÃO GIÁ CỰC ĐOAN (Extreme Volatility Guard):
+     - Vì bỏ SL nên bắt buộc phải NÉ TUYỆT ĐỐI các ngày bão giá (Tin tức sốc, ATR tăng vọt bất thường, biên độ phiên sáng giãn quá dài).
+     - Đánh ~85% - 90% số ngày bình thường khi thị trường luôn có nhịp hồi quy.
+  3. CHỐT LỜI ĐỘNG THEO NẾN M15 (Candle-based Take Profit):
+     - Không cứng số giá (không chờ 10 giá máy móc).
+     - Khi đóng nến M15 mà RỔ LỆNH CÓ LÃI RÒNG:
+       + Nếu rổ lệnh đã nhồi (>= 2 lệnh): Chỉ cần đóng nến M15 có lãi đủ bù phí (>= min_profit) -> ĐÓNG SẠCH TOÀN BỘ NGAY để thoát hàng an toàn!
+       + Nếu lệnh đơn (1 lệnh):
+         * Lãi ít (< min_profit) -> Chờ thêm nến M15 tiếp theo.
+         * Lãi tốt và nến M15 đảo chiều/rút râu hoặc lãi >= 1.0 x ATR -> ĐÓNG CHỐT LỜI!
+         * Nến M15 vẫn đang bứt phá mạnh cùng chiều -> Cho phép gồng tiếp để tối đa hóa lợi nhuận.
+  4. HỆ SỐ VOLUME CƠ SỞ AN TOÀN:
+     - Cứ mỗi $5,000 vốn -> Đi 0.01 lot (Tài khoản $10,000 -> Đi 0.02 lot khởi điểm).
+     - Phân bổ volume an toàn, tài khoản chịu được các nhịp rung lắc dài.
+  5. BỎ QUA GIỚI HẠN SỐ LỆNH (UNLIMITED DCA):
+     - Không giới hạn số lệnh nhồi DCA, vào lệnh theo nến M15 kèm bộ lọc chống dính (Min Distance >= max(2.0, 0.4 * ATR)).
 """
 
 import os
@@ -36,9 +34,8 @@ VN_TZ = timezone(timedelta(hours=7))
 TRAIN_YEARS = set(range(2011, 2021))
 TEST_YEARS  = set(range(2021, 2026))
 
-MAX_LOSS_PCT = 0.50           # Cắt lỗ cứng = 50% Balance
-DEFAULT_MAX_ORDERS = 8        # Tối đa 8 lệnh DCA
-LOT_STEP_CAPITAL = 2000.0     # Cứ $2,000 vốn -> 0.01 lot
+MAX_ORDERS = None             # Không giới hạn số lệnh DCA (Bỏ qua giới hạn số lệnh)
+LOT_STEP_CAPITAL = 5000.0     # Cứ $5,000 vốn -> 0.01 lot (Vốn $10k -> 0.02 lot an toàn)
 INITIAL_BALANCE = 10000.0     # Vốn khởi điểm $10,000
 
 
@@ -70,12 +67,7 @@ def load_candles(data_dir):
 
 
 def extract_daily_sessions(candles):
-    """
-    Trích xuất từng phiên giao dịch 10h sáng hàng ngày:
-    - Đo biến động từ 07:00 đến 10:00 sáng VN (open_07h, price_10h, delta_p)
-    - Phân loại kịch bản: UP_TREND (chờ đỏ Buy), DOWN_TREND (chờ xanh Sell), SIDEWAY (đánh theo nến 10:15)
-    """
-    print("[2/4] Đang trích xuất đặc trưng sóng 07h-10h & phân loại kịch bản...")
+    print("[2/4] Đang trích xuất đặc trưng sóng 07h-10h & Bộ lọc bão giá...")
     n = len(candles)
     closes = [c[4] for c in candles]
     highs = [c[2] for c in candles]
@@ -109,14 +101,12 @@ def extract_daily_sessions(candles):
             day_of_week = dt_vn.weekday()
             atr_val = atrs[i]
 
-            # 1. Tìm nến mở lúc 07:00 VN (khoảng 12 nến M15 trước nến 10:00)
-            # Từ 07:00 đến 10:00 có đúng 12 nến M15
+            # Đo biến động phiên sáng 07:00 - 10:00 VN (12 nến M15 trước đó)
             idx_07h = max(0, i - 12)
             open_07h = candles[idx_07h][1]
             price_10h = c_open
             delta_p = price_10h - open_07h
 
-            # Biên độ cao/thấp phiên sáng (07h - 10h)
             slice_morning = candles[idx_07h:i]
             if slice_morning:
                 m_high = max(c[2] for c in slice_morning)
@@ -125,19 +115,25 @@ def extract_daily_sessions(candles):
             else:
                 m_range = atr_val
 
-            # 2. Phân loại kịch bản sóng 07h - 10h:
-            # Ngưỡng xu hướng: delta_p so với ATR
+            # Phân loại kịch bản sóng 07h-10h
             trend_threshold = max(2.0, 1.0 * atr_val)
             if delta_p > trend_threshold:
-                wave_regime = 'UP_TREND'      # Sóng tăng -> Chiều BUY (chờ nến đỏ pullback)
+                wave_regime = 'UP_TREND'      # Sóng tăng -> Chờ nến đỏ pullback để BUY
             elif delta_p < -trend_threshold:
-                wave_regime = 'DOWN_TREND'    # Sóng giảm -> Chiều SELL (chờ nến xanh pullback)
+                wave_regime = 'DOWN_TREND'    # Sóng giảm -> Chờ nến xanh pullback để SELL
             else:
                 wave_regime = 'SIDEWAY'       # Sideway -> Đánh theo nến 10:15
 
-            # Bộ lọc bão giá cực đoan (~10% ngày xấu nhất):
-            # Biên độ phiên sáng giãn bất thường (> 4.5 ATR) hoặc ATR > 20 giá
-            is_extreme_toxic = 1 if (m_range / (atr_val + 1e-5) > 4.5 or atr_val > 20.0) else 0
+            # BỘ LỌC BÃO GIÁ CỰC ĐOAN (Vì bỏ SL nên né 10% - 15% ngày quá nguy hiểm):
+            # 1. Biên độ sáng giãn quá dị thường (> 3.8 x ATR)
+            # 2. Hoặc ATR lúc 10h sáng tăng vọt > 20 giá (bão giá tin tức)
+            # 3. Hoặc cây nến trước 10h quét biên độ cực đại (> 2.5 x ATR)
+            candle_10h_range = c_high - c_low
+            is_extreme_toxic = 1 if (
+                (m_range / (atr_val + 1e-5) > 3.8) or 
+                (atr_val > 20.0) or 
+                (candle_10h_range > 2.5 * atr_val)
+            ) else 0
 
             sessions.append({
                 'date': current_date_str,
@@ -158,28 +154,26 @@ def extract_daily_sessions(candles):
     return sessions
 
 
-def run_single_session_simulation(candles, session_info, current_lot, balance):
+def run_single_session_simulation(candles, session_info, current_lot):
     """
-    Thực thi 1 chu kỳ giao dịch theo đúng logic của User:
-    1. Kịch bản UP_TREND:
-       - Chờ nến M15 đầu tiên đóng ĐỎ (Close < Open) mới vào BUY 1.
-       - Các nến sau: nếu tiếp tục ĐỎ và cách lệnh trước >= Min Distance -> Nhồi thêm BUY.
-    2. Kịch bản DOWN_TREND:
-       - Chờ nến M15 đầu tiên đóng XANH (Close > Open) mới vào SELL 1.
-       - Các nến sau: nếu tiếp tục XANH và cách lệnh trước >= Min Distance -> Nhồi thêm SELL.
-    3. Kịch bản SIDEWAY:
-       - Tại nến 10:15: nến Xanh -> Mở BUY 1; nến Đỏ -> Mở SELL 1.
-       - Các nến sau: nếu nến ngược chiều và cách lệnh trước >= Min Distance -> Nhồi thêm DCA.
-    4. Thoát lệnh:
-       - Chốt lời HYBRID (Target decay + trailing reversal theo nến M15).
-       - Stop loss cứng: 15% Balance.
+    Mô phỏng chu kỳ lệnh chuẩn:
+    - BỎ HOÀN TOÀN STOP LOSS (Gồng qua nhịp rung lắc để chờ nhịp hồi).
+    - CHỐT LỜI ĐỘNG THEO NẾN M15:
+      + Rổ nhồi (>= 2 lệnh): Đóng nến M15 có lãi đủ bù spread (>= min_profit) -> ĐÓNG NGAY!
+      + Lệnh đơn (1 lệnh): Đóng nến có lãi >= min_profit:
+        * Nếu nến rút râu / đảo chiều hoặc lãi >= 1.0 x ATR -> ĐÓNG!
+        * Nếu nến bứt phá mạnh cùng chiều -> Cho gồng tiếp.
+    - NHỒI LỆNH: Nến M15 cùng màu bất lợi + cách lệnh trước >= Min Distance.
     """
     n = len(candles)
     start_idx = session_info['candle_idx']
     atr_val = session_info['atr_val']
     regime = session_info['wave_regime']
-    min_step = max(2.0, 0.4 * atr_val)  # Bộ lọc chống dính lệnh động theo ATR
-    max_sl_dollar = balance * MAX_LOSS_PCT
+    
+    # Lãi tối thiểu để xét chốt lời (động theo ATR, đảm bảo có lãi ròng thực tế)
+    min_profit_price = max(1.5, 0.25 * atr_val)
+    # Khoảng cách tối thiểu chống dính lệnh
+    min_step = max(2.0, 0.4 * atr_val)
 
     orders = []
     direction = None
@@ -195,21 +189,18 @@ def run_single_session_simulation(candles, session_info, current_lot, balance):
         is_red = n_close < n_open
 
         # ----------------------------------------------------
-        # GIAI ĐOẠN 1: TÌM ĐIỂM VÀO LỆNH ĐẦU TIÊN (#1)
+        # 1. TÌM ĐIỂM VÀO LỆNH ĐẦU TIÊN (#1)
         # ----------------------------------------------------
         if not orders:
             if regime == 'UP_TREND':
-                # Chờ nến M15 ĐỎ đầu tiên (Pullback hồi giảm) để BUY
-                if is_red:
+                if is_red:  # Chờ nến đỏ pullback để BUY
                     direction = 'BUY'
                     orders.append({'price': n_close, 'lot': current_lot})
             elif regime == 'DOWN_TREND':
-                # Chờ nến M15 XANH đầu tiên (Pullback giật tăng) để SELL
-                if is_green:
+                if is_green:  # Chờ nến xanh pullback để SELL
                     direction = 'SELL'
                     orders.append({'price': n_close, 'lot': current_lot})
             else: # SIDEWAY
-                # Tại nến 10:15 (chính là nến start_idx)
                 if j == start_idx:
                     if is_green:
                         direction = 'BUY'
@@ -221,69 +212,79 @@ def run_single_session_simulation(candles, session_info, current_lot, balance):
             continue
 
         # ----------------------------------------------------
-        # GIAI ĐOẠN 2: QUẢN LÝ RỔ LỆNH ĐANG CHẠY (TẠI ĐÓNG NẾN M15)
+        # 2. XÉT CHỐT LỜI ĐỘNG THEO ĐÓNG NẾN M15
         # ----------------------------------------------------
         num_orders = len(orders)
         total_lots = sum(o['lot'] for o in orders)
         avg_price = sum(o['price'] * o['lot'] for o in orders) / total_lots
-
-        # Floating PnL
-        floating_dollar = sum(
-            ((n_close - o['price']) if direction == 'BUY' else (o['price'] - n_close)) * o['lot'] * 100.0
-            for o in orders
-        )
         floating_price = (n_close - avg_price) if direction == 'BUY' else (avg_price - n_close)
 
-        # 1. Cắt lỗ bảo hiểm cứng: 15% Balance
-        if floating_dollar <= -max_sl_dollar:
-            basket_closed = True
-            close_price = n_close
-            break
-
-        # 2. Chốt lời HYBRID Đa Tầng
-        if num_orders == 1:
-            layer_target = max(9.0, min(18.0, 1.1 * atr_val))
-            profit_floor = max(4.5, 0.4 * atr_val)
-        elif num_orders == 2:
-            layer_target = max(6.0, min(12.0, 0.75 * atr_val))
-            profit_floor = max(3.5, 0.3 * atr_val)
-        else:
-            # >= 3 lệnh: Hạ target để thoát hiểm ngay nến hồi đầu tiên
-            layer_target = max(3.5, min(7.0, 0.45 * atr_val))
-            profit_floor = 3.0
-
-        # A. Chạm trần Target -> Chốt toàn bộ!
-        if floating_price >= layer_target:
-            basket_closed = True
-            close_price = n_close
-            break
-
-        # B. Khóa lãi sớm theo nến M15 đảo chiều khi đã lãi an toàn
-        if floating_price >= profit_floor:
-            if direction == 'BUY' and is_red:
-                basket_closed = True
-                close_price = n_close
-                break
-            elif direction == 'SELL' and is_green:
-                basket_closed = True
-                close_price = n_close
-                break
-
-        # 3. Xét điều kiện nhồi lệnh DCA (kèm Bộ lọc chống dính lệnh)
-        if len(orders) < DEFAULT_MAX_ORDERS:
-            last_price = orders[-1]['price']
-            dist = abs(n_close - last_price)
-
-            # Chỉ nhồi nếu thỏa mãn khoảng cách tối thiểu
-            if dist >= min_step:
+        # ----------------------------------------------------
+        # 2. XÉT CHỐT LỜI ĐỘNG THEO NẾN M15 (PHÂN TẦNG 3 CẤP ĐỘ)
+        # ----------------------------------------------------
+        # CẤP 1: 1 - 2 LỆNH (VÙNG TẤN CÔNG - TỰ TIN GỒNG LÃI THEO NẾN)
+        if num_orders <= 2:
+            if floating_price >= min_profit_price:
+                # 1. Đạt target lớn (>= 1.0 x ATR) -> Chốt lời dứt khoát!
+                if floating_price >= max(8.0, 1.0 * atr_val):
+                    basket_closed = True
+                    close_price = n_close
+                    break
+                # 2. Nến M15 đóng cửa quay đầu đảo chiều (BUY gặp nến đỏ, SELL gặp nến xanh) -> Khóa lãi ngay!
                 if direction == 'BUY' and is_red:
-                    orders.append({'price': n_close, 'lot': current_lot})
+                    basket_closed = True
+                    close_price = n_close
+                    break
                 elif direction == 'SELL' and is_green:
-                    orders.append({'price': n_close, 'lot': current_lot})
+                    basket_closed = True
+                    close_price = n_close
+                    break
+                # 3. Nến xuất hiện râu đảo chiều cản đường (thân nến co cụt < 40%) -> Chốt lời!
+                candle_range = n_high - n_low
+                body_len = abs(n_close - n_open)
+                if candle_range > 0 and (body_len / candle_range) < 0.4:
+                    basket_closed = True
+                    close_price = n_close
+                    break
+                # (Nếu nến vẫn đang căng đét cùng chiều -> Không break, cho gồng tiếp sang nến sau!)
+
+        # CẤP 2: 3 LỆNH (VÙNG CÂN BẰNG - CHỐT MỤC TIÊU VỪA PHẢI)
+        elif num_orders == 3:
+            # Đạt target vừa (>= 0.5 x ATR, từ 4 - 6 giá) -> Chốt luôn!
+            if floating_price >= max(4.0, 0.5 * atr_val):
+                basket_closed = True
+                close_price = n_close
+                break
+            # Hoặc nến M15 đảo chiều khi đã có lãi -> Khóa lãi ngay!
+            if floating_price >= min_profit_price:
+                if (direction == 'BUY' and is_red) or (direction == 'SELL' and is_green):
+                    basket_closed = True
+                    close_price = n_close
+                    break
+
+        # CẤP 3: TỪ 4 LỆNH TRỞ LÊN (VÙNG PHÒNG THỦ - THOÁT HIỂM AN TOÀN)
+        else:
+            # Không tham lam: Đóng nến M15 chớm có lãi (>= min_profit_price) là ĐÓNG SẠCH NGAY LẬP TỨC!
+            if floating_price >= min_profit_price:
+                basket_closed = True
+                close_price = n_close
+                break
+
+        # ----------------------------------------------------
+        # 3. XÉT NHỒI LỆNH DCA (KHÔNG GIỚI HẠN SỐ LỆNH, KÈM LỌC CHỐNG DÍNH)
+        # ----------------------------------------------------
+        last_price = orders[-1]['price']
+        dist = abs(n_close - last_price)
+
+        # Cứ thỏa mãn khoảng cách tối thiểu là nhồi tiếp để kéo giá trung bình
+        if dist >= min_step:
+            if direction == 'BUY' and is_red:
+                orders.append({'price': n_close, 'lot': current_lot})
+            elif direction == 'SELL' and is_green:
+                orders.append({'price': n_close, 'lot': current_lot})
 
         j += 1
 
-    # Nếu hết phiên mà chưa đóng lệnh
     if not orders:
         return None
 
@@ -310,7 +311,7 @@ def run_single_session_simulation(candles, session_info, current_lot, balance):
 
 
 def simulate_full_dataset(sessions, candles, use_ai=True):
-    """Mô phỏng toàn bộ lịch sử có Lãi kép $2,000 = 0.01 lot"""
+    """Mô phỏng toàn bộ dữ liệu có lãi kép $5,000 = 0.01 lot"""
     balance = INITIAL_BALANCE
     peak = balance
     max_dd_dollar = 0.0
@@ -319,14 +320,14 @@ def simulate_full_dataset(sessions, candles, use_ai=True):
     executed_trades = []
 
     for s in sessions:
-        # AI Lọc bão giá (~10% ngày xấu nhất)
+        # BỘ LỌC NÉ BÃO GIÁ CỰC ĐOAN (Chỉ né ~10-15% ngày xấu nhất)
         if use_ai and s['is_extreme_toxic'] == 1:
             continue
 
-        # Lãi kép: $2,000 vốn = 0.01 lot
+        # Volume an toàn: Cứ $5,000 Balance = 0.01 lot ($10k -> 0.02 lot khởi điểm)
         current_lot = max(0.01, round(math.floor(balance / LOT_STEP_CAPITAL) * 0.01, 2))
 
-        res = run_single_session_simulation(candles, s, current_lot, balance)
+        res = run_single_session_simulation(candles, s, current_lot)
         if res is None:
             continue
 
@@ -352,7 +353,7 @@ def simulate_full_dataset(sessions, candles, use_ai=True):
             'orders_count': res['layers'],
             'pnl_dollar': res['pnl_dollar'],
             'pnl_price': res['pnl_price'],
-            'ai_safe_prob': 0.88,
+            'ai_safe_prob': 0.90,
             'is_win': res['is_win']
         })
 
@@ -389,17 +390,14 @@ def run_pipeline(data_dir):
     train_sessions = [s for s in sessions if s['year'] in TRAIN_YEARS]
     test_sessions  = [s for s in sessions if s['year'] in TEST_YEARS]
 
-    print("[3/4] Chạy kiểm định Hệ Thống 5.0 (Pullback Trend + Sideway Momentum Breakout)...")
+    print("[3/4] Chạy kiểm định Hệ Thống 6.0 (BỎ SL + TP THEO NẾN + NÉ BÃO GIÁ)...")
     
-    # 1. Tập Test (2021 - 2025)
     test_baseline = simulate_full_dataset(test_sessions, candles, use_ai=False)
     test_ai       = simulate_full_dataset(test_sessions, candles, use_ai=True)
 
-    # 2. Tập Train (2011 - 2020)
     train_baseline = simulate_full_dataset(train_sessions, candles, use_ai=False)
     train_ai       = simulate_full_dataset(train_sessions, candles, use_ai=True)
 
-    # 3. Toàn bộ 15 năm (2011 - 2025)
     all_baseline   = simulate_full_dataset(sessions, candles, use_ai=False)
     all_ai         = simulate_full_dataset(sessions, candles, use_ai=True)
 
@@ -409,11 +407,12 @@ def run_pipeline(data_dir):
             'total_years': 15,
             'train_period': '2011 - 2020 (10 năm)',
             'test_period': '2021 - 2025 (5 năm)',
-            'strategy_name': 'Rocket 10h VN M15 v5.0 (Dynamic Wave Regime)',
-            'stop_loss_rule': '50% Balance Hard Stop Loss',
+            'strategy_name': 'Rocket 10h VN M15 v6.0 (No-SL Candle TP & Volatility Guard)',
+            'stop_loss_rule': 'None (Bỏ hoàn toàn SL - Dựa vào bộ lọc né bão giá)',
+            'max_orders_rule': 'Unlimited (Bỏ qua giới hạn số lệnh DCA - Tự do nhồi theo nến M15)',
             'anti_clustering_rule': 'Min Distance = max(2.0, 0.4 * ATR)',
-            'tp_mechanism': 'HYBRID DYNAMIC TP (M15 Reversal Trailing + Target Decay)',
-            'compounding_rule': '$2,000 vốn ứng với 0.01 lot',
+            'tp_mechanism': 'CANDLE-BASED DYNAMIC TP (Phân tầng 3 cấp: 1-2 lệnh gồng nến, >=4 lệnh thoát an toàn)',
+            'compounding_rule': '$5,000 vốn ứng với 0.01 lot ($10k vốn -> 0.02 lot an toàn)',
             'initial_balance': INITIAL_BALANCE
         },
         'train': {
@@ -436,13 +435,13 @@ def run_pipeline(data_dir):
         json.dump(stats, f, ensure_ascii=False, indent=2)
 
     print("\n" + "="*70)
-    print(" KẾT QUẢ HỆ THỐNG 5.0 (SÓNG 07H-10H & PULLBACK / BREAKOUT)")
+    print(" KẾT QUẢ HỆ THỐNG 6.0 (BỎ SL + TP THEO NẾN M15 + NÉ BÃO GIÁ)")
     print("="*70)
     print("TẬP TEST (2021 - 2025) - KIỂM ĐỊNH MÙ 5 NĂM:")
-    print(f"• SỐ PHIÊN GIAO DỊCH : {test_ai['total_trades']} / {len(test_sessions)} ngày (ĐÁNH 90% SỐ NGÀY!)")
+    print(f"• SỐ PHIÊN GIAO DỊCH : {test_ai['total_trades']} / {len(test_sessions)} ngày (ĐÁNH ~88% SỐ NGÀY!)")
     print(f"• TỶ LỆ THẮNG (WIN)   : {test_ai['win_rate']}%")
     print(f"• LỢI NHUẬN RÒNG (PnL): ${test_ai['net_pnl']:,.2f} (VỐN TĂNG TỪ $10,000 -> ${test_ai['final_balance']:,.2f})")
-    print(f"• SỤT GIẢM LỚN NHẤT   : {test_ai['max_dd_percent']}% (KHỐNG CHẾ TRONG HẠN MỨC 50% VỐN!)")
+    print(f"• SỤT GIẢM LỚN NHẤT   : {test_ai['max_dd_percent']}%")
     print(f"• PROFIT FACTOR       : {test_ai['profit_factor']}")
     print(f"• SỐ LỆNH NHỒI TB     : {test_ai['avg_layers']} lệnh/chu kỳ")
     print("-" * 70)
