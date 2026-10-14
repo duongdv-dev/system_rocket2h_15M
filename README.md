@@ -1,6 +1,23 @@
-# Hệ Thống AI Quantitative Trading: Rocket 10h M15 (XAU/USD)
+# Hệ Thống AI Quantitative Trading: Rocket 10h M15 (XAU/USD) v5.0 WAVE REGIME
 
-Hệ thống giao dịch định lượng kết hợp Trí tuệ Nhân tạo (Machine Learning) dành cho Vàng (XAU/USD), được kiểm chứng và tối ưu trên **15 năm dữ liệu nến M15 (2011 – 2025)**.
+Hệ thống giao dịch định lượng kết hợp Trí tuệ Nhân tạo (Machine Learning) dành cho Vàng (XAU/USD), được tối ưu hóa toàn diện trên **15 năm dữ liệu nến M15 (2011 – 2025)**.
+
+### Bộ Quy Tắc Giao Dịch v5.0 (Pullback Trend + Breakout Sideway):
+1. **Nhận Diện Sóng 07:00 – 10:00 Sáng VN ($\Delta P = \text{Price}_{10h} - \text{Open}_{07h}$):**
+   - **Kịch bản SÓNG TĂNG ($\Delta P > 1.0 \times ATR$):** Xác định chiều **BUY**. Chờ nến M15 đầu tiên đóng **ĐỎ** (Pullback giá hồi giảm) mới vào BUY 1 để được giá chiết khấu; các nến sau tiếp tục Đỏ $\rightarrow$ Nhồi thêm BUY.
+   - **Kịch bản SÓNG GIẢM ($\Delta P < -1.0 \times ATR$):** Xác định chiều **SELL**. Chờ nến M15 đầu tiên đóng **XANH** (Pullback giật lên) mới vào SELL 1 để được giá cao; các nến sau tiếp tục Xanh $\rightarrow$ Nhồi thêm SELL.
+   - **Kịch bản SIDEWAY ($\lvert \Delta P \rvert \le 1.0 \times ATR$):** Đánh thuận theo nến bứt phá 10:15: nến 10:15 XANH $\rightarrow$ Mở BUY 1; nến 10:15 ĐỎ $\rightarrow$ Mở SELL 1. Nhồi DCA khi nến sau đi ngược chiều.
+2. **Bộ Lọc Chống Dính Lệnh (Anti-Clustering):**
+   - Khoảng cách tối thiểu giữa 2 lệnh: $\text{Min Distance} = \max(2.0, 0.4 \times ATR_{15M})$.
+   - Ngăn chặn việc gom 2 - 3 lệnh đè lên nhau tại các nến Doji/thân ngắn đi ngang.
+3. **Cơ Chế Chốt Lời HYBRID Đa Tầng:**
+   - 1 lệnh: Ăn dày theo con sóng ($1.0 - 1.5 \times ATR$, dao động 10 - 20 giá).
+   - $\ge 3$ lệnh: Tự động co target lại ($0.5 \times ATR$, chỉ cần lãi 3.5 - 7 giá) để thoát sạch rổ lệnh ngay nến hồi đầu tiên.
+   - Khóa lãi sớm theo nến M15 đảo chiều khi đã có lãi an toàn.
+4. **Bảo Hiểm Rủi Ro (Circuit Breaker):**
+   - Cắt lỗ cứng toàn bộ rổ lệnh khi chạm ngưỡng **$-15\%$ Balance** (bảo vệ tuyệt đối 85% tài sản còn lại).
+5. **Quản Lý Vốn Lãi Kép (Compounding):**
+   - Cứ mỗi **$2,000 vốn** đi **0.01 lot** ($10k$ vốn khởi điểm 0.05 lot).
 
 ---
 
@@ -8,8 +25,8 @@ Hệ thống giao dịch định lượng kết hợp Trí tuệ Nhân tạo (Ma
 
 | File | Vai trò |
 | :--- | :--- |
-| **[`ai_system.py`](file:///Users/duongdv/Documents/Workspace/Personal/system_rocket2h_15M/ai_system.py)** | **Bộ não AI:** Trích xuất đặc trưng (ATR, Asian Range, EMA), huấn luyện mô hình AI trên 10 năm Train (2011-2020), kiểm định mù (Blind Test) trên 5 năm Test (2021-2025) và xuất ra file `web_data.json`. |
-| **[`dashboard.html`](file:///Users/duongdv/Documents/Workspace/Personal/system_rocket2h_15M/dashboard.html)** | **Giao diện Web View:** Dashboard trực quan hóa hiệu suất, biểu đồ tăng trưởng vốn (Equity Curve), bảng đối đầu Train vs Test, và nhật ký từng lệnh. |
+| **[`ai_system.py`](file:///Users/duongdv/Documents/Workspace/Personal/system_rocket2h_15M/ai_system.py)** | **Bộ não AI v5.0:** Đo sóng 07h-10h, phân loại Pullback Trend & Breakout Sideway, mô phỏng chốt lời Hybrid, lọc bão giá và xuất ra file `web_data.json`. |
+| **[`dashboard.html`](file:///Users/duongdv/Documents/Workspace/Personal/system_rocket2h_15M/dashboard.html)** | **Giao diện Web View v5.0:** Dashboard trực quan hóa hiệu suất Lãi kép, biểu đồ tăng trưởng vốn (Equity Curve), bảng đối đầu Train vs Test, và nhật ký từng lệnh. |
 | **[`server.py`](file:///Users/duongdv/Documents/Workspace/Personal/system_rocket2h_15M/server.py)** | **Web Server:** Máy chủ HTTP nhẹ bằng Python tiêu chuẩn, tự động tạo dữ liệu và phục vụ dashboard trên cổng `8080` (chạy cả máy cá nhân lẫn VPS). |
 | **[`deploy_vps.sh`](file:///Users/duongdv/Documents/Workspace/Personal/system_rocket2h_15M/deploy_vps.sh)** | **Script triển khai VPS:** Tự động cài đặt và biến dashboard thành dịch vụ chạy ngầm 24/7 (`systemd`). |
 

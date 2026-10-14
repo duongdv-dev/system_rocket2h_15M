@@ -31,6 +31,10 @@ class QuantDashboardHandler(SimpleHTTPRequestHandler):
         super().end_headers()
 
 
+class ReusableHTTPServer(HTTPServer):
+    allow_reuse_address = True
+
+
 def ensure_data_ready():
     data_file = os.path.join(CURRENT_DIR, "web_data.json")
     if not os.path.exists(data_file):
@@ -44,13 +48,24 @@ def ensure_data_ready():
 def run_server(host='0.0.0.0', port=8080):
     ensure_data_ready()
     server_address = (host, port)
-    httpd = HTTPServer(server_address, QuantDashboardHandler)
+    try:
+        httpd = ReusableHTTPServer(server_address, QuantDashboardHandler)
+    except OSError as e:
+        if e.errno == 98 or "already in use" in str(e).lower():
+            alt_port = port + 1
+            print(f"[!] Cổng {port} đang có tiến trình khác sử dụng. Tự động chuyển sang cổng {alt_port}...")
+            server_address = (host, alt_port)
+            httpd = ReusableHTTPServer(server_address, QuantDashboardHandler)
+            port = alt_port
+        else:
+            raise e
+
     display_host = 'localhost' if host in ('0.0.0.0', '127.0.0.1') else host
     print("\n" + "="*65)
     print(" 🚀 XAU/USD QUANT AI WEB SERVER ĐANG CHẠY")
     print("="*65)
-    print(f" • Truy cập cục bộ (Local) : http://{display_host}:{port}")
-    print(f" • Truy cập qua VPS (Remote) : http://<IP_VPS_CỦA_BẠN>:{port}")
+    print(f" • Mở xem trên trình duyệt   : http://{display_host}:{port}")
+    print(f" • Truy cập từ ngoài qua VPS : http://<IP_VPS_CỦA_BẠN>:{port}")
     print(f" • Thư mục phục vụ           : {CURRENT_DIR}")
     print("="*65)
     print(" Nhấn Ctrl + C để dừng server.\n")
