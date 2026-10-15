@@ -38,8 +38,9 @@ TRAIN_YEARS = set(range(2011, 2021))
 TEST_YEARS  = set(range(2021, 2026))
 
 MIN_STEP_ATR_FACTOR = 0.5           # Khoảng cách tối thiểu giữa các lệnh DCA = 0.5 x ATR14
-TP_ATR_FACTOR = 1.0                 # Take Profit cố định = 1.0 x ATR14
-DEFAULT_HARD_CLOSE_TIME = (12, 0)   # Cắt lỗ ép buộc vào 12:00 trưa VN (Hard Exit)
+TP_SINGLE_ATR_FACTOR = 0.8          # Chốt lời lệnh đơn = 0.8 x ATR14 (Chốt nhanh phiên Á)
+TP_DCA_ATR_FACTOR = 0.5             # Chốt lời rổ DCA (>= 2 lệnh) = 0.5 x ATR14 tính từ giá trung bình (avg_price)
+DEFAULT_HARD_CLOSE_TIME = (14, 0)   # Cắt lỗ ép buộc vào 14:00 chiều VN (Hết phiên Á, né phiên Âu)
 MAX_ORDERS = None                   # Bỏ giới hạn số lệnh (None = không giới hạn)
 LOT_STEP_CAPITAL = 5000.0           # Cứ $5,000 vốn -> 0.01 lot
 INITIAL_BALANCE = 10000.0           # Vốn khởi điểm $10,000
@@ -138,13 +139,17 @@ def extract_daily_sessions(candles):
             reasons = []
 
             ratio_range = m_range / (atr_val + 1e-5)
-            if ratio_range > 3.0:
-                reasons.append(f"Biên độ sáng giãn lớn ({m_range:.1f} giá = {ratio_range:.1f}x ATR)")
-            if atr_val > 15.0:
-                reasons.append(f"ATR14 tại 10h vọt cao ({atr_val:.1f} giá)")
-            if candle_10h_range > 2.0 * atr_val:
-                reasons.append(f"Nến 10h quét cực đại ({candle_10h_range:.1f} giá = {(candle_10h_range/atr_val):.1f}x ATR)")
-            if abs(delta_p) > 2.5 * atr_val:
+            # 1. Biên độ sóng sáng 07h-10h giãn cực đại (> 5.0x ATR14 VÀ tối thiểu 25 USD)
+            if ratio_range > 5.0 and m_range > 25.0:
+                reasons.append(f"Biên độ sáng giãn cực đại ({m_range:.1f} giá = {ratio_range:.1f}x ATR)")
+            # 2. Biến động ATR14 tại 10h vọt cao bất thường (> 18.0 USD)
+            if atr_val > 18.0:
+                reasons.append(f"ATR14 tại 10h vọt bão giá ({atr_val:.1f} giá)")
+            # 3. Nến 10h quét biên độ siêu lớn (> 2.5x ATR14 VÀ tối thiểu 15 USD)
+            if candle_10h_range > 2.5 * atr_val and candle_10h_range > 15.0:
+                reasons.append(f"Nến 10h quét đột biến ({candle_10h_range:.1f} giá = {(candle_10h_range/atr_val):.1f}x ATR)")
+            # 4. Sóng sáng 07h-10h 1 chiều dốc đứng không hồi (> 3.5x ATR14 VÀ tối thiểu 20 USD)
+            if abs(delta_p) > 3.5 * atr_val and abs(delta_p) > 20.0:
                 reasons.append(f"Sóng sáng 1 chiều quá dốc ({abs(delta_p):.1f} giá = {(abs(delta_p)/atr_val):.1f}x ATR)")
 
             is_extreme_toxic = 1 if len(reasons) > 0 else 0
@@ -173,10 +178,12 @@ def extract_daily_sessions(candles):
 
 def run_single_session_simulation(candles, session_info, current_lot, hard_close_time=DEFAULT_HARD_CLOSE_TIME, max_orders=MAX_ORDERS):
     """
-    Mô phỏng chu kỳ lệnh Rocket 10h M15:
-    - CẮT LỖ ÉP BUỘC VÀO 12:00 TRƯA VN (Nếu chưa đạt TP trước 12:00 thì cắt sạch rổ lệnh lúc 12:00).
-    - KHOẢNG CÁCH MIN GIỮA CÁC LỆNH: 0.5 x ATR14.
-    - CHỐT LỜI CỐ ĐỊNH: 1.0 x ATR14 tính từ giá trung bình rổ lệnh (avg_price).
+    Mô phỏng chu kỳ lệnh Rocket 10h M15 - Kết hợp 3 hướng tối ưu:
+    - CẮT LỖ ÉP BUỘC VÀO 14:00 CHIỀU VN: Hết phiên Á, dứt khoát né phiên Âu biến động mạnh.
+    - KHOẢNG CÁCH MIN GIỮA CÁC LỆNH DCA: 0.5 x ATR14.
+    - CHỐT LỜI THÍCH ỨNG (Adaptive TP):
+        + 1 lệnh đơn: 0.8 x ATR14 (Chốt nhanh trong phiên Á).
+        + Rổ DCA (>= 2 lệnh): 0.5 x ATR14 tính từ giá trung bình (avg_price) - Hồi nhẹ là chốt lời ngay.
     - NHỒI LỆNH DCA: Nến M15 đóng cửa cùng màu bất lợi và dist >= 0.5 x ATR14.
     """
     n = len(candles)
@@ -185,7 +192,6 @@ def run_single_session_simulation(candles, session_info, current_lot, hard_close
     regime = session_info['wave_regime']
     
     min_step = MIN_STEP_ATR_FACTOR * atr_val
-    target_tp = TP_ATR_FACTOR * atr_val
 
     orders = []
     direction = None
@@ -200,7 +206,7 @@ def run_single_session_simulation(candles, session_info, current_lot, hard_close
     if hard_close_time is not None:
         h_close, m_close = hard_close_time
         cutoff_dt = start_dt.replace(hour=h_close, minute=m_close, second=0, microsecond=0)
-        max_search = min(n, start_idx + 25)  # Từ 10h đến 12h chỉ tối đa 8 nến M15
+        max_search = min(n, start_idx + 35)  # Từ 10h đến 14h là 16 nến M15
     else:
         cutoff_dt = None
         max_search = min(n, start_idx + 960)
@@ -215,7 +221,7 @@ def run_single_session_simulation(candles, session_info, current_lot, hard_close
         # 1. TÌM ĐIỂM VÀO LỆNH ĐẦU TIÊN (#1)
         if not orders:
             if cutoff_dt is not None and cur_dt >= cutoff_dt:
-                break  # Hết giờ sáng mà chưa xuất hiện tín hiệu vào lệnh
+                break  # Hết giờ mà chưa xuất hiện tín hiệu vào lệnh
             if regime == 'UP_TREND':
                 if is_red:  # Chờ nến đỏ pullback để BUY
                     direction = 'BUY'
@@ -243,8 +249,11 @@ def run_single_session_simulation(candles, session_info, current_lot, hard_close
         if cur_floating_dollar < worst_floating_pnl:
             worst_floating_pnl = cur_floating_dollar
 
-        # 2. XÉT CHỐT LỜI CỐ ĐỊNH 1.0 x ATR14 (THEO ĐÓNG NẾN M15)
+        # 2. XÉT CHỐT LỜI THÍCH ỨNG (ADAPTIVE TP THEO SỐ LỆNH)
+        # - 1 lệnh đơn: 0.8 x ATR14 (Chốt nhanh trong phiên Á)
+        # - Rổ DCA (>= 2 lệnh): 0.5 x ATR14 tính từ avg_price (Hồi nhẹ là ăn trọn khối lượng lớn)
         num_orders = len(orders)
+        target_tp = (TP_SINGLE_ATR_FACTOR * atr_val) if num_orders == 1 else (TP_DCA_ATR_FACTOR * atr_val)
         total_lots = sum(o['lot'] for o in orders)
         avg_price = sum(o['price'] * o['lot'] for o in orders) / total_lots
         floating_price = (n_close - avg_price) if direction == 'BUY' else (avg_price - n_close)
@@ -252,16 +261,17 @@ def run_single_session_simulation(candles, session_info, current_lot, hard_close
         if floating_price >= target_tp:
             basket_closed = True
             close_price = n_close
-            close_reason = f"Đạt TP cố định 1.0 ATR14 (+{round(floating_price, 2)} giá)"
+            tp_type = "0.8 ATR (Lệnh đơn)" if num_orders == 1 else f"0.5 ATR (Rổ DCA {num_orders} lệnh)"
+            close_reason = f"Đạt TP thích ứng {tp_type} (+{round(floating_price, 2)} giá)"
             break
 
-        # 3. CẮT LỖ ÉP BUỘC VÀO 12:00 TRƯA VN (HARD EXIT)
-        # Nến 11:45 là cây nến kết thúc đúng lúc 12:00 VN
-        is_noon_exit = (cur_dt.hour == 11 and cur_dt.minute == 45) or (cutoff_dt is not None and cur_dt >= cutoff_dt)
-        if is_noon_exit:
+        # 3. CẮT LỖ ÉP BUỘC VÀO 14:00 CHIỀU VN (HẾT PHIÊN Á, NÉ PHIÊN ÂU)
+        # Nến 13:45 là cây nến kết thúc đúng lúc 14:00 VN
+        is_hard_exit = (cur_dt.hour == 13 and cur_dt.minute == 45) or (cutoff_dt is not None and cur_dt >= cutoff_dt)
+        if is_hard_exit:
             basket_closed = False
             close_price = n_close
-            close_reason = "Cắt lỗ ép buộc vào 12:00 trưa VN (Hard Exit)"
+            close_reason = "Cắt lỗ ép buộc vào 14:00 chiều VN (Hết phiên Á, né phiên Âu)"
             break
 
         # 4. XÉT NHỒI LỆNH DCA (KHOẢNG CÁCH TỐI THIỂU >= 0.5 x ATR14)
@@ -288,7 +298,7 @@ def run_single_session_simulation(candles, session_info, current_lot, hard_close
         if close_price is None:
             close_price = candles[exit_idx][4]
         if not close_reason:
-            close_reason = "Cắt lỗ ép buộc vào 12:00 trưa VN (Hard Exit)"
+            close_reason = "Cắt lỗ ép buộc vào 14:00 chiều VN (Hết phiên Á, né phiên Âu)"
 
     total_lots = sum(o['lot'] for o in orders)
     avg_price = sum(o['price'] * o['lot'] for o in orders) / total_lots
@@ -325,7 +335,7 @@ def simulate_full_dataset(sessions, candles, use_filter=True, hard_close_time=DE
     Mô phỏng toàn bộ dữ liệu có lãi kép $5,000 = 0.01 lot
     - use_filter=False: Chạy thuần không lọc (Baseline)
     - use_filter=True:  Kích hoạt bộ lọc né những ngày biến động mạnh (Filter)
-    - hard_close_time:  Cắt lỗ ép buộc vào 12:00 trưa VN
+    - hard_close_time:  Cắt lỗ ép buộc vào 14:00 chiều VN
     """
     balance = INITIAL_BALANCE
     peak = balance
@@ -456,11 +466,11 @@ def run_pipeline(data_dir):
             'total_years': 15,
             'train_period': '2011 - 2020 (10 năm)',
             'test_period': '2021 - 2025 (5 năm)',
-            'strategy_name': 'Rocket 10h VN M15 - Volatility Guard (Cắt lỗ 12h trưa VN)',
+            'strategy_name': 'Rocket 10h VN M15 - Volatility Guard (Cắt lỗ 14h chiều VN)',
             'dca_min_step_rule': '0.5 x ATR(14) giữa các lệnh DCA',
-            'tp_rule': 'Cố định 1.0 x ATR(14) tính từ avg_price',
-            'stop_loss_rule': 'Cắt lỗ ép buộc vào 12:00 trưa VN (Hard Exit)',
-            'hard_close_rule': 'Đóng sạch toàn bộ rổ lệnh lúc 12:00 VN nếu chưa chạm TP',
+            'tp_rule': 'Thích ứng: 0.8 x ATR14 (lệnh đơn) / 0.5 x ATR14 (rổ DCA >= 2 lệnh)',
+            'stop_loss_rule': 'Cắt lỗ ép buộc vào 14:00 chiều VN (Hết phiên Á, né phiên Âu)',
+            'hard_close_rule': 'Đóng sạch toàn bộ rổ lệnh lúc 14:00 VN nếu chưa chạm TP',
             'max_orders_rule': 'Không giới hạn số lệnh (Unlimited DCA)',
             'compounding_rule': '$5,000 vốn ứng với 0.01 lot ($10k vốn -> 0.02 lot khởi điểm)',
             'initial_balance': INITIAL_BALANCE
@@ -495,7 +505,7 @@ def run_pipeline(data_dir):
 
     print("\n" + "="*85)
     print(" KẾT QUẢ SO SÁNH: CHẠY THUẦN (BASELINE) VS CÓ BỘ LỌC BIẾN ĐỘNG MẠNH (FILTER)")
-    print(" (Quy tắc: DCA min = 0.5 ATR14 | TP cố định = 1.0 ATR14 | Cắt lỗ ép buộc 12:00 trưa VN)")
+    print(" (Quy tắc: DCA min = 0.5 ATR14 | TP thích ứng: 0.8/0.5 ATR | Cắt lỗ ép buộc 14:00 chiều VN)")
     print("="*85)
     print(f"{'CHỈ SỐ':<26} | {'KHÔNG LỌC (BASELINE)':<24} | {'CÓ LỌC BIẾN ĐỘNG (FILTER)':<26}")
     print("-" * 85)
