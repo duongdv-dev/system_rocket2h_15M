@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # ==============================================================================
+  # 1. PYTHON BACKEND & QUANT ENGINE (CÓ CHẾ ĐỘ AUTO-RELOAD KHI SỬA CODE .PY)
+  # ==============================================================================
+  backend:
+    image: python:3.11-slim
+    container_name: quant_backend_dev
+    working_dir: /app
+    ports:
+      - "8080:8080"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Mount thư mục mã nguồn để khi bạn sửa code trên máy host, container nhận diện ngay lập tức
+      - ./data:/app/data
+      - ./engine:/app/engine
+      - ./server:/app/server
+    # Chạy với cờ --reload để tự động khởi động lại server khi sửa bất kỳ file .py nào
+    command: python3 server/app.py --host 0.0.0.0 --port 8080 --reload
+    restart: unless-stopped
+
+  # ==============================================================================
+  # 2. REACT FRONTEND WEB UI (VITE HOT MODULE REPLACEMENT - HMR)
+  # ==============================================================================
+  frontend:
+    image: node:20-slim
+    container_name: quant_frontend_dev
+    working_dir: /app/frontend
+    ports:
+      - "5173:5173"
+    environment:
+      # URL trỏ sang container backend qua mạng nội bộ Docker
+      - VITE_BACKEND_URL=http://backend:8080
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      # Mount thư mục frontend để sửa code React là trình duyệt tự cập nhật (Hot Reload)
+      - ./frontend:/app/frontend
+      # Anonymous volume bảo vệ node_modules không bị ghi đè bởi máy host
+      - /app/frontend/node_modules
+    # Tự động cài package nếu thiếu và chạy Vite dev server lắng nghe 0.0.0.0
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    depends_on:
+      - backend
+    restart: unless-stopped
