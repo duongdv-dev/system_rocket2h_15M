@@ -50,22 +50,15 @@ export default function App() {
   const loadDataAndHistory = async () => {
     setIsLoading(true);
     try {
-      const [status, initial, runs, catRes] = await Promise.all([
+      // Chỉ nạp trạng thái server, lịch sử các lần chạy và catalog huấn luyện (nếu có)
+      // KHÔNG tự động nạp mặc định bất kỳ bản chạy hay setup nào khi mới vào web
+      const [status, runs, catRes] = await Promise.all([
         checkServerStatus(),
-        fetchInitialData(),
         fetchHistory(),
         fetchTrainCatalog()
       ]);
 
       setServerStatus(status);
-      if (initial) {
-        setRawData(initial);
-        const rId = initial.metadata?.run_id || status?.active_run_id || "active_run";
-        setActiveRunId(rId);
-        if (initial.training_catalog) {
-          setCatalogData(initial.training_catalog);
-        }
-      }
       setHistoryRuns(runs || []);
       if (catRes?.catalog) {
         setCatalogData(catRes.catalog);
@@ -232,43 +225,72 @@ export default function App() {
 
       {/* 3.5. AI Market Regime Matrix & Auto-Tuned Parameters */}
       <AiRegimeMatrixCard 
-        data={rawData} 
+        data={rawData || (catalogData ? { regime_matrix: catalogData.morphology_catalog } : null)} 
         onOpenTrainingReport={catalogData ? () => setIsTrainingReportOpen(true) : handleTriggerDeepTraining} 
       />
 
-      {/* 4. Metrics Grid & Head-to-Head Comparison */}
-      <MetricsGrid 
-        data={rawData}
-        currentPeriod={currentPeriod}
-        onPeriodChange={setCurrentPeriod}
-        currentMode={currentMode}
-        onModeChange={setCurrentMode}
-      />
+      {/* 4. Hiển thị Kết Quả Kiểm Định (Chỉ hiện khi bạn bấm Chạy hoặc chọn từ Lịch Sử) */}
+      {rawData ? (
+        <>
+          {/* Metrics Grid & Head-to-Head Comparison */}
+          <MetricsGrid 
+            data={rawData}
+            currentPeriod={currentPeriod}
+            onPeriodChange={setCurrentPeriod}
+            currentMode={currentMode}
+            onModeChange={setCurrentMode}
+          />
 
-      {/* 5. Equity Curve & Dynamic DCA Layers Distribution */}
-      <EquityChart periodData={periodData} currentMode={currentMode} />
+          {/* Equity Curve & Dynamic DCA Layers Distribution */}
+          <EquityChart periodData={periodData} currentMode={currentMode} />
 
-      {/* 6. Day-of-Week Quant Breakdown (Thứ 2 - Thứ 6 Performance & AI Insights) */}
-      <DayOfWeekAnalytics trades={currentTrades} />
+          {/* Day-of-Week Quant Breakdown */}
+          <DayOfWeekAnalytics trades={currentTrades} />
 
-      {/* 7. Calendar Heatmap & Monthly Return Matrix (OmniRoute Style) */}
-      <CalendarHeatmap 
-        trades={currentTrades} 
-        filterAnalysis={filterAnalysis} 
-        onInspectTrade={handleInspectTrade}
-      />
+          {/* Calendar Heatmap & Monthly Return Matrix */}
+          <CalendarHeatmap 
+            trades={currentTrades} 
+            filterAnalysis={filterAnalysis} 
+            onInspectTrade={handleInspectTrade}
+          />
 
-      {/* 8. Risk Days & Anomaly Inspector */}
-      <RiskDaysInspector 
-        filterAnalysis={filterAnalysis} 
-        onInspectTrade={handleInspectTrade}
-      />
+          {/* Risk Days & Anomaly Inspector */}
+          <RiskDaysInspector 
+            filterAnalysis={filterAnalysis} 
+            onInspectTrade={handleInspectTrade}
+          />
 
-      {/* 9. Trade Audit Log Table */}
-      <TradeLogTable 
-        trades={currentTrades} 
-        onInspectTrade={handleInspectTrade}
-      />
+          {/* Trade Audit Log Table */}
+          <TradeLogTable 
+            trades={currentTrades} 
+            onInspectTrade={handleInspectTrade}
+          />
+        </>
+      ) : (
+        /* Standby State: Khi chưa kích hoạt chạy setup */
+        <section className="section-card" style={{
+          padding: '40px 24px',
+          textAlign: 'center',
+          background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.7) 0%, rgba(11, 16, 29, 0.9) 100%)',
+          border: '1px dashed rgba(99, 102, 241, 0.35)',
+          borderRadius: '16px',
+          marginBottom: '24px'
+        }}>
+          <span style={{ fontSize: '42px', display: 'block', marginBottom: '12px' }}>🎯</span>
+          <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#FFF' }}>
+            HỆ THỐNG ĐANG Ở CHẾ ĐỘ CHỜ (STANDBY) — ĐÃ TẮT TỰ ĐỘNG CHẠY MẶC ĐỊNH
+          </h3>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', maxWidth: '680px', margin: '8px auto 20px', lineHeight: '1.6' }}>
+            Hệ thống không còn tự động nạp hay chạy bất kỳ setup nào khi bạn vào Web. Bạn hoàn toàn chủ động:
+            <br/>
+            • Bấm <b style={{ color: '#C084FC' }}>"🔬 Huấn Luyện Sâu 10 Năm"</b> để AI quét 1,200 setups/ngày và tự động gom nhóm hình thái.
+            <br/>
+            • Bấm <b style={{ color: '#818CF8' }}>"🧠 Huấn Luyện Ma Trận & Chạy Dynamic AI"</b> để chạy kiểm định trực tiếp.
+            <br/>
+            • Hoặc mở <b style={{ color: '#38BDF8' }}>"📜 Lịch Sử Chạy"</b> để xem lại các kết quả đã lưu trước đây.
+          </p>
+        </section>
+      )}
 
       {/* 10. VPS Architecture & Candle Data Storage Guide */}
       <section className="vps-box">

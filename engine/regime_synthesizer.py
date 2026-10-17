@@ -17,6 +17,10 @@ import os
 import json
 import time
 import math
+from datetime import datetime, timezone
+import zoneinfo
+
+VN_TZ = zoneinfo.ZoneInfo("Asia/Ho_Chi_Minh")
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
 CATALOG_FILE = os.path.join(DATA_DIR, "trained_morphology_catalog.json")
