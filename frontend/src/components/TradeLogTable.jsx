@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 
-export default function TradeLogTable({ trades }) {
+export default function TradeLogTable({ trades, onInspectTrade }) {
   const [filterType, setFilterType] = useState('all'); // 'all', 'win', 'loss', 'deep'
   const [searchDate, setSearchDate] = useState('');
   const [page, setPage] = useState(1);
@@ -28,7 +28,7 @@ export default function TradeLogTable({ trades }) {
             <span>📜</span> NHẬT KÝ CHI TIẾT TỪNG CHU KỲ LỆNH (TRADE AUDIT LOG)
           </h2>
           <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-            Toàn bộ lịch sử vào lệnh, nhồi DCA, mức giá trung bình và lý do đóng lệnh.
+            Toàn bộ lịch sử vào lệnh, nhồi DCA, mức giá trung bình và lý do đóng lệnh. Bấm <b>"📈 Soi Nến"</b> để xem biểu đồ chi tiết từng ngày.
           </p>
         </div>
 
@@ -36,7 +36,7 @@ export default function TradeLogTable({ trades }) {
           <input 
             type="text" 
             placeholder="Tìm theo ngày (YYYY-MM)..." 
-            value={searchDate}
+            value={searchDate} 
             onChange={(e) => { setSearchDate(e.target.value); setPage(1); }}
             style={{
               background: 'rgba(15, 23, 42, 0.8)',
@@ -91,6 +91,7 @@ export default function TradeLogTable({ trades }) {
               <th>GIÁ THOÁT</th>
               <th>LỢI NHUẬN ($)</th>
               <th>LÝ DO THOÁT LỆNH</th>
+              <th>BIỂU ĐỒ</th>
             </tr>
           </thead>
           <tbody>
@@ -125,6 +126,33 @@ export default function TradeLogTable({ trades }) {
                   </td>
                   <td style={{ fontSize: '11px', color: t.is_win ? 'var(--text-secondary)' : '#FCA5A5' }}>
                     {t.close_reason}
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      onClick={() => onInspectTrade && onInspectTrade(t)}
+                      style={{
+                        background: 'rgba(59, 130, 246, 0.15)',
+                        border: '1px solid rgba(59, 130, 246, 0.35)',
+                        color: '#60A5FA',
+                        borderRadius: '6px',
+                        padding: '4px 10px',
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.3)'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.15)'}
+                    >
+                      📈 Soi Nến
+                    </button>
+                  </td>
+                </tr>
+              )){t.close_reason}
                   </td>
                 </tr>
               ))

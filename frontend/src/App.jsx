@@ -8,6 +8,7 @@ import DayOfWeekAnalytics from './components/DayOfWeekAnalytics';
 import CalendarHeatmap from './components/CalendarHeatmap';
 import RiskDaysInspector from './components/RiskDaysInspector';
 import TradeLogTable from './components/TradeLogTable';
+import DailyCandleModal from './components/DailyCandleModal';
 import { 
   checkServerStatus, 
   fetchInitialData, 
@@ -28,6 +29,11 @@ export default function App() {
   const [activeRunId, setActiveRunId] = useState(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(true);
   const [toastMessage, setToastMessage] = useState(null);
+  const [inspectTarget, setInspectTarget] = useState(null);
+
+  const handleInspectTrade = (trade, filteredDay = null) => {
+    setInspectTarget({ trade, filteredDay });
+  };
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -196,13 +202,23 @@ export default function App() {
       <DayOfWeekAnalytics trades={currentTrades} />
 
       {/* 7. Calendar Heatmap & Monthly Return Matrix (OmniRoute Style) */}
-      <CalendarHeatmap trades={currentTrades} filterAnalysis={filterAnalysis} />
+      <CalendarHeatmap 
+        trades={currentTrades} 
+        filterAnalysis={filterAnalysis} 
+        onInspectTrade={handleInspectTrade}
+      />
 
       {/* 8. Risk Days & Anomaly Inspector */}
-      <RiskDaysInspector filterAnalysis={filterAnalysis} />
+      <RiskDaysInspector 
+        filterAnalysis={filterAnalysis} 
+        onInspectTrade={handleInspectTrade}
+      />
 
       {/* 9. Trade Audit Log Table */}
-      <TradeLogTable trades={currentTrades} />
+      <TradeLogTable 
+        trades={currentTrades} 
+        onInspectTrade={handleInspectTrade}
+      />
 
       {/* 10. VPS Architecture & Candle Data Storage Guide */}
       <section className="vps-box">
@@ -249,6 +265,14 @@ export default function App() {
           </button>
         </div>
       </section>
+
+      {/* 11. Daily Candlestick Inspection Modal (Soi nến M15 từng ngày) */}
+      <DailyCandleModal 
+        isOpen={!!inspectTarget}
+        onClose={() => setInspectTarget(null)}
+        trade={inspectTarget?.trade}
+        filteredDay={inspectTarget?.filteredDay}
+      />
     </div>
   );
 }

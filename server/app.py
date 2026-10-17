@@ -112,9 +112,29 @@ class QuantApiHandler(SimpleHTTPRequestHandler):
                 self.send_json_response(active_data)
             else:
                 self.send_json_error("Chưa có dữ liệu nào trong lịch sử.", 404)
+        # 5. API: Lấy nến M15 của một ngày (/api/candles?date=YYYY-MM-DD)
+        if self.path.startswith('/api/candles'):
+            from urllib.parse import urlparse, parse_qs
+            query = parse_qs(urlparse(self.path).query)
+            date_str = query.get('date', [None])[0]
+            if not date_str:
+                self.send_json_error("Vui lòng truyền tham số date=YYYY-MM-DD", 400)
+                return
+
+            try:
+                from engine.backtest_ai import get_candles_for_day
+                candles = get_candles_for_day(date_str)
+                self.send_json_response({
+                    "status": "success",
+                    "date": date_str,
+                    "total_candles": len(candles),
+                    "candles": candles
+                })
+            except Exception as e:
+                self.send_json_error(f"Lỗi nạp nến ngày {date_str}: {str(e)}", 500)
             return
 
-        # 5. Phục vụ Web UI:
+        # 6. Phục vụ Web UI:
         if not os.path.isdir(FRONTEND_DIST):
             if self.path in ('/', '/index.html'):
                 self.path = '/dashboard.html'

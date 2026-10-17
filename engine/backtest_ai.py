@@ -84,6 +84,56 @@ def load_candles(data_dir=None):
     return candles
 
 
+def get_candles_for_day(date_str, data_dir=None):
+    """
+    Trích xuất toàn bộ nến M15 của một ngày cụ thể (YYYY-MM-DD theo giờ VN).
+    Phục vụ vẽ biểu đồ nến chi tiết phiên giao dịch cho Web UI.
+    """
+    if data_dir is None:
+        data_dir = DEFAULT_DATA_DIR
+
+    parts = date_str.split('-')
+    if len(parts) != 3:
+        return []
+
+    year_str = parts[0]
+    fpath = os.path.join(data_dir, f"XAUUSD_{year_str}_m15.csv")
+    if not os.path.isfile(fpath):
+        fpath = os.path.join(data_dir, "candles", f"XAUUSD_{year_str}_m15.csv")
+    if not os.path.isfile(fpath):
+        matches = glob.glob(os.path.join(data_dir, f"*{year_str}*.csv"))
+        fpath = matches[0] if matches else None
+
+    if not fpath or not os.path.isfile(fpath):
+        return []
+
+    day_candles = []
+    with open(fpath, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                ts = int(row['timestamp'])
+                dt_utc = datetime.fromtimestamp(ts / 1000.0, tz=timezone.utc)
+                dt_vn = dt_utc.astimezone(VN_TZ)
+                cur_date = dt_vn.strftime('%Y-%m-%d')
+                if cur_date == date_str:
+                    day_candles.append({
+                        'timestamp': ts,
+                        'time': dt_vn.strftime('%H:%M'),
+                        'datetime': dt_vn.strftime('%Y-%m-%d %H:%M'),
+                        'open': round(float(row['open']), 2),
+                        'high': round(float(row['high']), 2),
+                        'low': round(float(row['low']), 2),
+                        'close': round(float(row['close']), 2),
+                        'volume': float(row.get('volume', 0))
+                    })
+            except Exception:
+                continue
+
+    day_candles.sort(key=lambda x: x['timestamp'])
+    return day_candles
+
+
 def extract_daily_sessions(candles, params):
     """
     Trích xuất đặc trưng từng phiên sáng (07h-10h VN):
@@ -348,13 +398,22 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None):
             'entry_price': round(orders[0]['entry_price'], 2),
             'avg_entry': round(avg_entry, 2),
             'close_price': round(close_price, 2),
+            'close_time': close_time,
+            'close_time_str': datetime.fromtimestamp(close_time / 1000.0, tz=timezone.utc).astimezone(VN_TZ).strftime('%H:%M') if close_time else '--',
             'pnl_dollar': round(final_pnl, 2),
             'worst_floating_pnl': round(worst_floating_pnl, 2),
             'balance_after': round(balance, 2),
             'is_win': is_win,
             'close_reason': close_reason,
             'bars_held': bars_held,
-            'atr_at_entry': round(atr, 2)
+            'atr_at_entry': round(atr, 2),
+            'orders': [{
+                'layer': idx + 1,
+                'entry_price': round(o['entry_price'], 2),
+                'lot': o['lot'],
+                'timestamp': o['time'],
+                'time': datetime.fromtimestamp(o['time'] / 1000.0, tz=timezone.utc).astimezone(VN_TZ).strftime('%H:%M')
+            } for idx, o in enumerate(orders)]
         })
 
         if len(trades) % 5 == 0 or len(trades) == len(sessions):

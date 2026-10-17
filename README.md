@@ -133,5 +133,8 @@ Hệ thống được nâng cấp bộ tính năng phân tích trực quan chu�
 3. **Lịch nhiệt hiệu suất 15 năm & Ma trận Tháng/Năm (Calendar Heatmap & Monthly Return Matrix):**
    - **Chế độ Ma trận Tháng/Năm:** Bảng 15 năm x 12 tháng hiển thị trực quan các tháng lãi (xanh lá) / lỗ (đỏ) và tổng PnL từng năm.
    - **Chế độ Lịch 365 Ngày:** Xem chi tiết từng ngày của năm được chọn, phân biệt ngày lãi lớn, lãi vừa, cắt lỗ 14:00, và các ngày được AI Shock Filter kích hoạt né bão an toàn (màu tím). Hover chuột để xem đầy đủ chi tiết phiên giao dịch.
+4. **Biểu đồ nến Nhật M15 chi tiết từng ngày (Intraday Candlestick Chart):**
+   - Bấm nút **"📈 Soi Nến"** ở bất kỳ dòng lệnh nào trong Nhật ký lệnh, hoặc click vào ô ngày trên Lịch nhiệt / Nhật ký ngày bão.
+   - Hiển thị toàn bộ nến M15 của ngày đó: Vùng sóng sáng 07h-10h, các điểm vào lệnh L1, L2, L3..., đường giá trung bình rổ lệnh (Avg Entry), và điểm thoát lệnh (TP hoặc Cắt 14h) đi kèm con trỏ chữ thập (Crosshair) soi giá Open, High, Low, Close.
 
 

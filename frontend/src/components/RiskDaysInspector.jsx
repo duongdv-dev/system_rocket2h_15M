@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function RiskDaysInspector({ filterAnalysis }) {
+export default function RiskDaysInspector({ filterAnalysis, onInspectTrade }) {
   if (!filterAnalysis) return null;
 
   const { test_total_days, test_filtered_days_count, filter_rate_percent, filtered_days } = filterAnalysis;
@@ -39,6 +39,7 @@ export default function RiskDaysInspector({ filterAnalysis }) {
               <th>NẾU VÀO LỆNH (BASELINE)</th>
               <th>THIỆT HẠI NÉ ĐƯỢC</th>
               <th>KẾT QUẢ ĐỐI CHỨNG</th>
+              <th>BIỂU ĐỒ</th>
             </tr>
           </thead>
           <tbody>
@@ -66,6 +67,27 @@ export default function RiskDaysInspector({ filterAnalysis }) {
                       <span className={`badge ${isLoss ? 'badge-live' : 'badge-info'}`}>
                         {isLoss ? '🛡️ CỨU NGU THÀNH CÔNG' : 'AN TOÀN'}
                       </span>
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        onClick={() => onInspectTrade && onInspectTrade(null, fd)}
+                        style={{
+                          background: 'rgba(139, 92, 246, 0.15)',
+                          border: '1px solid rgba(139, 92, 246, 0.35)',
+                          color: '#C4B5FD',
+                          borderRadius: '6px',
+                          padding: '4px 10px',
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}
+                      >
+                        📉 Soi Nến Bão
+                      </button>
                     </td>
                   </tr>
                 );

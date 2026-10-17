@@ -3,7 +3,7 @@ import React, { useState, useMemo } from 'react';
 const MONTH_NAMES = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
 const FULL_MONTHS = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
 
-export default function CalendarHeatmap({ trades = [], filterAnalysis }) {
+export default function CalendarHeatmap({ trades = [], filterAnalysis, onInspectTrade }) {
   const [viewMode, setViewMode] = useState('matrix'); // 'matrix' hoặc 'daily'
   const [selectedYear, setSelectedYear] = useState(null);
   const [hoveredDay, setHoveredDay] = useState(null);
@@ -328,6 +328,7 @@ export default function CalendarHeatmap({ trades = [], filterAnalysis }) {
                       return (
                         <div
                           key={d.date}
+                          onClick={() => (d.trade || d.filtered) && onInspectTrade && onInspectTrade(d.trade, d.filtered)}
                           onMouseEnter={() => setHoveredDay(d)}
                           onMouseLeave={() => setHoveredDay(null)}
                           style={{
@@ -346,6 +347,7 @@ export default function CalendarHeatmap({ trades = [], filterAnalysis }) {
                             transition: 'transform 0.1s ease',
                             position: 'relative'
                           }}
+                          title={d.trade || d.filtered ? "Bấm để mở Chart Nến M15 chi tiết phiên này" : undefined}
                         >
                           {d.dayOfMonth}
                         </div>
@@ -389,27 +391,50 @@ export default function CalendarHeatmap({ trades = [], filterAnalysis }) {
                 )}
               </div>
 
-              {hoveredDay.trade && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontFamily: 'var(--font-mono)' }}>
-                  <div>
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Giá vào: </span>
-                    <b style={{ color: 'var(--text-primary)' }}>{hoveredDay.trade.first_entry}</b>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                {hoveredDay.trade && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontFamily: 'var(--font-mono)' }}>
+                    <div>
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Giá vào: </span>
+                      <b style={{ color: 'var(--text-primary)' }}>{hoveredDay.trade.first_entry}</b>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Giá đóng: </span>
+                      <b style={{ color: 'var(--text-primary)' }}>{hoveredDay.trade.close_price}</b>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>PnL: </span>
+                      <b style={{
+                        fontSize: '15px',
+                        color: hoveredDay.trade.pnl_dollar >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'
+                      }}>
+                        {hoveredDay.trade.pnl_dollar >= 0 ? `+$${hoveredDay.trade.pnl_dollar}` : `-$${Math.abs(hoveredDay.trade.pnl_dollar)}`}
+                      </b>
+                    </div>
                   </div>
-                  <div>
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Giá đóng: </span>
-                    <b style={{ color: 'var(--text-primary)' }}>{hoveredDay.trade.close_price}</b>
-                  </div>
-                  <div>
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>PnL: </span>
-                    <b style={{
-                      fontSize: '15px',
-                      color: hoveredDay.trade.pnl_dollar >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'
-                    }}>
-                      {hoveredDay.trade.pnl_dollar >= 0 ? `+$${hoveredDay.trade.pnl_dollar}` : `-$${Math.abs(hoveredDay.trade.pnl_dollar)}`}
-                    </b>
-                  </div>
-                </div>
-              )}
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => onInspectTrade && onInspectTrade(hoveredDay.trade, hoveredDay.filtered)}
+                  style={{
+                    background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
+                    border: 'none',
+                    color: '#FFF',
+                    borderRadius: '6px',
+                    padding: '6px 14px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 2px 8px rgba(59, 130, 246, 0.4)'
+                  }}
+                >
+                  📈 Mở Chart Nến M15
+                </button>
+              </div>
             </div>
           )}
         </div>

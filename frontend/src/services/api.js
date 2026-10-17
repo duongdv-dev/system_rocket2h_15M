@@ -93,3 +93,16 @@ export async function deleteHistoricalRun(runId) {
 
   return await res.json();
 }
+
+export async function fetchDayCandles(date) {
+  try {
+    const res = await fetch(`/api/candles?date=${date}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    return data.candles || [];
+  } catch (err) {
+    console.error("Lỗi lấy dữ liệu nến ngày:", err);
+    return [];
+  }
+}
+
