@@ -313,7 +313,13 @@ export default function TrainingReportModal({
                             </div>
                           </div>
                           <div>
-                            <span style={{ color: 'var(--text-muted)' }}>Giờ Cắt Lỗ:</span>
+                            <span style={{ color: 'var(--text-muted)' }}>Đóng Sớm (Cắt Lỗ AI):</span>
+                            <div style={{ color: '#EF4444', fontWeight: 700, fontSize: '12px' }}>
+                              {opt.sl_atr ? `${opt.sl_atr}x ATR` : '3.5x ATR'} (Cắt ngay)
+                            </div>
+                          </div>
+                          <div>
+                            <span style={{ color: 'var(--text-muted)' }}>Giữ Lâu (Tối Đa):</span>
                             <div style={{ color: '#FCD34D', fontWeight: 700, fontSize: '12px' }}>{opt.hard_exit} VN</div>
                           </div>
                           <div>

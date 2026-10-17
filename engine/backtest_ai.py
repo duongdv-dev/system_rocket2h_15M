@@ -287,12 +287,14 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
 
         eff_risk_pct = float(reg_params.get('risk_percent', risk_percent)) if regime_models else risk_percent
         eff_max_layers = int(reg_params.get('max_dca_layers', 7)) if regime_models else 7
+        eff_sl_atr = float(reg_params.get('sl_atr', 3.5)) if regime_models else 3.5
 
         c_idx = s['candle_idx']
         atr = s['atr_val']
         min_dist = max(1.5, eff_min_step * atr)
         tp_target_single = max(1.5, eff_tp_single * atr)
         tp_target_dca = max(1.5, eff_tp_dca * atr)
+        eff_sl_target = max(3.5, eff_sl_atr * atr)
 
         # Tính lot theo % rủi ro vốn do AI tự may đo cho hình thái này:
         if sizing_mode == 'atr_risk' or 'risk_percent' in params or regime_models:
@@ -348,15 +350,24 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
             current_target = tp_target_single if len(orders) == 1 else tp_target_dca
             if pts_diff >= current_target:
                 closed = True
-                close_reason = f"TP đạt mục tiêu ({pts_diff:.1f} giá)"
+                close_reason = f"TP đạt mục tiêu (+{pts_diff:.1f} giá)"
                 close_price = c_close
                 close_time = cur_c[0]
                 break
 
-            # 2. Điều kiện cắt lỗ ép buộc theo giờ
+            # 2. CƠ CHẾ ĐÓNG SỚM KHẨN CẤP (AI Adaptive Invalidation Stop-Loss):
+            # Khi giá đi ngược vượt quá ngưỡng an toàn của hình thái này -> AI cắt sớm ngay lập tức!
+            if pts_diff <= -eff_sl_target:
+                closed = True
+                close_reason = f"AI đóng sớm bảo vệ vốn (-{abs(pts_diff):.1f} giá)"
+                close_price = c_close
+                close_time = cur_c[0]
+                break
+
+            # 3. Điều kiện hết giờ giữ lệnh tối đa (Hard Exit)
             if (dt_vn.hour > eff_h_exit) or (dt_vn.hour == eff_h_exit and dt_vn.minute >= eff_m_exit):
                 closed = True
-                close_reason = f"Cắt lỗ ép buộc lúc {eff_h_exit:02d}:{eff_m_exit:02d} VN"
+                close_reason = f"Hết giờ giao dịch lúc {eff_h_exit:02d}:{eff_m_exit:02d} VN"
                 close_price = c_close
                 close_time = cur_c[0]
                 break

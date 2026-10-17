@@ -45,17 +45,19 @@ for s in GRID_MIN_STEP_ATR:
                 ALL_SETUPS.append((s, tp_s, tp_d, h, m, h_str))
 
 
-def evaluate_setup_on_day(fast_candles, first_close, is_green, atr, setup, max_layers=8):
+def evaluate_setup_on_day(fast_candles, first_close, is_green, atr, setup, max_layers=8, sl_atr=None):
     """
     Mô phỏng siêu tốc 1 setup trên danh sách nến của 1 ngày.
     setup: (min_step_atr, tp_single_atr, tp_dca_atr, h_exit, m_exit, h_str)
     max_layers: số tầng DCA tối đa do AI khống chế (mặc định 8)
+    sl_atr: Ngưỡng AI tự động ĐÓNG SỚM bảo vệ vốn khi giá đi ngược (tính theo ATR, mặc định None)
     """
     min_step_atr, tp_single_atr, tp_dca_atr, h_exit, m_exit, h_str = setup
 
     min_dist = max(1.2, min_step_atr * atr)
     tp_single = max(1.2, tp_single_atr * atr)
     tp_dca = max(1.2, tp_dca_atr * atr)
+    sl_target = max(3.5, sl_atr * atr) if sl_atr is not None else None
 
     direction_is_sell = is_green
     orders = [first_close]
@@ -84,13 +86,20 @@ def evaluate_setup_on_day(fast_candles, first_close, is_green, atr, setup, max_l
             close_price = c_close
             break
 
-        # 2. Kiểm tra Hard Exit theo giờ
+        # 2. CƠ CHẾ ĐÓNG SỚM KHẨN CẤP (AI Adaptive Invalidation Stop-Loss):
+        # Nếu giá đi ngược vượt quá ngưỡng an toàn sl_target -> AI cắt lỗ đóng sớm ngay lập tức!
+        if sl_target is not None and pts_diff <= -sl_target:
+            closed = True
+            close_price = c_close
+            break
+
+        # 3. Kiểm tra Hard Exit theo giờ (Giới hạn giữ lệnh tối đa trong ngày nếu an toàn)
         if (c_h > h_exit) or (c_h == h_exit and c_m >= m_exit):
             closed = True
             close_price = c_close
             break
 
-        # 3. Kiểm tra nhồi lệnh DCA nếu chưa chạm trần max_layers
+        # 4. Kiểm tra nhồi lệnh DCA nếu chưa chạm trần max_layers
         if orders_cnt < max_layers:
             if direction_is_sell and (c_close > c_open):
                 if (c_close - last_order_p) >= min_dist:

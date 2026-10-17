@@ -253,7 +253,11 @@ export default function AiRegimeMatrixCard({ data, onOpenTrainingReport, onRetra
                         <div style={{ color: 'var(--accent-green)', fontWeight: 700 }}>{opt.tp_single_atr} / {opt.tp_dca_atr} ATR</div>
                       </div>
                       <div>
-                        <span style={{ color: 'var(--text-muted)' }}>Giờ Cắt Lỗ:</span>
+                        <span style={{ color: 'var(--text-muted)' }}>Đóng Sớm (Cắt Lỗ):</span>
+                        <div style={{ color: '#EF4444', fontWeight: 700 }}>{opt.sl_atr ? `${opt.sl_atr}x ATR` : '3.5x ATR'} (Cắt ngay)</div>
+                      </div>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)' }}>Giữ Lâu (Tối Đa):</span>
                         <div style={{ color: '#FCD34D', fontWeight: 700 }}>{opt.hard_exit} VN</div>
                       </div>
                       <div>
