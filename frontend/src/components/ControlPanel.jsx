@@ -14,7 +14,8 @@ export default function ControlPanel({
   const [dcaStep, setDcaStep] = useState(0.5);
   const [tpSingle, setTpSingle] = useState(0.8);
   const [tpDca, setTpDca] = useState(0.5);
-  const [hardExit, setHardExit] = useState("14:00");
+  const [exitHour, setExitHour] = useState(14);
+  const [exitMinute, setExitMinute] = useState(0);
   const [filterRatio, setFilterRatio] = useState(5.0);
   const [filterAtr, setFilterAtr] = useState(18.0);
   const [balance, setBalance] = useState(10000);
@@ -24,6 +25,9 @@ export default function ControlPanel({
   const [activePreset, setActivePreset] = useState('recommended');
   const [copied, setCopied] = useState(false);
 
+  // Chuỗi HH:MM định dạng chuẩn
+  const hardExit = `${String(Math.min(23, Math.max(0, parseInt(exitHour, 10) || 0))).padStart(2, '0')}:${String(Math.min(59, Math.max(0, parseInt(exitMinute, 10) || 0))).padStart(2, '0')}`;
+
   // Sync inputs if activeParams provided from backend metadata
   useEffect(() => {
     if (activeParams) {
@@ -31,9 +35,14 @@ export default function ControlPanel({
       if (activeParams.tp_single_atr !== undefined) setTpSingle(activeParams.tp_single_atr);
       if (activeParams.tp_dca_atr !== undefined) setTpDca(activeParams.tp_dca_atr);
       if (activeParams.hard_exit_hour !== undefined) {
-        const h = String(activeParams.hard_exit_hour).padStart(2, '0');
-        const m = String(activeParams.hard_exit_minute || 0).padStart(2, '0');
-        setHardExit(`${h}:${m}`);
+        setExitHour(parseInt(activeParams.hard_exit_hour, 10));
+        setExitMinute(parseInt(activeParams.hard_exit_minute ?? 0, 10));
+      } else if (activeParams.hard_exit && typeof activeParams.hard_exit === 'string') {
+        const parts = activeParams.hard_exit.split(':');
+        if (parts.length >= 2) {
+          setExitHour(parseInt(parts[0], 10) || 14);
+          setExitMinute(parseInt(parts[1], 10) || 0);
+        }
       }
       if (activeParams.filter_ratio_range !== undefined) setFilterRatio(activeParams.filter_ratio_range);
       if (activeParams.filter_atr_max !== undefined) setFilterAtr(activeParams.filter_atr_max);
@@ -50,7 +59,8 @@ export default function ControlPanel({
       setDcaStep(0.5);
       setTpSingle(0.8);
       setTpDca(0.5);
-      setHardExit("14:00");
+      setExitHour(14);
+      setExitMinute(0);
       setFilterRatio(5.0);
       setFilterAtr(18.0);
       setSizingMode('atr_risk');
@@ -59,7 +69,8 @@ export default function ControlPanel({
       setDcaStep(0.6);
       setTpSingle(0.6);
       setTpDca(0.4);
-      setHardExit("12:00");
+      setExitHour(12);
+      setExitMinute(0);
       setFilterRatio(4.0);
       setFilterAtr(15.0);
       setSizingMode('atr_risk');
@@ -68,7 +79,8 @@ export default function ControlPanel({
       setDcaStep(0.5);
       setTpSingle(1.0);
       setTpDca(0.6);
-      setHardExit("15:00");
+      setExitHour(15);
+      setExitMinute(0);
       setFilterRatio(6.0);
       setFilterAtr(22.0);
       setSizingMode('atr_risk');
@@ -87,11 +99,15 @@ export default function ControlPanel({
 
   const handleRunClick = () => {
     if (onTriggerRun) {
+      const hNum = Math.min(23, Math.max(0, parseInt(exitHour, 10) || 0));
+      const mNum = Math.min(59, Math.max(0, parseInt(exitMinute, 10) || 0));
       onTriggerRun({
         min_step_atr: parseFloat(dcaStep),
         tp_single_atr: parseFloat(tpSingle),
         tp_dca_atr: parseFloat(tpDca),
-        hard_exit: hardExit,
+        hard_exit: `${String(hNum).padStart(2, '0')}:${String(mNum).padStart(2, '0')}`,
+        hard_exit_hour: hNum,
+        hard_exit_minute: mNum,
         filter_ratio_range: parseFloat(filterRatio),
         filter_atr_max: parseFloat(filterAtr),
         initial_balance: parseFloat(balance),
@@ -193,22 +209,66 @@ export default function ControlPanel({
           </div>
         </div>
 
-        {/* Field 4: Hard Exit Hour */}
+        {/* Field 4: Hard Exit Hour & Minute */}
         <div className="param-item">
-          <label>Giờ Cắt Lỗ Ép Buộc <span className="param-tip">Hết phiên Á né phiên Âu</span></label>
-          <select 
-            className="param-select" 
-            value={hardExit} 
-            onChange={(e) => setHardExit(e.target.value)}
-          >
-            <option value="12:00">12:00 Trưa VN (Né sớm)</option>
-            <option value="13:00">13:00 Chiều VN</option>
-            <option value="13:30">13:30 Chiều VN</option>
-            <option value="14:00">14:00 Chiều VN (Khuyến nghị chuẩn)</option>
-            <option value="14:30">14:30 Chiều VN</option>
-            <option value="15:00">15:00 Chiều VN</option>
-            <option value="18:00">18:00 Chiều VN</option>
-          </select>
+          <label>Giờ Cắt Lỗ Ép Buộc <span className="param-tip">Tự do nhập Giờ & Phút (giờ VN)</span></label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="input-unit" style={{ flex: 1 }}>
+              <input 
+                type="number" 
+                min="0" 
+                max="23" 
+                value={exitHour} 
+                onChange={(e) => setExitHour(e.target.value)}
+                placeholder="14"
+                style={{ textAlign: 'center', padding: '7px 4px' }}
+              />
+              <span>Giờ</span>
+            </div>
+            <span style={{ fontWeight: 800, color: 'var(--text-muted)', fontSize: '15px' }}>:</span>
+            <div className="input-unit" style={{ flex: 1 }}>
+              <input 
+                type="number" 
+                min="0" 
+                max="59" 
+                value={exitMinute} 
+                onChange={(e) => setExitMinute(e.target.value)}
+                placeholder="00"
+                style={{ textAlign: 'center', padding: '7px 4px' }}
+              />
+              <span>Phút</span>
+            </div>
+          </div>
+          {/* Quick Benchmark Chips */}
+          <div style={{ display: 'flex', gap: '5px', marginTop: '6px', flexWrap: 'wrap' }}>
+            {['12:00', '13:00', '13:30', '14:00', '14:30', '15:00'].map((presetTime) => {
+              const [h, m] = presetTime.split(':');
+              const isSelected = parseInt(exitHour, 10) === parseInt(h, 10) && parseInt(exitMinute, 10) === parseInt(m, 10);
+              return (
+                <button
+                  key={presetTime}
+                  type="button"
+                  onClick={() => {
+                    setExitHour(parseInt(h, 10));
+                    setExitMinute(parseInt(m, 10));
+                  }}
+                  style={{
+                    background: isSelected ? 'rgba(99, 102, 241, 0.35)' : 'rgba(255, 255, 255, 0.05)',
+                    border: isSelected ? '1px solid #6366F1' : '1px solid rgba(255, 255, 255, 0.1)',
+                    color: isSelected ? '#A5B4FC' : 'var(--text-muted)',
+                    borderRadius: '4px',
+                    padding: '2px 7px',
+                    fontSize: '11px',
+                    fontFamily: 'var(--font-mono)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s'
+                  }}
+                >
+                  {presetTime}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Field 5: Volatility Morning Ratio */}
