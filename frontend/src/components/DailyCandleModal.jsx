@@ -252,7 +252,11 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
     // 2. Vùng đánh dấu Sóng Sáng 07h-10h VN
     let idx07h = -1;
     let idx10h = -1;
-    let idx14h = -1;
+    let idxHardExit = -1;
+
+    const hardExitH = trade?.dynamic_params?.hard_exit_hour ?? 14;
+    const hardExitM = trade?.dynamic_params?.hard_exit_minute ?? trade?.dynamic_params?.hard_exit_min ?? 0;
+    const hardExitStr = `${String(hardExitH).padStart(2, '0')}:${String(hardExitM).padStart(2, '0')}`;
 
     candles.forEach((c, idx) => {
       if (c.time.startsWith('07:00') || (idx07h === -1 && c.time >= '07:00')) {
@@ -261,8 +265,8 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
       if (c.time.startsWith('10:00') || (idx10h === -1 && c.time >= '10:00')) {
         if (idx10h === -1) idx10h = idx;
       }
-      if (c.time.startsWith('14:00') || (idx14h === -1 && c.time >= '14:00')) {
-        if (idx14h === -1) idx14h = idx;
+      if (c.time.startsWith(hardExitStr) || (idxHardExit === -1 && c.time >= hardExitStr)) {
+        if (idxHardExit === -1) idxHardExit = idx;
       }
     });
 
@@ -279,21 +283,21 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
       ctx.fillText('SÓNG SÁNG 07h - 10h', (x07 + x10) / 2, padTop - 10);
     }
 
-    // Đường gạch đỏ Cắt Lỗ Cưỡng Bức lúc 14:00
-    if (idx14h !== -1) {
-      const x14 = getX(idx14h);
+    // Đường gạch đỏ Cắt Lỗ Cưỡng Bức theo Giờ Thích Ứng (Mặc định 14:00 hoặc do AI định đoạt)
+    if (idxHardExit !== -1) {
+      const xExit = getX(idxHardExit);
       ctx.save();
       ctx.setLineDash([4, 4]);
       ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)';
       ctx.beginPath();
-      ctx.moveTo(x14, padTop);
-      ctx.lineTo(x14, padTop + plotH);
+      ctx.moveTo(xExit, padTop);
+      ctx.lineTo(xExit, padTop + plotH);
       ctx.stroke();
 
       ctx.fillStyle = '#EF4444';
       ctx.font = '10px JetBrains Mono';
       ctx.textAlign = 'center';
-      ctx.fillText('14:00 HARD EXIT', x14, padTop - 10);
+      ctx.fillText(`${hardExitStr} HARD EXIT`, xExit, padTop - 10);
       ctx.restore();
     }
 
@@ -591,12 +595,59 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
                   {trade.direction}
                 </span>
               )}
+              {trade?.regime_name && (
+                <span style={{
+                  padding: '3px 10px',
+                  borderRadius: '6px',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  background: 'rgba(99, 102, 241, 0.2)',
+                  color: '#A5B4FC',
+                  border: '1px solid rgba(99, 102, 241, 0.4)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}>
+                  <span>{trade.regime_icon || '🤖'}</span>
+                  <span>{trade.regime_name}</span>
+                </span>
+              )}
             </div>
-            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
               {filteredDay 
                 ? `🛡️ Phiên này được AI Shock Filter nhận diện rủi ro né bão: ${filteredDay.toxic_reason}`
                 : `Chu kỳ ${trade?.orders_count || 1} lệnh • Thoát lệnh lúc ${trade?.close_time_str || '14:00'} • ${trade?.close_reason || '--'}`}
             </p>
+            {trade?.dynamic_params && (
+              <div style={{
+                marginTop: '6px',
+                fontSize: '11px',
+                color: '#94A3B8',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                flexWrap: 'wrap'
+              }}>
+                <span style={{ color: '#818CF8', fontWeight: 600 }}>⚙️ AI Tự Động Định Hình:</span>
+                <span style={{ background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '4px' }}>
+                  Bước DCA: <b style={{ color: '#FCD34D' }}>{trade.dynamic_params.min_step_atr}x ATR</b>
+                </span>
+                <span style={{ background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '4px' }}>
+                  TP Đơn: <b style={{ color: '#34D399' }}>{trade.dynamic_params.tp_single_atr}x ATR</b>
+                </span>
+                <span style={{ background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '4px' }}>
+                  TP DCA: <b style={{ color: '#34D399' }}>{trade.dynamic_params.tp_dca_atr}x ATR</b>
+                </span>
+                <span style={{ background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '4px' }}>
+                  Hard Exit: <b style={{ color: '#F87171' }}>{trade.dynamic_params.hard_exit_hour}:{String(trade.dynamic_params.hard_exit_minute || trade.dynamic_params.hard_exit_min || '00').padStart(2, '0')} VN</b>
+                </span>
+                {trade.dynamic_params.risk_percent && (
+                  <span style={{ background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '4px' }}>
+                    Risk: <b style={{ color: '#60A5FA' }}>{(trade.dynamic_params.risk_percent * 100).toFixed(1)}%</b>
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -779,6 +830,15 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
                 {trade.atr_at_entry ? `${trade.atr_at_entry} giá` : '--'}
               </div>
             </div>
+
+            {trade.regime_name && (
+              <div>
+                <span style={{ color: 'var(--text-muted)' }}>Hình Thái AI Xác Định:</span>
+                <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: '#818CF8', fontSize: '13px' }}>
+                  {trade.regime_icon || '🤖'} {trade.regime_name}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

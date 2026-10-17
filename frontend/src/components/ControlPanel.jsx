@@ -24,6 +24,7 @@ export default function ControlPanel({
   const [riskPercent, setRiskPercent] = useState(0.5);
   const [activePreset, setActivePreset] = useState('recommended');
   const [copied, setCopied] = useState(false);
+  const [systemMode, setSystemMode] = useState('dynamic_ai');
 
   // Chuỗi HH:MM định dạng chuẩn
   const hardExit = `${String(Math.min(23, Math.max(0, parseInt(exitHour, 10) || 0))).padStart(2, '0')}:${String(Math.min(59, Math.max(0, parseInt(exitMinute, 10) || 0))).padStart(2, '0')}`;
@@ -50,6 +51,7 @@ export default function ControlPanel({
       if (activeParams.lot_step_capital !== undefined) setLotStep(activeParams.lot_step_capital);
       if (activeParams.sizing_mode !== undefined) setSizingMode(activeParams.sizing_mode);
       if (activeParams.risk_percent !== undefined) setRiskPercent(activeParams.risk_percent);
+      if (activeParams.mode !== undefined) setSystemMode(activeParams.mode);
     }
   }, [activeParams]);
 
@@ -102,6 +104,7 @@ export default function ControlPanel({
       const hNum = Math.min(23, Math.max(0, parseInt(exitHour, 10) || 0));
       const mNum = Math.min(59, Math.max(0, parseInt(exitMinute, 10) || 0));
       onTriggerRun({
+        mode: systemMode,
         min_step_atr: parseFloat(dcaStep),
         tp_single_atr: parseFloat(tpSingle),
         tp_dca_atr: parseFloat(tpDca),
@@ -125,37 +128,127 @@ export default function ControlPanel({
           <div className="panel-icon">🎛️</div>
           <div>
             <h2 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              THIẾT LẬP THAM SỐ ĐẦU VÀO
-              <span className="badge badge-live">WEB UI CONTROLLER</span>
+              BỘ ĐIỀU KHIỂN ĐỘNG CƠ QUANT AI
+              <span className="badge badge-live" style={{ background: systemMode === 'dynamic_ai' ? '#6366F1' : '#475569', color: '#FFF' }}>
+                {systemMode === 'dynamic_ai' ? '🤖 AI ADAPTIVE ACTIVE' : '⚙️ MANUAL MODE'}
+              </span>
             </h2>
             <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-              Nhập tham số bên dưới và nhấn nút <b>"🚀 Chạy Backtest / AI"</b>. Kết quả sẽ tự động lưu vào lịch sử Server và hiển thị trực quan.
+              {systemMode === 'dynamic_ai'
+                ? 'Hệ thống tự động học và thích ứng tham số cho từng ngày theo hình thái sóng sáng 07h-10h VN.'
+                : 'Bạn đang bật quyền can thiệp thủ công: tự do chỉnh từng tham số và nhấn nút chạy thử nghiệm.'}
             </p>
           </div>
         </div>
 
-        <div className="preset-buttons">
-          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>MẪU NHANH:</span>
-          <button 
+        {systemMode === 'manual' && (
+          <div className="preset-buttons">
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>MẪU THỦ CÔNG:</span>
+            <button 
+              type="button"
+              className={`preset-btn ${activePreset === 'recommended' ? 'active-preset' : ''}`}
+              onClick={() => handlePreset('recommended')}
+            >
+              ⭐ Khuyên Dùng
+            </button>
+            <button 
+              type="button"
+              className={`preset-btn ${activePreset === 'safe' ? 'active-preset' : ''}`}
+              onClick={() => handlePreset('safe')}
+            >
+              🛡️ An Toàn
+            </button>
+            <button 
+              type="button"
+              className={`preset-btn ${activePreset === 'aggressive' ? 'active-preset' : ''}`}
+              onClick={() => handlePreset('aggressive')}
+            >
+              🔥 Tối Đa
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Mode Switcher Banner */}
+      <div style={{
+        margin: '14px 0 16px 0',
+        padding: '12px 18px',
+        background: systemMode === 'dynamic_ai' 
+          ? 'linear-gradient(90deg, rgba(99, 102, 241, 0.18) 0%, rgba(56, 189, 248, 0.12) 100%)' 
+          : 'rgba(255, 255, 255, 0.03)',
+        border: `1px solid ${systemMode === 'dynamic_ai' ? 'rgba(99, 102, 241, 0.45)' : 'rgba(255, 255, 255, 0.1)'}`,
+        borderRadius: '10px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ fontSize: '24px' }}>{systemMode === 'dynamic_ai' ? '🤖' : '⚙️'}</span>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: '13px', color: '#FFF', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              CHẾ ĐỘ VẬN HÀNH: {systemMode === 'dynamic_ai' ? 'AI TỰ ĐỘNG THÍCH ỨNG THEO HÌNH THÁI' : 'TÙY BIẾN THỦ CÔNG'}
+              <span style={{
+                background: systemMode === 'dynamic_ai' ? '#10B981' : '#64748B',
+                color: '#0B0F19',
+                padding: '1px 6px',
+                borderRadius: '4px',
+                fontSize: '10px',
+                fontWeight: 800
+              }}>
+                {systemMode === 'dynamic_ai' ? 'KHUYÊN DÙNG' : 'OVERRIDE'}
+              </span>
+            </div>
+            <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
+              {systemMode === 'dynamic_ai'
+                ? '✨ Không cần nhập tay: AI sẽ tự động phân tích sóng sáng từng ngày và chọn bộ tham số (DCA, TP, Giờ Cắt) tối ưu nhất.'
+                : 'Bạn đang tự nhập các giá trị cố định bên dưới để kiểm định theo ý tưởng cá nhân.'}
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button
             type="button"
-            className={`preset-btn ${activePreset === 'recommended' ? 'active-preset' : ''}`}
-            onClick={() => handlePreset('recommended')}
+            onClick={() => setSystemMode('dynamic_ai')}
+            style={{
+              background: systemMode === 'dynamic_ai' ? 'linear-gradient(135deg, #6366F1, #4F46E5)' : 'rgba(255, 255, 255, 0.06)',
+              color: '#FFF',
+              border: systemMode === 'dynamic_ai' ? '1px solid #818CF8' : '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '6px',
+              padding: '7px 14px',
+              fontSize: '12px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s',
+              boxShadow: systemMode === 'dynamic_ai' ? '0 0 14px rgba(99, 102, 241, 0.4)' : 'none'
+            }}
           >
-            ⭐ Khuyên Dùng (0.5 DCA / TP 0.8-0.5 / 14h)
+            🤖 AI Tự Động Thích Ứng
           </button>
-          <button 
+          <button
             type="button"
-            className={`preset-btn ${activePreset === 'safe' ? 'active-preset' : ''}`}
-            onClick={() => handlePreset('safe')}
+            onClick={() => setSystemMode('manual')}
+            style={{
+              background: systemMode === 'manual' ? '#475569' : 'rgba(255, 255, 255, 0.06)',
+              color: systemMode === 'manual' ? '#FFF' : 'var(--text-muted)',
+              border: systemMode === 'manual' ? '1px solid #64748B' : '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '6px',
+              padding: '7px 14px',
+              fontSize: '12px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s'
+            }}
           >
-            🛡️ Siêu An Toàn (Cắt 12h)
-          </button>
-          <button 
-            type="button"
-            className={`preset-btn ${activePreset === 'aggressive' ? 'active-preset' : ''}`}
-            onClick={() => handlePreset('aggressive')}
-          >
-            🔥 Tối Đa Hóa (Cắt 15h)
+            ⚙️ Tùy Biến Thủ Công
           </button>
         </div>
       </div>
@@ -448,10 +541,12 @@ export default function ControlPanel({
               fontWeight: 700,
               borderRadius: '8px',
               border: 'none',
-              background: isLoading ? 'rgba(59, 130, 246, 0.5)' : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+              background: isLoading 
+                ? 'rgba(99, 102, 241, 0.5)' 
+                : (systemMode === 'dynamic_ai' ? 'linear-gradient(135deg, #6366F1, #4338CA)' : 'linear-gradient(135deg, #2563EB, #1D4ED8)'),
               color: '#FFF',
               cursor: isLoading ? 'not-allowed' : 'pointer',
-              boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)',
+              boxShadow: systemMode === 'dynamic_ai' ? '0 4px 16px rgba(99, 102, 241, 0.5)' : '0 4px 14px rgba(37, 99, 235, 0.4)',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
@@ -459,9 +554,11 @@ export default function ControlPanel({
             }}
           >
             {isLoading ? (
-              <>⏳ ĐANG CHẠY MÔ PHỎNG 15 NĂM...</>
+              <>⏳ ĐANG HUẤN LUYỆN MA TRẬN AI & MÔ PHỎNG 15 NĂM...</>
+            ) : systemMode === 'dynamic_ai' ? (
+              <>🧠 HUẤN LUYỆN MA TRẬN & CHẠY DYNAMIC AI</>
             ) : (
-              <>🚀 CHẠY BACKTEST & TRAIN AI</>
+              <>🚀 CHẠY BACKTEST THAM SỐ THỦ CÔNG</>
             )}
           </button>
         </div>

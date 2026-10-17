@@ -234,10 +234,12 @@ def extract_daily_sessions(candles, params):
     return sessions
 
 
-def simulate_dataset(sessions, candles, use_filter=True, params=None):
-    """Mô phỏng giao dịch qua danh sách các phiên."""
+def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_models=None):
+    """Mô phỏng giao dịch qua danh sách các phiên. Hỗ trợ cả chế độ tham số thủ công hoặc Dynamic AI theo hình thái."""
     if params is None:
         params = {}
+
+    from engine.ai_regime_optimizer import classify_session_regime, REGIME_METADATA
 
     min_step_atr = float(params.get('min_step_atr', 0.5))
     tp_single_atr = float(params.get('tp_single_atr', 0.8))
@@ -259,23 +261,44 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None):
     layer_counts = {}
 
     for s in sessions:
-        if use_filter and s['is_extreme_toxic'] == 1:
+        # Xác định hình thái phiên sáng
+        regime_id = s.get('regime') or classify_session_regime(s)
+        s['regime'] = regime_id
+
+        regime_info = regime_models.get(regime_id, {}) if regime_models else {}
+        reg_params = regime_info.get('optimal_params', {}) if regime_models else {}
+
+        # Nếu dùng bộ lọc bão giá hoặc hình thái Extreme Shock -> Bỏ qua
+        if use_filter and (s['is_extreme_toxic'] == 1 or reg_params.get('action') == 'SKIP_SESSION'):
             continue
+
+        # Áp dụng tham số động theo hình thái (nếu regime_models được bật)
+        eff_min_step = reg_params.get('min_step_atr', min_step_atr) if regime_models else min_step_atr
+        eff_tp_single = reg_params.get('tp_single_atr', tp_single_atr) if regime_models else tp_single_atr
+        eff_tp_dca = reg_params.get('tp_dca_atr', tp_dca_atr) if regime_models else tp_dca_atr
+
+        if regime_models and 'hard_exit' in reg_params and ':' in str(reg_params['hard_exit']):
+            h_p = str(reg_params['hard_exit']).split(':')
+            eff_h_exit = int(h_p[0])
+            eff_m_exit = int(h_p[1])
+        else:
+            eff_h_exit = hard_exit_hour
+            eff_m_exit = hard_exit_min
+
+        eff_risk_pct = reg_params.get('risk_percent', risk_percent) if regime_models else risk_percent
 
         c_idx = s['candle_idx']
         atr = s['atr_val']
-        min_dist = max(1.5, min_step_atr * atr)
-        tp_target_single = max(1.5, tp_single_atr * atr)
-        tp_target_dca = max(1.5, tp_dca_atr * atr)
+        min_dist = max(1.5, eff_min_step * atr)
+        tp_target_single = max(1.5, eff_tp_single * atr)
+        tp_target_dca = max(1.5, eff_tp_dca * atr)
 
-        # CÁCH 2: Tính lot theo % rủi ro vốn co giãn động theo ATR(14)
-        if sizing_mode == 'atr_risk' or 'risk_percent' in params:
-            # Biên độ chịu nhiệt cơ sở: 5.0 lần ATR (tối thiểu 12.0 giá)
-            risk_dollars = balance * (risk_percent / 100.0)
+        # Tính lot theo % rủi ro vốn co giãn động theo ATR(14)
+        if sizing_mode == 'atr_risk' or 'risk_percent' in params or regime_models:
+            risk_dollars = balance * (eff_risk_pct / 100.0)
             risk_points = max(12.0, atr * 5.0)
             lot_size = max(0.01, round(risk_dollars / (risk_points * 100.0), 2))
         else:
-            # Chế độ cũ: Lãi kép theo định mức vốn cố định (mỗi 5k vốn đi 0.01 lot)
             lot_size = max(0.01, round((balance / lot_step_capital) * 0.01, 2))
 
         # Nến 10:00 VN đóng lúc 10:15
@@ -330,9 +353,9 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None):
                 break
 
             # 2. Điều kiện cắt lỗ ép buộc theo giờ
-            if (dt_vn.hour > hard_exit_hour) or (dt_vn.hour == hard_exit_hour and dt_vn.minute >= hard_exit_min):
+            if (dt_vn.hour > eff_h_exit) or (dt_vn.hour == eff_h_exit and dt_vn.minute >= eff_m_exit):
                 closed = True
-                close_reason = f"Cắt lỗ ép buộc lúc {hard_exit_hour:02d}:{hard_exit_min:02d} VN"
+                close_reason = f"Cắt lỗ ép buộc lúc {eff_h_exit:02d}:{eff_m_exit:02d} VN"
                 close_price = c_close
                 close_time = cur_c[0]
                 break
@@ -387,10 +410,23 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None):
         num_orders = len(orders)
         layer_counts[num_orders] = layer_counts.get(num_orders, 0) + 1
 
+        meta_reg = REGIME_METADATA.get(regime_id, {})
         trades.append({
             'trade_idx': len(trades) + 1,
             'date': s['date'],
             'direction': direction,
+            'regime_id': regime_id,
+            'regime_name': meta_reg.get('name', 'Bình thường'),
+            'regime_icon': meta_reg.get('icon', '🎯'),
+            'regime_tag': meta_reg.get('tag', 'CHUẨN'),
+            'dynamic_params': {
+                'min_step_atr': eff_min_step,
+                'tp_single_atr': eff_tp_single,
+                'tp_dca_atr': eff_tp_dca,
+                'hard_exit': f"{eff_h_exit:02d}:{eff_m_exit:02d}",
+                'risk_percent': eff_risk_pct
+            },
+            'ai_rationale': meta_reg.get('desc', ''),
             'orders_count': num_orders,
             'lot_size': lot_size,
             'total_lots': round(final_total_lot, 2),
@@ -482,7 +518,13 @@ def analyze_filtered_days(test_sessions, baseline_trades):
 def execute_backtest(params, data_dir=None):
     """
     Hàm thực thi Backtest & Huấn Luyện AI chính:
-    Nhận tham số, nạp nến, tính toán mô phỏng 15 năm và trả về object kết quả hoàn chỉnh.
+    1. Trích xuất nến và đặc trưng sóng sáng 07h-10h
+    2. Huấn luyện ma trận hình thái thị trường (AI Regime Optimizer 2011-2020)
+    3. Mô phỏng so sánh:
+       - Baseline Tĩnh (Static Baseline, không lọc)
+       - Baseline Tĩnh Có Lọc (Static AI Volatility Guard)
+       - Dynamic Adaptive AI (AI tự động chọn tham số theo hình thái từng ngày)
+    4. Trả về thống kê toàn diện, ma trận tối ưu và so sánh độ cải thiện Alpha Lift
     """
     t0 = time.time()
     candles = load_candles(data_dir)
@@ -491,18 +533,35 @@ def execute_backtest(params, data_dir=None):
     train_sessions = [s for s in sessions if s['year'] in TRAIN_YEARS]
     test_sessions  = [s for s in sessions if s['year'] in TEST_YEARS]
 
-    print("[3/4] Mô phỏng Kiểm định Tập Test (2021-2025): Baseline vs Có Bộ Lọc...")
-    test_baseline = simulate_dataset(test_sessions, candles, use_filter=False, params=params)
-    test_ai       = simulate_dataset(test_sessions, candles, use_filter=True, params=params)
+    # 1. Huấn luyện Ma Trận Hình Thái Thị Trường (AI Regime Optimizer trên 10 năm Train 2011-2020)
+    from engine.ai_regime_optimizer import train_regime_matrix, classify_session_regime
+    regime_models = train_regime_matrix(train_sessions, candles, params)
+
+    # Gán hình thái cho toàn bộ sessions
+    for s in sessions:
+        s['regime'] = classify_session_regime(s)
+
+    # 2. Mô phỏng kiểm định
+    print("[3/4] Mô phỏng Tập Test (2021-2025): Baseline Tĩnh vs Dynamic AI...")
+    test_baseline   = simulate_dataset(test_sessions, candles, use_filter=False, params=params)
+    test_static_ai  = simulate_dataset(test_sessions, candles, use_filter=True, params=params)
+    test_dynamic_ai = simulate_dataset(test_sessions, candles, use_filter=True, params=params, regime_models=regime_models)
 
     filtered_days_test = analyze_filtered_days(test_sessions, test_baseline['trades'])
 
     print("[4/4] Mô phỏng Tập Train (2011-2020) & Toàn bộ 15 Năm...")
-    train_baseline = simulate_dataset(train_sessions, candles, use_filter=False, params=params)
-    train_ai       = simulate_dataset(train_sessions, candles, use_filter=True, params=params)
+    train_baseline   = simulate_dataset(train_sessions, candles, use_filter=False, params=params)
+    train_static_ai  = simulate_dataset(train_sessions, candles, use_filter=True, params=params)
+    train_dynamic_ai = simulate_dataset(train_sessions, candles, use_filter=True, params=params, regime_models=regime_models)
 
     all_baseline   = simulate_dataset(sessions, candles, use_filter=False, params=params)
-    all_ai         = simulate_dataset(sessions, candles, use_filter=True, params=params)
+    all_static_ai  = simulate_dataset(sessions, candles, use_filter=True, params=params)
+    all_dynamic_ai = simulate_dataset(sessions, candles, use_filter=True, params=params, regime_models=regime_models)
+
+    mode = params.get('mode', 'dynamic_ai') # 'dynamic_ai' (mặc định) hoặc 'manual'
+    active_test = test_dynamic_ai if mode == 'dynamic_ai' else test_static_ai
+    active_train = train_dynamic_ai if mode == 'dynamic_ai' else train_static_ai
+    active_all = all_dynamic_ai if mode == 'dynamic_ai' else all_static_ai
 
     min_step = params.get('min_step_atr', 0.5)
     tp_single = params.get('tp_single_atr', 0.8)
@@ -520,16 +579,40 @@ def execute_backtest(params, data_dir=None):
             'total_years': 15,
             'train_period': '2011 - 2020 (10 năm)',
             'test_period': '2021 - 2025 (5 năm)',
-            'strategy_name': f'Rocket 10h VN M15 - Volatility Guard (Cắt lỗ {h_close:02d}:{m_close:02d} VN)',
-            'dca_min_step_rule': f'{min_step} x ATR(14) giữa các lệnh DCA',
-            'tp_rule': f'Thích ứng: {tp_single} ATR14 (lệnh đơn) / {tp_dca} ATR14 (rổ DCA >= 2 lệnh)',
-            'stop_loss_rule': f'Cắt lỗ ép buộc vào {h_close:02d}:{m_close:02d} VN (Hết phiên Á, né phiên Âu)',
-            'hard_close_rule': f'Đóng sạch toàn bộ rổ lệnh lúc {h_close:02d}:{m_close:02d} VN nếu chưa chạm TP',
+            'strategy_name': 'Rocket 10h VN M15 - Dynamic AI Adaptive Engine',
+            'mode': mode,
+            'dca_min_step_rule': 'AI Tự Động Chọn Theo Hình Thái' if mode == 'dynamic_ai' else f'{min_step} x ATR(14) giữa các lệnh DCA',
+            'tp_rule': 'AI Tự Động Chọn Theo Hình Thái' if mode == 'dynamic_ai' else f'Thích ứng: {tp_single} ATR14 (lệnh đơn) / {tp_dca} ATR14 (rổ DCA >= 2 lệnh)',
+            'stop_loss_rule': 'AI Tự Động Cắt Theo Hình Thái (12h30 - 14h30 VN)' if mode == 'dynamic_ai' else f'Cắt lỗ ép buộc vào {h_close:02d}:{m_close:02d} VN',
+            'hard_close_rule': 'Tự động đóng theo hình thái nếu chưa chạm TP',
             'max_orders_rule': 'Không giới hạn số lệnh (Unlimited DCA)',
             'compounding_rule': f'{params.get("risk_percent", 0.5)}% rủi ro vốn co giãn theo biến động ATR(14) (Cách 2)' if params.get('sizing_mode', 'atr_risk') == 'atr_risk' or 'risk_percent' in params else f'${lot_cap:,.0f} vốn ứng với 0.01 lot',
             'initial_balance': init_bal,
             'active_params': params,
             'execution_time_seconds': elapsed
+        },
+        'mode': mode,
+        'regime_matrix': regime_models,
+        'dynamic_ai_comparison': {
+            'static_baseline': {
+                'win_rate': test_static_ai['win_rate'],
+                'net_pnl': test_static_ai['net_pnl'],
+                'profit_factor': test_static_ai['profit_factor'],
+                'max_dd_percent': test_static_ai['max_dd_percent'],
+                'total_trades': test_static_ai['total_trades']
+            },
+            'dynamic_regime_ai': {
+                'win_rate': test_dynamic_ai['win_rate'],
+                'net_pnl': test_dynamic_ai['net_pnl'],
+                'profit_factor': test_dynamic_ai['profit_factor'],
+                'max_dd_percent': test_dynamic_ai['max_dd_percent'],
+                'total_trades': test_dynamic_ai['total_trades']
+            },
+            'alpha_lift': {
+                'win_rate_diff': round(test_dynamic_ai['win_rate'] - test_static_ai['win_rate'], 2),
+                'pnl_diff': round(test_dynamic_ai['net_pnl'] - test_static_ai['net_pnl'], 2),
+                'dd_diff': round(test_static_ai['max_dd_percent'] - test_dynamic_ai['max_dd_percent'], 2)
+            }
         },
         'volatility_filter_analysis': {
             'test_total_days': len(test_sessions),
@@ -540,19 +623,19 @@ def execute_backtest(params, data_dir=None):
         },
         'train': {
             'baseline': train_baseline,
-            'ai': train_ai
+            'ai': active_train
         },
         'test': {
             'baseline': test_baseline,
-            'ai': test_ai
+            'ai': active_test
         },
         'all_time': {
             'baseline': all_baseline,
-            'ai': all_ai
+            'ai': active_all
         },
-        'losing_trades': [t for t in test_ai['trades'] if not t['is_win']],
-        'deep_dca_trades': [t for t in test_ai['trades'] if t['orders_count'] >= 5],
-        'recent_trades': test_ai['trades']
+        'losing_trades': [t for t in active_test['trades'] if not t['is_win']],
+        'deep_dca_trades': [t for t in active_test['trades'] if t['orders_count'] >= 5],
+        'recent_trades': active_test['trades']
     }
 
     return stats

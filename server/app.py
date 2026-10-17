@@ -186,7 +186,8 @@ class QuantApiHandler(SimpleHTTPRequestHandler):
                     'initial_balance': float(body.get('initial_balance', 10000.0)),
                     'sizing_mode': str(body.get('sizing_mode', 'atr_risk')),
                     'risk_percent': float(body.get('risk_percent', 0.5)),
-                    'lot_step_capital': float(body.get('lot_step_capital', 5000.0))
+                    'lot_step_capital': float(body.get('lot_step_capital', 5000.0)),
+                    'mode': str(body.get('mode', 'dynamic_ai'))
                 }
 
                 # Engine thực thi trên dữ liệu nến

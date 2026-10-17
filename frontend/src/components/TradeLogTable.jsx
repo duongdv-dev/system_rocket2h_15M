@@ -12,6 +12,8 @@ export default function TradeLogTable({ trades, onInspectTrade }) {
       if (filterType === 'win' && !t.is_win) return false;
       if (filterType === 'loss' && t.is_win) return false;
       if (filterType === 'deep' && t.orders_count < 4) return false;
+      if (filterType === 'trend' && t.regime_id !== 'TREND_MOMENTUM') return false;
+      if (filterType === 'sideway' && t.regime_id !== 'QUIET_SIDEWAY') return false;
       if (searchDate && !t.date.includes(searchDate)) return false;
       return true;
     });
@@ -28,7 +30,7 @@ export default function TradeLogTable({ trades, onInspectTrade }) {
             <span>📜</span> NHẬT KÝ CHI TIẾT TỪNG CHU KỲ LỆNH (TRADE AUDIT LOG)
           </h2>
           <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-            Toàn bộ lịch sử vào lệnh, nhồi DCA, mức giá trung bình và lý do đóng lệnh. Bấm <b>"📈 Soi Nến"</b> để xem biểu đồ chi tiết từng ngày.
+            Toàn bộ lịch sử vào lệnh, hình thái AI nhận diện, tham số may đo và lý do đóng lệnh. Bấm <b>"📈 Soi Nến"</b> để xem biểu đồ chi tiết từng ngày.
           </p>
         </div>
 
@@ -67,7 +69,19 @@ export default function TradeLogTable({ trades, onInspectTrade }) {
               className={`tab-btn ${filterType === 'loss' ? 'active' : ''}`}
               onClick={() => { setFilterType('loss'); setPage(1); }}
             >
-              Thua (Cắt 14h)
+              Thua (Cắt)
+            </button>
+            <button 
+              className={`tab-btn ${filterType === 'trend' ? 'active' : ''}`}
+              onClick={() => { setFilterType('trend'); setPage(1); }}
+            >
+              🌊 Trend Mạnh
+            </button>
+            <button 
+              className={`tab-btn ${filterType === 'sideway' ? 'active' : ''}`}
+              onClick={() => { setFilterType('sideway'); setPage(1); }}
+            >
+              🧘 Tích Lũy
             </button>
             <button 
               className={`tab-btn ${filterType === 'deep' ? 'active' : ''}`}
@@ -85,6 +99,7 @@ export default function TradeLogTable({ trades, onInspectTrade }) {
             <tr>
               <th>NGÀY VÀO (10H)</th>
               <th>HƯỚNG</th>
+              <th>HÌNH THÁI AI</th>
               <th>KHỐI LƯỢNG</th>
               <th>TẦNG NHỒI</th>
               <th>GIÁ VÀO</th>
@@ -103,6 +118,31 @@ export default function TradeLogTable({ trades, onInspectTrade }) {
                     <span className={t.direction === 'BUY' ? 'dir-buy' : 'dir-sell'}>
                       {t.direction}
                     </span>
+                  </td>
+                  <td>
+                    {t.regime_name ? (
+                      <span 
+                        title={`AI Auto-Params: DCA ${t.dynamic_params?.min_step_atr} ATR | TP ${t.dynamic_params?.tp_single_atr}/${t.dynamic_params?.tp_dca_atr} ATR | Cắt ${t.dynamic_params?.hard_exit} VN`}
+                        style={{
+                          background: t.regime_id === 'QUIET_SIDEWAY' ? 'rgba(56, 189, 248, 0.15)' : (t.regime_id === 'TREND_MOMENTUM' ? 'rgba(129, 140, 248, 0.18)' : 'rgba(245, 158, 11, 0.15)'),
+                          border: `1px solid ${t.regime_id === 'QUIET_SIDEWAY' ? 'rgba(56, 189, 248, 0.4)' : (t.regime_id === 'TREND_MOMENTUM' ? 'rgba(129, 140, 248, 0.4)' : 'rgba(245, 158, 11, 0.4)')}`,
+                          color: t.regime_id === 'QUIET_SIDEWAY' ? '#38BDF8' : (t.regime_id === 'TREND_MOMENTUM' ? '#A5B4FC' : '#FCD34D'),
+                          padding: '3px 8px',
+                          borderRadius: '6px',
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          cursor: 'help'
+                        }}
+                      >
+                        <span>{t.regime_icon || '🎯'}</span>
+                        <span>{t.regime_tag || 'CHUẨN'}</span>
+                      </span>
+                    ) : (
+                      <span style={{ color: 'var(--text-muted)', fontSize: '11px' }}>--</span>
+                    )}
                   </td>
                   <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-cyan)', fontWeight: 700 }}>
                     {t.lot_size ? `${t.lot_size} lot` : '0.01 lot'}

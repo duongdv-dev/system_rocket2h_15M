@@ -9,6 +9,7 @@ import CalendarHeatmap from './components/CalendarHeatmap';
 import RiskDaysInspector from './components/RiskDaysInspector';
 import TradeLogTable from './components/TradeLogTable';
 import DailyCandleModal from './components/DailyCandleModal';
+import AiRegimeMatrixCard from './components/AiRegimeMatrixCard';
 import { 
   checkServerStatus, 
   fetchInitialData, 
@@ -185,6 +186,9 @@ export default function App() {
           isLoading={isLoading}
         />
       )}
+
+      {/* 3.5. AI Market Regime Matrix & Auto-Tuned Parameters */}
+      <AiRegimeMatrixCard data={rawData} />
 
       {/* 4. Metrics Grid & Head-to-Head Comparison */}
       <MetricsGrid 
