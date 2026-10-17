@@ -1,0 +1,6325 @@
+{
+  "metadata": {
+    "generated_at": "2026-10-17 17:00:30",
+    "training_period": "2011 - 2020 (10 năm)",
+    "total_training_days": 2577,
+    "setups_evaluated_per_day": 2688,
+    "total_simulations_executed": 6926976,
+    "training_elapsed_seconds": 36.66,
+    "clusters_discovered": 8
+  },
+  "morphology_catalog": {
+    "MORPH_0": {
+      "regime_id": "MORPH_0",
+      "cluster_index": 0,
+      "name": "Hình Thái 1: Sóng Thanh Khoản Thấp Rút Râu Êm Đềm",
+      "tag": "TRÔI DẠT",
+      "icon": "🌙",
+      "color": "#6EE7B7",
+      "desc": "Dao động nhỏ $4.93, râu nến 2 đầu chiếm 89.0%. Thị trường ít sóng, AI đi volume an toàn và chốt lời gọn.",
+      "sample_count": 638,
+      "sample_percent": 24.8,
+      "centroid_metrics": {
+        "avg_morning_range": 4.93,
+        "avg_atr": 1.47,
+        "avg_range_to_atr": 3.29,
+        "avg_trend_efficiency": 11.0,
+        "avg_wick_ratio": 89.0
+      },
+      "optimal_params": {
+        "min_step_atr": 0.5,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.35,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 0.8,
+        "base_lot_per_10k": 0.11,
+        "max_dca_layers": 4,
+        "sl_atr": 2.2
+      },
+      "train_metrics": {
+        "win_rate": 58.78,
+        "profit_factor": 0.78,
+        "total_pnl": -2720.44,
+        "max_dd_percent": 31.59,
+        "avg_layers": 1.77,
+        "total_trades": 638,
+        "auto_risk_percent": 0.8,
+        "auto_base_lot": 0.11,
+        "auto_max_layers": 4,
+        "auto_sl_atr": 2.2
+      }
+    },
+    "MORPH_1": {
+      "regime_id": "MORPH_1",
+      "cluster_index": 1,
+      "name": "Hình Thái 2: Sóng Xu Hướng Tăng Mạnh Một Chiều",
+      "tag": "TREND TĂNG",
+      "icon": "📈",
+      "color": "#10B981",
+      "desc": "Thân nến tăng áp đảo (77.0%), biên độ sáng $8.49. Xung lực mua dốc đứng, AI giãn bước DCA và nới rộng TP.",
+      "sample_count": 277,
+      "sample_percent": 10.7,
+      "centroid_metrics": {
+        "avg_morning_range": 8.49,
+        "avg_atr": 1.61,
+        "avg_range_to_atr": 5.2,
+        "avg_trend_efficiency": 77.0,
+        "avg_wick_ratio": 23.0
+      },
+      "optimal_params": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.9,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 1.2,
+        "base_lot_per_10k": 0.16,
+        "max_dca_layers": 4,
+        "sl_atr": 4.5
+      },
+      "train_metrics": {
+        "win_rate": 62.09,
+        "profit_factor": 1.5,
+        "total_pnl": 3093.27,
+        "max_dd_percent": 5.53,
+        "avg_layers": 1.76,
+        "total_trades": 277,
+        "auto_risk_percent": 1.2,
+        "auto_base_lot": 0.16,
+        "auto_max_layers": 4,
+        "auto_sl_atr": 4.5
+      }
+    },
+    "MORPH_2": {
+      "regime_id": "MORPH_2",
+      "cluster_index": 2,
+      "name": "Hình Thái 3: Sóng Xu Hướng Giảm Mạnh Một Chiều",
+      "tag": "TREND GIẢM",
+      "icon": "📉",
+      "color": "#F43F5E",
+      "desc": "Thân nến xả dốc chiếm 79.7%, biên độ sáng $9.92. Xung lực bán áp đảo, AI khống chế tầng DCA và nới TP theo đà rơi.",
+      "sample_count": 114,
+      "sample_percent": 4.4,
+      "centroid_metrics": {
+        "avg_morning_range": 9.92,
+        "avg_atr": 1.79,
+        "avg_range_to_atr": 5.39,
+        "avg_trend_efficiency": 79.7,
+        "avg_wick_ratio": 20.3
+      },
+      "optimal_params": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.8,
+        "tp_dca_atr": 0.9,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 1.2,
+        "base_lot_per_10k": 0.16,
+        "max_dca_layers": 5,
+        "sl_atr": 2.8
+      },
+      "train_metrics": {
+        "win_rate": 78.95,
+        "profit_factor": 2.0,
+        "total_pnl": 1996.23,
+        "max_dd_percent": 3.35,
+        "avg_layers": 1.6,
+        "total_trades": 114,
+        "auto_risk_percent": 1.2,
+        "auto_base_lot": 0.16,
+        "auto_max_layers": 5,
+        "auto_sl_atr": 2.8
+      }
+    },
+    "MORPH_3": {
+      "regime_id": "MORPH_3",
+      "cluster_index": 3,
+      "name": "Hình Thái 4: Sóng Xu Hướng Giảm Mạnh Một Chiều",
+      "tag": "TREND GIẢM",
+      "icon": "📉",
+      "color": "#F43F5E",
+      "desc": "Thân nến xả dốc chiếm 54.2%, biên độ sáng $7.45. Xung lực bán áp đảo, AI khống chế tầng DCA và nới TP theo đà rơi.",
+      "sample_count": 283,
+      "sample_percent": 11.0,
+      "centroid_metrics": {
+        "avg_morning_range": 7.45,
+        "avg_atr": 1.72,
+        "avg_range_to_atr": 4.19,
+        "avg_trend_efficiency": 54.2,
+        "avg_wick_ratio": 45.8
+      },
+      "optimal_params": {
+        "min_step_atr": 0.75,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.9,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 0.8,
+        "base_lot_per_10k": 0.11,
+        "max_dca_layers": 4,
+        "sl_atr": 2.8
+      },
+      "train_metrics": {
+        "win_rate": 58.3,
+        "profit_factor": 1.04,
+        "total_pnl": 210.42,
+        "max_dd_percent": 10.03,
+        "avg_layers": 1.66,
+        "total_trades": 283,
+        "auto_risk_percent": 0.8,
+        "auto_base_lot": 0.11,
+        "auto_max_layers": 4,
+        "auto_sl_atr": 2.8
+      }
+    },
+    "MORPH_4": {
+      "regime_id": "MORPH_4",
+      "cluster_index": 4,
+      "name": "Hình Thái 5: Sóng Xu Hướng Tăng Mạnh Một Chiều",
+      "tag": "TREND TĂNG",
+      "icon": "📈",
+      "color": "#10B981",
+      "desc": "Thân nến tăng áp đảo (57.8%), biên độ sáng $5.50. Xung lực mua dốc đứng, AI giãn bước DCA và nới rộng TP.",
+      "sample_count": 401,
+      "sample_percent": 15.6,
+      "centroid_metrics": {
+        "avg_morning_range": 5.5,
+        "avg_atr": 1.38,
+        "avg_range_to_atr": 3.94,
+        "avg_trend_efficiency": 57.8,
+        "avg_wick_ratio": 42.2
+      },
+      "optimal_params": {
+        "min_step_atr": 0.75,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.75,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 0.8,
+        "base_lot_per_10k": 0.11,
+        "max_dca_layers": 6,
+        "sl_atr": 4.5
+      },
+      "train_metrics": {
+        "win_rate": 61.1,
+        "profit_factor": 1.05,
+        "total_pnl": 379.81,
+        "max_dd_percent": 15.06,
+        "avg_layers": 1.78,
+        "total_trades": 401,
+        "auto_risk_percent": 0.8,
+        "auto_base_lot": 0.11,
+        "auto_max_layers": 6,
+        "auto_sl_atr": 4.5
+      }
+    },
+    "MORPH_5": {
+      "regime_id": "MORPH_5",
+      "cluster_index": 5,
+      "name": "Hình Thái 6: Sóng Giằng Co Hai Chiều Rút Râu",
+      "tag": "GIẰNG CO",
+      "icon": "⚡",
+      "color": "#F59E0B",
+      "desc": "Biên độ sáng $5.06, râu nến 2 chiều co giật liên tục (65.7% râu). Thích hợp kiên nhẫn điểm hồi.",
+      "sample_count": 353,
+      "sample_percent": 13.7,
+      "centroid_metrics": {
+        "avg_morning_range": 5.06,
+        "avg_atr": 1.37,
+        "avg_range_to_atr": 3.61,
+        "avg_trend_efficiency": 34.3,
+        "avg_wick_ratio": 65.7
+      },
+      "optimal_params": {
+        "min_step_atr": 0.9,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.9,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 0.8,
+        "base_lot_per_10k": 0.11,
+        "max_dca_layers": 4,
+        "sl_atr": 2.2
+      },
+      "train_metrics": {
+        "win_rate": 59.49,
+        "profit_factor": 0.96,
+        "total_pnl": -250.61,
+        "max_dd_percent": 10.04,
+        "avg_layers": 1.61,
+        "total_trades": 353,
+        "auto_risk_percent": 0.8,
+        "auto_base_lot": 0.11,
+        "auto_max_layers": 4,
+        "auto_sl_atr": 2.2
+      }
+    },
+    "MORPH_6": {
+      "regime_id": "MORPH_6",
+      "cluster_index": 6,
+      "name": "Hình Thái 7: Sóng Xu Hướng Giảm Mạnh Một Chiều",
+      "tag": "TREND GIẢM",
+      "icon": "📉",
+      "color": "#F43F5E",
+      "desc": "Thân nến xả dốc chiếm 73.9%, biên độ sáng $5.17. Xung lực bán áp đảo, AI khống chế tầng DCA và nới TP theo đà rơi.",
+      "sample_count": 168,
+      "sample_percent": 6.5,
+      "centroid_metrics": {
+        "avg_morning_range": 5.17,
+        "avg_atr": 1.4,
+        "avg_range_to_atr": 3.71,
+        "avg_trend_efficiency": 73.9,
+        "avg_wick_ratio": 26.1
+      },
+      "optimal_params": {
+        "min_step_atr": 0.4,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.45,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 1.2,
+        "base_lot_per_10k": 0.16,
+        "max_dca_layers": 5,
+        "sl_atr": 4.5
+      },
+      "train_metrics": {
+        "win_rate": 66.67,
+        "profit_factor": 1.46,
+        "total_pnl": 2060.72,
+        "max_dd_percent": 7.11,
+        "avg_layers": 1.71,
+        "total_trades": 168,
+        "auto_risk_percent": 1.2,
+        "auto_base_lot": 0.16,
+        "auto_max_layers": 5,
+        "auto_sl_atr": 4.5
+      }
+    },
+    "MORPH_7": {
+      "regime_id": "MORPH_7",
+      "cluster_index": 7,
+      "name": "Hình Thái 8: Sóng Giằng Co Hai Chiều Rút Râu",
+      "tag": "GIẰNG CO",
+      "icon": "⚡",
+      "color": "#F59E0B",
+      "desc": "Biên độ sáng $4.88, râu nến 2 chiều co giật liên tục (66.9% râu). Thích hợp kiên nhẫn điểm hồi.",
+      "sample_count": 343,
+      "sample_percent": 13.3,
+      "centroid_metrics": {
+        "avg_morning_range": 4.88,
+        "avg_atr": 1.38,
+        "avg_range_to_atr": 3.46,
+        "avg_trend_efficiency": 33.1,
+        "avg_wick_ratio": 66.9
+      },
+      "optimal_params": {
+        "min_step_atr": 0.75,
+        "tp_single_atr": 1.0,
+        "tp_dca_atr": 0.9,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 1.2,
+        "base_lot_per_10k": 0.16,
+        "max_dca_layers": 4,
+        "sl_atr": 2.2
+      },
+      "train_metrics": {
+        "win_rate": 70.85,
+        "profit_factor": 1.24,
+        "total_pnl": 1744.55,
+        "max_dd_percent": 8.75,
+        "avg_layers": 1.59,
+        "total_trades": 343,
+        "auto_risk_percent": 1.2,
+        "auto_base_lot": 0.16,
+        "auto_max_layers": 4,
+        "auto_sl_atr": 2.2
+      }
+    },
+    "_clustering_meta": {
+      "centroids": [
+        [
+          0.2124830375005691,
+          0.11157096952648558,
+          0.5049765309489467,
+          0.05270596491181986,
+          0.8884290304735185,
+          0.10282823241164876
+        ],
+        [
+          0.48132113321870157,
+          0.7773020055628723,
+          0.8931619215772822,
+          0.5750764429923769,
+          0.22269799443712504,
+          0.11737293971810296
+        ],
+        [
+          0.507599621203669,
+          0.8049521759419291,
+          0.09801895726776123,
+          0.6148396342692793,
+          0.19504782405807036,
+          0.13739709059454322
+        ],
+        [
+          0.3395690494823032,
+          0.5473171470347797,
+          0.22749036773379105,
+          0.3272403932937128,
+          0.45268285296521943,
+          0.12898888958487936
+        ],
+        [
+          0.30385946327683616,
+          0.5843686868686844,
+          0.7962055837563452,
+          0.3273952312138729,
+          0.4156313131313138,
+          0.09317317845828924
+        ],
+        [
+          0.25676120313302536,
+          0.34693526170798766,
+          0.6768862482694967,
+          0.17837378481345256,
+          0.6530647382920076,
+          0.09244204185466055
+        ],
+        [
+          0.27198994900466006,
+          0.7453577931998564,
+          0.12796740341733093,
+          0.39494136325670537,
+          0.25464220680014354,
+          0.09523298879339849
+        ],
+        [
+          0.23547923624263434,
+          0.3336877605743658,
+          0.3348472675286176,
+          0.16426241749303164,
+          0.66631223942563,
+          0.0927521181523556
+        ]
+      ],
+      "min_vals": [
+        1.79,
+        0.0,
+        -0.99,
+        0.0,
+        0.01,
+        0.5
+      ],
+      "max_vals": [
+        8.87,
+        0.99,
+        0.98,
+        6.92,
+        1.0,
+        9.97
+      ],
+      "k": 8
+    }
+  },
+  "cluster_summaries": [
+    {
+      "regime_id": "MORPH_0",
+      "cluster_index": 0,
+      "name": "Hình Thái 1: Sóng Thanh Khoản Thấp Rút Râu Êm Đềm",
+      "tag": "TRÔI DẠT",
+      "icon": "🌙",
+      "color": "#6EE7B7",
+      "desc": "Dao động nhỏ $4.93, râu nến 2 đầu chiếm 89.0%. Thị trường ít sóng, AI đi volume an toàn và chốt lời gọn.",
+      "sample_count": 638,
+      "sample_percent": 24.8,
+      "centroid_metrics": {
+        "avg_morning_range": 4.93,
+        "avg_atr": 1.47,
+        "avg_range_to_atr": 3.29,
+        "avg_trend_efficiency": 11.0,
+        "avg_wick_ratio": 89.0
+      },
+      "optimal_params": {
+        "min_step_atr": 0.5,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.35,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 0.8,
+        "base_lot_per_10k": 0.11,
+        "max_dca_layers": 4,
+        "sl_atr": 2.2
+      },
+      "train_metrics": {
+        "win_rate": 58.78,
+        "profit_factor": 0.78,
+        "total_pnl": -2720.44,
+        "max_dd_percent": 31.59,
+        "avg_layers": 1.77,
+        "total_trades": 638,
+        "auto_risk_percent": 0.8,
+        "auto_base_lot": 0.11,
+        "auto_max_layers": 4,
+        "auto_sl_atr": 2.2
+      }
+    },
+    {
+      "regime_id": "MORPH_1",
+      "cluster_index": 1,
+      "name": "Hình Thái 2: Sóng Xu Hướng Tăng Mạnh Một Chiều",
+      "tag": "TREND TĂNG",
+      "icon": "📈",
+      "color": "#10B981",
+      "desc": "Thân nến tăng áp đảo (77.0%), biên độ sáng $8.49. Xung lực mua dốc đứng, AI giãn bước DCA và nới rộng TP.",
+      "sample_count": 277,
+      "sample_percent": 10.7,
+      "centroid_metrics": {
+        "avg_morning_range": 8.49,
+        "avg_atr": 1.61,
+        "avg_range_to_atr": 5.2,
+        "avg_trend_efficiency": 77.0,
+        "avg_wick_ratio": 23.0
+      },
+      "optimal_params": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.9,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 1.2,
+        "base_lot_per_10k": 0.16,
+        "max_dca_layers": 4,
+        "sl_atr": 4.5
+      },
+      "train_metrics": {
+        "win_rate": 62.09,
+        "profit_factor": 1.5,
+        "total_pnl": 3093.27,
+        "max_dd_percent": 5.53,
+        "avg_layers": 1.76,
+        "total_trades": 277,
+        "auto_risk_percent": 1.2,
+        "auto_base_lot": 0.16,
+        "auto_max_layers": 4,
+        "auto_sl_atr": 4.5
+      }
+    },
+    {
+      "regime_id": "MORPH_2",
+      "cluster_index": 2,
+      "name": "Hình Thái 3: Sóng Xu Hướng Giảm Mạnh Một Chiều",
+      "tag": "TREND GIẢM",
+      "icon": "📉",
+      "color": "#F43F5E",
+      "desc": "Thân nến xả dốc chiếm 79.7%, biên độ sáng $9.92. Xung lực bán áp đảo, AI khống chế tầng DCA và nới TP theo đà rơi.",
+      "sample_count": 114,
+      "sample_percent": 4.4,
+      "centroid_metrics": {
+        "avg_morning_range": 9.92,
+        "avg_atr": 1.79,
+        "avg_range_to_atr": 5.39,
+        "avg_trend_efficiency": 79.7,
+        "avg_wick_ratio": 20.3
+      },
+      "optimal_params": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.8,
+        "tp_dca_atr": 0.9,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 1.2,
+        "base_lot_per_10k": 0.16,
+        "max_dca_layers": 5,
+        "sl_atr": 2.8
+      },
+      "train_metrics": {
+        "win_rate": 78.95,
+        "profit_factor": 2.0,
+        "total_pnl": 1996.23,
+        "max_dd_percent": 3.35,
+        "avg_layers": 1.6,
+        "total_trades": 114,
+        "auto_risk_percent": 1.2,
+        "auto_base_lot": 0.16,
+        "auto_max_layers": 5,
+        "auto_sl_atr": 2.8
+      }
+    },
+    {
+      "regime_id": "MORPH_3",
+      "cluster_index": 3,
+      "name": "Hình Thái 4: Sóng Xu Hướng Giảm Mạnh Một Chiều",
+      "tag": "TREND GIẢM",
+      "icon": "📉",
+      "color": "#F43F5E",
+      "desc": "Thân nến xả dốc chiếm 54.2%, biên độ sáng $7.45. Xung lực bán áp đảo, AI khống chế tầng DCA và nới TP theo đà rơi.",
+      "sample_count": 283,
+      "sample_percent": 11.0,
+      "centroid_metrics": {
+        "avg_morning_range": 7.45,
+        "avg_atr": 1.72,
+        "avg_range_to_atr": 4.19,
+        "avg_trend_efficiency": 54.2,
+        "avg_wick_ratio": 45.8
+      },
+      "optimal_params": {
+        "min_step_atr": 0.75,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.9,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 0.8,
+        "base_lot_per_10k": 0.11,
+        "max_dca_layers": 4,
+        "sl_atr": 2.8
+      },
+      "train_metrics": {
+        "win_rate": 58.3,
+        "profit_factor": 1.04,
+        "total_pnl": 210.42,
+        "max_dd_percent": 10.03,
+        "avg_layers": 1.66,
+        "total_trades": 283,
+        "auto_risk_percent": 0.8,
+        "auto_base_lot": 0.11,
+        "auto_max_layers": 4,
+        "auto_sl_atr": 2.8
+      }
+    },
+    {
+      "regime_id": "MORPH_4",
+      "cluster_index": 4,
+      "name": "Hình Thái 5: Sóng Xu Hướng Tăng Mạnh Một Chiều",
+      "tag": "TREND TĂNG",
+      "icon": "📈",
+      "color": "#10B981",
+      "desc": "Thân nến tăng áp đảo (57.8%), biên độ sáng $5.50. Xung lực mua dốc đứng, AI giãn bước DCA và nới rộng TP.",
+      "sample_count": 401,
+      "sample_percent": 15.6,
+      "centroid_metrics": {
+        "avg_morning_range": 5.5,
+        "avg_atr": 1.38,
+        "avg_range_to_atr": 3.94,
+        "avg_trend_efficiency": 57.8,
+        "avg_wick_ratio": 42.2
+      },
+      "optimal_params": {
+        "min_step_atr": 0.75,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.75,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 0.8,
+        "base_lot_per_10k": 0.11,
+        "max_dca_layers": 6,
+        "sl_atr": 4.5
+      },
+      "train_metrics": {
+        "win_rate": 61.1,
+        "profit_factor": 1.05,
+        "total_pnl": 379.81,
+        "max_dd_percent": 15.06,
+        "avg_layers": 1.78,
+        "total_trades": 401,
+        "auto_risk_percent": 0.8,
+        "auto_base_lot": 0.11,
+        "auto_max_layers": 6,
+        "auto_sl_atr": 4.5
+      }
+    },
+    {
+      "regime_id": "MORPH_5",
+      "cluster_index": 5,
+      "name": "Hình Thái 6: Sóng Giằng Co Hai Chiều Rút Râu",
+      "tag": "GIẰNG CO",
+      "icon": "⚡",
+      "color": "#F59E0B",
+      "desc": "Biên độ sáng $5.06, râu nến 2 chiều co giật liên tục (65.7% râu). Thích hợp kiên nhẫn điểm hồi.",
+      "sample_count": 353,
+      "sample_percent": 13.7,
+      "centroid_metrics": {
+        "avg_morning_range": 5.06,
+        "avg_atr": 1.37,
+        "avg_range_to_atr": 3.61,
+        "avg_trend_efficiency": 34.3,
+        "avg_wick_ratio": 65.7
+      },
+      "optimal_params": {
+        "min_step_atr": 0.9,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.9,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 0.8,
+        "base_lot_per_10k": 0.11,
+        "max_dca_layers": 4,
+        "sl_atr": 2.2
+      },
+      "train_metrics": {
+        "win_rate": 59.49,
+        "profit_factor": 0.96,
+        "total_pnl": -250.61,
+        "max_dd_percent": 10.04,
+        "avg_layers": 1.61,
+        "total_trades": 353,
+        "auto_risk_percent": 0.8,
+        "auto_base_lot": 0.11,
+        "auto_max_layers": 4,
+        "auto_sl_atr": 2.2
+      }
+    },
+    {
+      "regime_id": "MORPH_6",
+      "cluster_index": 6,
+      "name": "Hình Thái 7: Sóng Xu Hướng Giảm Mạnh Một Chiều",
+      "tag": "TREND GIẢM",
+      "icon": "📉",
+      "color": "#F43F5E",
+      "desc": "Thân nến xả dốc chiếm 73.9%, biên độ sáng $5.17. Xung lực bán áp đảo, AI khống chế tầng DCA và nới TP theo đà rơi.",
+      "sample_count": 168,
+      "sample_percent": 6.5,
+      "centroid_metrics": {
+        "avg_morning_range": 5.17,
+        "avg_atr": 1.4,
+        "avg_range_to_atr": 3.71,
+        "avg_trend_efficiency": 73.9,
+        "avg_wick_ratio": 26.1
+      },
+      "optimal_params": {
+        "min_step_atr": 0.4,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.45,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 1.2,
+        "base_lot_per_10k": 0.16,
+        "max_dca_layers": 5,
+        "sl_atr": 4.5
+      },
+      "train_metrics": {
+        "win_rate": 66.67,
+        "profit_factor": 1.46,
+        "total_pnl": 2060.72,
+        "max_dd_percent": 7.11,
+        "avg_layers": 1.71,
+        "total_trades": 168,
+        "auto_risk_percent": 1.2,
+        "auto_base_lot": 0.16,
+        "auto_max_layers": 5,
+        "auto_sl_atr": 4.5
+      }
+    },
+    {
+      "regime_id": "MORPH_7",
+      "cluster_index": 7,
+      "name": "Hình Thái 8: Sóng Giằng Co Hai Chiều Rút Râu",
+      "tag": "GIẰNG CO",
+      "icon": "⚡",
+      "color": "#F59E0B",
+      "desc": "Biên độ sáng $4.88, râu nến 2 chiều co giật liên tục (66.9% râu). Thích hợp kiên nhẫn điểm hồi.",
+      "sample_count": 343,
+      "sample_percent": 13.3,
+      "centroid_metrics": {
+        "avg_morning_range": 4.88,
+        "avg_atr": 1.38,
+        "avg_range_to_atr": 3.46,
+        "avg_trend_efficiency": 33.1,
+        "avg_wick_ratio": 66.9
+      },
+      "optimal_params": {
+        "min_step_atr": 0.75,
+        "tp_single_atr": 1.0,
+        "tp_dca_atr": 0.9,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0,
+        "risk_percent": 1.2,
+        "base_lot_per_10k": 0.16,
+        "max_dca_layers": 4,
+        "sl_atr": 2.2
+      },
+      "train_metrics": {
+        "win_rate": 70.85,
+        "profit_factor": 1.24,
+        "total_pnl": 1744.55,
+        "max_dd_percent": 8.75,
+        "avg_layers": 1.59,
+        "total_trades": 343,
+        "auto_risk_percent": 1.2,
+        "auto_base_lot": 0.16,
+        "auto_max_layers": 4,
+        "auto_sl_atr": 2.2
+      }
+    }
+  ],
+  "sample_training_days": [
+    {
+      "date": "2011-01-04",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.68,
+      "atr_val": 1.22,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.02,
+        "ratio_trend": 0.13,
+        "ratio_delta_atr": 0.39,
+        "ratio_wick": 0.87,
+        "atr_val": 1.22,
+        "m_range": 3.68
+      },
+      "best_setup": {
+        "min_step_atr": 1.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -1.54,
+        "pts_pnl": 0.77,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -1.41,
+        "bars_held": 16
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 28.6,
+        "avg_pts_pnl": -0.15
+      }
+    },
+    {
+      "date": "2011-01-05",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 7.46,
+      "atr_val": 1.87,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 3.99,
+        "ratio_trend": 0.42,
+        "ratio_delta_atr": 1.69,
+        "ratio_wick": 0.58,
+        "atr_val": 1.87,
+        "m_range": 7.46
+      },
+      "best_setup": {
+        "min_step_atr": 1.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -3.88,
+        "pts_pnl": -0.26,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -2.44,
+        "bars_held": 16
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.14
+      }
+    },
+    {
+      "date": "2011-01-06",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.01,
+      "atr_val": 1.01,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 2.99,
+        "ratio_trend": 0.11,
+        "ratio_delta_atr": 0.32,
+        "ratio_wick": 0.89,
+        "atr_val": 1.01,
+        "m_range": 3.01
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -0.0,
+        "pts_pnl": 1.42,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.55,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 83.9,
+        "avg_pts_pnl": 0.83
+      }
+    },
+    {
+      "date": "2011-01-07",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.5,
+      "atr_val": 1.39,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.24,
+        "ratio_trend": 0.06,
+        "ratio_delta_atr": 0.18,
+        "ratio_wick": 0.94,
+        "atr_val": 1.39,
+        "m_range": 4.5
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 3.1,
+        "pts_pnl": 4.55,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 13
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.2
+      }
+    },
+    {
+      "date": "2011-01-10",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 7.07,
+      "atr_val": 1.65,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 4.29,
+        "ratio_trend": 0.62,
+        "ratio_delta_atr": 2.67,
+        "ratio_wick": 0.38,
+        "atr_val": 1.65,
+        "m_range": 7.07
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.64,
+        "pts_pnl": 1.74,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.5
+      }
+    },
+    {
+      "date": "2011-01-11",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.42,
+      "atr_val": 1.28,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 2.66,
+        "ratio_trend": 0.01,
+        "ratio_delta_atr": 0.03,
+        "ratio_wick": 0.99,
+        "atr_val": 1.28,
+        "m_range": 3.42
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -2.05,
+        "pts_pnl": -0.48,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -0.93,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 10.7,
+        "avg_pts_pnl": -0.73
+      }
+    },
+    {
+      "date": "2011-01-12",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.14,
+      "atr_val": 1.13,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 3.68,
+        "ratio_trend": 0.94,
+        "ratio_delta_atr": 3.47,
+        "ratio_wick": 0.06,
+        "atr_val": 1.13,
+        "m_range": 4.14
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.26,
+        "pts_pnl": 2.31,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 5
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 2.17
+      }
+    },
+    {
+      "date": "2011-01-13",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.62,
+      "atr_val": 1.04,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 2.53,
+        "ratio_trend": 0.08,
+        "ratio_delta_atr": 0.21,
+        "ratio_wick": 0.92,
+        "atr_val": 1.04,
+        "m_range": 2.62
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:00",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 0.12,
+        "pts_pnl": 1.45,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.27,
+        "bars_held": 8
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 94.6,
+        "avg_pts_pnl": 1.22
+      }
+    },
+    {
+      "date": "2011-01-14",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.26,
+      "atr_val": 0.93,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 2.43,
+        "ratio_trend": 0.13,
+        "ratio_delta_atr": 0.32,
+        "ratio_wick": 0.87,
+        "atr_val": 0.93,
+        "m_range": 2.26
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -1.25,
+        "pts_pnl": 1.73,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.27,
+        "bars_held": 15
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 28.6,
+        "avg_pts_pnl": -0.13
+      }
+    },
+    {
+      "date": "2011-01-17",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.88,
+      "atr_val": 0.98,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 3.96,
+        "ratio_trend": 0.38,
+        "ratio_delta_atr": 1.52,
+        "ratio_wick": 0.62,
+        "atr_val": 0.98,
+        "m_range": 3.88
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -1.89,
+        "pts_pnl": -0.48,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -0.62,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.2
+      }
+    },
+    {
+      "date": "2011-01-18",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.83,
+      "atr_val": 0.98,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 2.89,
+        "ratio_trend": 0.68,
+        "ratio_delta_atr": 1.96,
+        "ratio_wick": 0.32,
+        "atr_val": 0.98,
+        "m_range": 2.83
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.11,
+        "pts_pnl": -0.59,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -1.23,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.39
+      }
+    },
+    {
+      "date": "2011-01-19",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 6.11,
+      "atr_val": 1.21,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 5.04,
+        "ratio_trend": 0.82,
+        "ratio_delta_atr": 4.12,
+        "ratio_wick": 0.18,
+        "atr_val": 1.21,
+        "m_range": 6.11
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -0.39,
+        "pts_pnl": 0.71,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 28.6,
+        "avg_pts_pnl": -0.21
+      }
+    },
+    {
+      "date": "2011-01-20",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 2.53,
+      "atr_val": 1.1,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 2.3,
+        "ratio_trend": 0.4,
+        "ratio_delta_atr": 0.92,
+        "ratio_wick": 0.6,
+        "atr_val": 1.1,
+        "m_range": 2.53
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.18,
+        "pts_pnl": 2.23,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 5
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 96.4,
+        "avg_pts_pnl": 1.6
+      }
+    },
+    {
+      "date": "2011-01-21",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.55,
+      "atr_val": 1.05,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.38,
+        "ratio_trend": 0.11,
+        "ratio_delta_atr": 0.38,
+        "ratio_wick": 0.89,
+        "atr_val": 1.05,
+        "m_range": 3.55
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -2.37,
+        "pts_pnl": -0.85,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -0.85,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 14.3,
+        "avg_pts_pnl": -1.06
+      }
+    },
+    {
+      "date": "2011-01-24",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 6.38,
+      "atr_val": 1.31,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.88,
+        "ratio_trend": 0.88,
+        "ratio_delta_atr": 4.3,
+        "ratio_wick": 0.12,
+        "atr_val": 1.31,
+        "m_range": 6.38
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.75,
+        "pts_pnl": 1.6,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 1
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.58
+      }
+    },
+    {
+      "date": "2011-01-25",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 8.36,
+      "atr_val": 1.53,
+      "cluster_id": 2,
+      "regime_id": "MORPH_2",
+      "morphology": {
+        "ratio_range_atr": 5.47,
+        "ratio_trend": 0.67,
+        "ratio_delta_atr": 3.64,
+        "ratio_wick": 0.33,
+        "atr_val": 1.53,
+        "m_range": 8.36
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.82,
+        "pts_pnl": 2.92,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 98.2,
+        "avg_pts_pnl": 1.86
+      }
+    },
+    {
+      "date": "2011-01-26",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.14,
+      "atr_val": 1.25,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 3.3,
+        "ratio_trend": 0.54,
+        "ratio_delta_atr": 1.78,
+        "ratio_wick": 0.46,
+        "atr_val": 1.25,
+        "m_range": 4.14
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -1.54,
+        "pts_pnl": 0.17,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.82,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 28.6,
+        "avg_pts_pnl": -0.34
+      }
+    },
+    {
+      "date": "2011-01-27",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 5.26,
+      "atr_val": 1.15,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.56,
+        "ratio_trend": 0.76,
+        "ratio_delta_atr": 3.46,
+        "ratio_wick": 0.24,
+        "atr_val": 1.15,
+        "m_range": 5.26
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": 1.77,
+        "pts_pnl": 2.92,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.8
+      }
+    },
+    {
+      "date": "2011-01-28",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 7.36,
+      "atr_val": 1.98,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 3.71,
+        "ratio_trend": 0.23,
+        "ratio_delta_atr": 0.84,
+        "ratio_wick": 0.77,
+        "atr_val": 1.98,
+        "m_range": 7.36
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.0,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.8,
+        "pts_pnl": 3.37,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.65,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.74
+      }
+    },
+    {
+      "date": "2011-01-31",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 8.37,
+      "atr_val": 1.56,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 5.36,
+        "ratio_trend": 0.58,
+        "ratio_delta_atr": 3.1,
+        "ratio_wick": 0.42,
+        "atr_val": 1.56,
+        "m_range": 8.37
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 2.53,
+        "pts_pnl": 3.53,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 4
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 3.53
+      }
+    },
+    {
+      "date": "2011-02-01",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 5.81,
+      "atr_val": 1.15,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 5.05,
+        "ratio_trend": 0.86,
+        "ratio_delta_atr": 4.35,
+        "ratio_wick": 0.14,
+        "atr_val": 1.15,
+        "m_range": 5.81
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -0.8,
+        "pts_pnl": 1.99,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.39,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 71.4,
+        "avg_pts_pnl": 0.91
+      }
+    },
+    {
+      "date": "2011-02-02",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 5.27,
+      "atr_val": 1.52,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.47,
+        "ratio_trend": 0.02,
+        "ratio_delta_atr": 0.07,
+        "ratio_wick": 0.98,
+        "atr_val": 1.52,
+        "m_range": 5.27
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 2.52,
+        "pts_pnl": 4.23,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.52,
+        "bars_held": 13
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.97
+      }
+    },
+    {
+      "date": "2011-02-03",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.36,
+      "atr_val": 0.93,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.6,
+        "ratio_trend": 0.2,
+        "ratio_delta_atr": 0.71,
+        "ratio_wick": 0.8,
+        "atr_val": 0.93,
+        "m_range": 3.36
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.68,
+        "pts_pnl": -0.26,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -3.05,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.43
+      }
+    },
+    {
+      "date": "2011-02-04",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.14,
+      "atr_val": 1.03,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 3.04,
+        "ratio_trend": 0.41,
+        "ratio_delta_atr": 1.25,
+        "ratio_wick": 0.59,
+        "atr_val": 1.03,
+        "m_range": 3.14
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -0.08,
+        "pts_pnl": 1.2,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.26,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 85.7,
+        "avg_pts_pnl": 0.6
+      }
+    },
+    {
+      "date": "2011-02-07",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.56,
+      "atr_val": 1.16,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 3.06,
+        "ratio_trend": 0.61,
+        "ratio_delta_atr": 1.87,
+        "ratio_wick": 0.39,
+        "atr_val": 1.16,
+        "m_range": 3.56
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -0.83,
+        "pts_pnl": 0.27,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 57.1,
+        "avg_pts_pnl": -0.16
+      }
+    },
+    {
+      "date": "2011-02-08",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 2.9,
+      "atr_val": 0.82,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.54,
+        "ratio_trend": 0.13,
+        "ratio_delta_atr": 0.45,
+        "ratio_wick": 0.87,
+        "atr_val": 0.82,
+        "m_range": 2.9
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -0.91,
+        "pts_pnl": 0.68,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.59,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 71.4,
+        "avg_pts_pnl": 0.39
+      }
+    },
+    {
+      "date": "2011-02-09",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.23,
+      "atr_val": 1.04,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.11,
+        "ratio_trend": 0.05,
+        "ratio_delta_atr": 0.14,
+        "ratio_wick": 0.95,
+        "atr_val": 1.04,
+        "m_range": 3.23
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 1.23,
+        "pts_pnl": 2.83,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 16
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.19
+      }
+    },
+    {
+      "date": "2011-02-10",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.91,
+      "atr_val": 0.88,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 4.42,
+        "ratio_trend": 0.56,
+        "ratio_delta_atr": 2.47,
+        "ratio_wick": 0.44,
+        "atr_val": 0.88,
+        "m_range": 3.91
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.79,
+        "pts_pnl": 1.84,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 5
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 92.9,
+        "avg_pts_pnl": 1.61
+      }
+    },
+    {
+      "date": "2011-02-11",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.29,
+      "atr_val": 0.89,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 2.57,
+        "ratio_trend": 0.34,
+        "ratio_delta_atr": 0.87,
+        "ratio_wick": 0.66,
+        "atr_val": 0.89,
+        "m_range": 2.29
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 2.0,
+        "pts_pnl": 3.25,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.67
+      }
+    },
+    {
+      "date": "2011-02-14",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.9,
+      "atr_val": 1.0,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 3.89,
+        "ratio_trend": 0.43,
+        "ratio_delta_atr": 1.69,
+        "ratio_wick": 0.57,
+        "atr_val": 1.0,
+        "m_range": 3.9
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -1.2,
+        "pts_pnl": 0.22,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.54,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 14.3,
+        "avg_pts_pnl": -0.57
+      }
+    },
+    {
+      "date": "2011-02-15",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.1,
+      "atr_val": 0.83,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.92,
+        "ratio_trend": 0.82,
+        "ratio_delta_atr": 4.01,
+        "ratio_wick": 0.18,
+        "atr_val": 0.83,
+        "m_range": 4.1
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.23,
+        "pts_pnl": 1.33,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 89.3,
+        "avg_pts_pnl": 1.03
+      }
+    },
+    {
+      "date": "2011-02-16",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.89,
+      "atr_val": 0.69,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 4.16,
+        "ratio_trend": 0.66,
+        "ratio_delta_atr": 2.75,
+        "ratio_wick": 0.34,
+        "atr_val": 0.69,
+        "m_range": 2.89
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:00",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -0.77,
+        "pts_pnl": 0.52,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.18,
+        "bars_held": 8
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 42.9,
+        "avg_pts_pnl": -0.2
+      }
+    },
+    {
+      "date": "2011-02-17",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.48,
+      "atr_val": 0.74,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 4.69,
+        "ratio_trend": 0.54,
+        "ratio_delta_atr": 2.54,
+        "ratio_wick": 0.46,
+        "atr_val": 0.74,
+        "m_range": 3.48
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -1.96,
+        "pts_pnl": -0.57,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -0.59,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -0.74
+      }
+    },
+    {
+      "date": "2011-02-18",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 1.94,
+      "atr_val": 0.69,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 2.83,
+        "ratio_trend": 0.21,
+        "ratio_delta_atr": 0.58,
+        "ratio_wick": 0.79,
+        "atr_val": 0.69,
+        "m_range": 1.94
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -2.56,
+        "pts_pnl": -0.86,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -1.11,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -0.74
+      }
+    },
+    {
+      "date": "2011-02-21",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 5.41,
+      "atr_val": 0.92,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 5.88,
+        "ratio_trend": 0.74,
+        "ratio_delta_atr": 4.37,
+        "ratio_wick": 0.26,
+        "atr_val": 0.92,
+        "m_range": 5.41
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -0.13,
+        "pts_pnl": 1.7,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.55,
+        "bars_held": 15
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 57.1,
+        "avg_pts_pnl": 0.34
+      }
+    },
+    {
+      "date": "2011-02-22",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 9.25,
+      "atr_val": 1.54,
+      "cluster_id": 2,
+      "regime_id": "MORPH_2",
+      "morphology": {
+        "ratio_range_atr": 6.01,
+        "ratio_trend": 0.68,
+        "ratio_delta_atr": 4.11,
+        "ratio_wick": 0.32,
+        "atr_val": 1.54,
+        "m_range": 9.25
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.41,
+        "pts_pnl": 2.41,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 4
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 87.9,
+        "avg_pts_pnl": 1.56
+      }
+    },
+    {
+      "date": "2011-02-23",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 5.17,
+      "atr_val": 1.16,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 4.44,
+        "ratio_trend": 0.14,
+        "ratio_delta_atr": 0.64,
+        "ratio_wick": 0.86,
+        "atr_val": 1.16,
+        "m_range": 5.17
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -1.76,
+        "pts_pnl": 1.44,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.6,
+        "bars_held": 16
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 28.6,
+        "avg_pts_pnl": -0.63
+      }
+    },
+    {
+      "date": "2011-02-24",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.36,
+      "atr_val": 1.04,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 4.18,
+        "ratio_trend": 0.59,
+        "ratio_delta_atr": 2.47,
+        "ratio_wick": 0.41,
+        "atr_val": 1.04,
+        "m_range": 4.36
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -2.15,
+        "pts_pnl": 0.48,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.47,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 55.4,
+        "avg_pts_pnl": -0.18
+      }
+    },
+    {
+      "date": "2011-02-25",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.16,
+      "atr_val": 1.04,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.03,
+        "ratio_trend": 0.19,
+        "ratio_delta_atr": 0.56,
+        "ratio_wick": 0.81,
+        "atr_val": 1.04,
+        "m_range": 3.16
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.55,
+        "pts_pnl": -0.3,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -2.31,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.47
+      }
+    },
+    {
+      "date": "2011-02-28",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.38,
+      "atr_val": 1.09,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 3.09,
+        "ratio_trend": 0.29,
+        "ratio_delta_atr": 0.89,
+        "ratio_wick": 0.71,
+        "atr_val": 1.09,
+        "m_range": 3.38
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 1.37,
+        "pts_pnl": 2.97,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 16
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.32
+      }
+    },
+    {
+      "date": "2011-03-01",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.44,
+      "atr_val": 0.92,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 3.73,
+        "ratio_trend": 0.36,
+        "ratio_delta_atr": 1.33,
+        "ratio_wick": 0.64,
+        "atr_val": 0.92,
+        "m_range": 3.44
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:00",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 0.95,
+        "pts_pnl": 2.53,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.35,
+        "bars_held": 12
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.47
+      }
+    },
+    {
+      "date": "2011-03-02",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 5.76,
+      "atr_val": 1.11,
+      "cluster_id": 2,
+      "regime_id": "MORPH_2",
+      "morphology": {
+        "ratio_range_atr": 5.19,
+        "ratio_trend": 0.95,
+        "ratio_delta_atr": 4.94,
+        "ratio_wick": 0.05,
+        "atr_val": 1.11,
+        "m_range": 5.76
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.89,
+        "pts_pnl": 1.99,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.72
+      }
+    },
+    {
+      "date": "2011-03-03",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.98,
+      "atr_val": 0.87,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.44,
+        "ratio_trend": 0.21,
+        "ratio_delta_atr": 0.73,
+        "ratio_wick": 0.79,
+        "atr_val": 0.87,
+        "m_range": 2.98
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:00",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -0.09,
+        "pts_pnl": 3.0,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.88,
+        "bars_held": 11
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 57.1,
+        "avg_pts_pnl": 0.86
+      }
+    },
+    {
+      "date": "2011-03-04",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.75,
+      "atr_val": 1.06,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.48,
+        "ratio_trend": 0.79,
+        "ratio_delta_atr": 3.54,
+        "ratio_wick": 0.21,
+        "atr_val": 1.06,
+        "m_range": 4.75
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.25,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -0.3,
+        "pts_pnl": 1.75,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -1.0,
+        "bars_held": 15
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 57.1,
+        "avg_pts_pnl": 0.17
+      }
+    },
+    {
+      "date": "2011-03-07",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 5.36,
+      "atr_val": 1.74,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 3.09,
+        "ratio_trend": 0.54,
+        "ratio_delta_atr": 1.66,
+        "ratio_wick": 0.46,
+        "atr_val": 1.74,
+        "m_range": 5.36
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.0,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.73,
+        "pts_pnl": 1.94,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.23,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 92.9,
+        "avg_pts_pnl": 1.44
+      }
+    },
+    {
+      "date": "2011-03-08",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 2.94,
+      "atr_val": 1.41,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 2.08,
+        "ratio_trend": 0.28,
+        "ratio_delta_atr": 0.58,
+        "ratio_wick": 0.72,
+        "atr_val": 1.41,
+        "m_range": 2.94
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.41,
+        "pts_pnl": 1.56,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.19,
+        "bars_held": 5
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 71.4,
+        "avg_pts_pnl": 0.6
+      }
+    },
+    {
+      "date": "2011-03-09",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.48,
+      "atr_val": 1.19,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 2.91,
+        "ratio_trend": 0.38,
+        "ratio_delta_atr": 1.11,
+        "ratio_wick": 0.62,
+        "atr_val": 1.19,
+        "m_range": 3.48
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -1.06,
+        "pts_pnl": 2.27,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -2.17,
+        "bars_held": 13
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 42.9,
+        "avg_pts_pnl": 0.01
+      }
+    },
+    {
+      "date": "2011-03-10",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 2.67,
+      "atr_val": 1.17,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 2.29,
+        "ratio_trend": 0.1,
+        "ratio_delta_atr": 0.23,
+        "ratio_wick": 0.9,
+        "atr_val": 1.17,
+        "m_range": 2.67
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.25,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -0.1,
+        "pts_pnl": 1.76,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.62,
+        "bars_held": 15
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 0.92
+      }
+    },
+    {
+      "date": "2011-03-11",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 5.4,
+      "atr_val": 1.14,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.75,
+        "ratio_trend": 0.74,
+        "ratio_delta_atr": 3.53,
+        "ratio_wick": 0.26,
+        "atr_val": 1.14,
+        "m_range": 5.4
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -3.98,
+        "pts_pnl": -0.86,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -2.34,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 14.3,
+        "avg_pts_pnl": -1.3
+      }
+    },
+    {
+      "date": "2011-03-14",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 11.08,
+      "atr_val": 2.86,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 3.87,
+        "ratio_trend": 0.48,
+        "ratio_delta_atr": 1.86,
+        "ratio_wick": 0.52,
+        "atr_val": 2.86,
+        "m_range": 11.08
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -3.16,
+        "pts_pnl": -0.52,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -1.38,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.8
+      }
+    },
+    {
+      "date": "2011-03-15",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 8.21,
+      "atr_val": 1.54,
+      "cluster_id": 2,
+      "regime_id": "MORPH_2",
+      "morphology": {
+        "ratio_range_atr": 5.34,
+        "ratio_trend": 0.75,
+        "ratio_delta_atr": 3.99,
+        "ratio_wick": 0.25,
+        "atr_val": 1.54,
+        "m_range": 8.21
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 5.71,
+        "pts_pnl": 6.66,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 3
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 3.77
+      }
+    },
+    {
+      "date": "2011-03-16",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 6.57,
+      "atr_val": 1.83,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 3.59,
+        "ratio_trend": 0.23,
+        "ratio_delta_atr": 0.83,
+        "ratio_wick": 0.77,
+        "atr_val": 1.83,
+        "m_range": 6.57
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 2.69,
+        "pts_pnl": 4.33,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.16,
+        "bars_held": 15
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 2.15
+      }
+    },
+    {
+      "date": "2011-03-17",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 6.88,
+      "atr_val": 2.08,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 3.3,
+        "ratio_trend": 0.53,
+        "ratio_delta_atr": 1.75,
+        "ratio_wick": 0.47,
+        "atr_val": 2.08,
+        "m_range": 6.88
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.35,
+        "pts_pnl": -0.22,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -2.47,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.53
+      }
+    },
+    {
+      "date": "2011-03-18",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 5.1,
+      "atr_val": 1.69,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 3.01,
+        "ratio_trend": 0.58,
+        "ratio_delta_atr": 1.74,
+        "ratio_wick": 0.42,
+        "atr_val": 1.69,
+        "m_range": 5.1
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:00",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -1.59,
+        "pts_pnl": 1.43,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -2.04,
+        "bars_held": 8
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 83.0,
+        "avg_pts_pnl": 0.8
+      }
+    },
+    {
+      "date": "2011-03-21",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.88,
+      "atr_val": 0.99,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 4.91,
+        "ratio_trend": 0.62,
+        "ratio_delta_atr": 3.07,
+        "ratio_wick": 0.38,
+        "atr_val": 0.99,
+        "m_range": 4.88
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": 1.02,
+        "pts_pnl": 2.49,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.65,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.81
+      }
+    },
+    {
+      "date": "2011-03-22",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.48,
+      "atr_val": 0.93,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.83,
+        "ratio_trend": 0.82,
+        "ratio_delta_atr": 3.94,
+        "ratio_wick": 0.18,
+        "atr_val": 0.93,
+        "m_range": 4.48
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.22,
+        "pts_pnl": -0.48,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -1.68,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -0.85
+      }
+    },
+    {
+      "date": "2011-03-23",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.31,
+      "atr_val": 0.86,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.87,
+        "ratio_trend": 0.09,
+        "ratio_delta_atr": 0.36,
+        "ratio_wick": 0.91,
+        "atr_val": 0.86,
+        "m_range": 3.31
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.25,
+        "pts_pnl": 2.35,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.62
+      }
+    },
+    {
+      "date": "2011-03-24",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 2.02,
+      "atr_val": 0.75,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 2.69,
+        "ratio_trend": 0.21,
+        "ratio_delta_atr": 0.57,
+        "ratio_wick": 0.79,
+        "atr_val": 0.75,
+        "m_range": 2.02
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:00",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -0.28,
+        "pts_pnl": 0.92,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 8
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 85.7,
+        "avg_pts_pnl": 0.46
+      }
+    },
+    {
+      "date": "2011-03-25",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 1.88,
+      "atr_val": 0.65,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 2.88,
+        "ratio_trend": 0.4,
+        "ratio_delta_atr": 1.16,
+        "ratio_wick": 0.6,
+        "atr_val": 0.65,
+        "m_range": 1.88
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -1.11,
+        "pts_pnl": 1.31,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.25,
+        "bars_held": 4
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.31
+      }
+    },
+    {
+      "date": "2011-03-28",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.49,
+      "atr_val": 0.98,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 3.57,
+        "ratio_trend": 0.3,
+        "ratio_delta_atr": 1.07,
+        "ratio_wick": 0.7,
+        "atr_val": 0.98,
+        "m_range": 3.49
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.91,
+        "pts_pnl": 2.16,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.52
+      }
+    },
+    {
+      "date": "2011-03-29",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.87,
+      "atr_val": 0.98,
+      "cluster_id": 6,
+      "regime_id": "MORPH_6",
+      "morphology": {
+        "ratio_range_atr": 3.96,
+        "ratio_trend": 0.75,
+        "ratio_delta_atr": 2.99,
+        "ratio_wick": 0.25,
+        "atr_val": 0.98,
+        "m_range": 3.87
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.32,
+        "pts_pnl": -1.48,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -1.48,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.23
+      }
+    },
+    {
+      "date": "2011-03-30",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 5.05,
+      "atr_val": 1.22,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 4.14,
+        "ratio_trend": 0.13,
+        "ratio_delta_atr": 0.55,
+        "ratio_wick": 0.87,
+        "atr_val": 1.22,
+        "m_range": 5.05
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.56,
+        "pts_pnl": 2.81,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.97
+      }
+    },
+    {
+      "date": "2011-03-31",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 6.17,
+      "atr_val": 0.96,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 6.4,
+        "ratio_trend": 0.71,
+        "ratio_delta_atr": 4.57,
+        "ratio_wick": 0.29,
+        "atr_val": 0.96,
+        "m_range": 6.17
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 0.06,
+        "pts_pnl": 1.84,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.37,
+        "bars_held": 16
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 71.4,
+        "avg_pts_pnl": 0.45
+      }
+    },
+    {
+      "date": "2011-04-01",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.71,
+      "atr_val": 1.08,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 4.36,
+        "ratio_trend": 0.36,
+        "ratio_delta_atr": 1.56,
+        "ratio_wick": 0.64,
+        "atr_val": 1.08,
+        "m_range": 4.71
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -4.37,
+        "pts_pnl": -1.62,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -1.69,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.74
+      }
+    },
+    {
+      "date": "2011-04-04",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 1.72,
+      "atr_val": 0.69,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 2.48,
+        "ratio_trend": 0.29,
+        "ratio_delta_atr": 0.72,
+        "ratio_wick": 0.71,
+        "atr_val": 0.69,
+        "m_range": 1.72
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -1.6,
+        "pts_pnl": -0.13,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -0.65,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -0.62
+      }
+    },
+    {
+      "date": "2011-04-05",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.16,
+      "atr_val": 1.05,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 3.97,
+        "ratio_trend": 0.49,
+        "ratio_delta_atr": 1.93,
+        "ratio_wick": 0.51,
+        "atr_val": 1.05,
+        "m_range": 4.16
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.1,
+        "pts_pnl": 2.58,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.35,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.98
+      }
+    },
+    {
+      "date": "2011-04-06",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.42,
+      "atr_val": 1.12,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.04,
+        "ratio_trend": 0.11,
+        "ratio_delta_atr": 0.33,
+        "ratio_wick": 0.89,
+        "atr_val": 1.12,
+        "m_range": 3.42
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:00",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -2.12,
+        "pts_pnl": -0.15,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -1.14,
+        "bars_held": 12
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -0.82
+      }
+    },
+    {
+      "date": "2011-04-07",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.42,
+      "atr_val": 1.16,
+      "cluster_id": 6,
+      "regime_id": "MORPH_6",
+      "morphology": {
+        "ratio_range_atr": 2.95,
+        "ratio_trend": 0.68,
+        "ratio_delta_atr": 2.02,
+        "ratio_wick": 0.32,
+        "atr_val": 1.16,
+        "m_range": 3.42
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 0.88,
+        "pts_pnl": 2.63,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.41,
+        "bars_held": 15
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.64
+      }
+    },
+    {
+      "date": "2011-04-08",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 8.77,
+      "atr_val": 1.24,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 7.05,
+        "ratio_trend": 0.68,
+        "ratio_delta_atr": 4.77,
+        "ratio_wick": 0.32,
+        "atr_val": 1.24,
+        "m_range": 8.77
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -2.32,
+        "pts_pnl": -0.72,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -1.0,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -0.88
+      }
+    },
+    {
+      "date": "2011-04-11",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.94,
+      "atr_val": 1.42,
+      "cluster_id": 6,
+      "regime_id": "MORPH_6",
+      "morphology": {
+        "ratio_range_atr": 3.47,
+        "ratio_trend": 0.75,
+        "ratio_delta_atr": 2.6,
+        "ratio_wick": 0.25,
+        "atr_val": 1.42,
+        "m_range": 4.94
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 2.07,
+        "pts_pnl": 3.32,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 2.03
+      }
+    },
+    {
+      "date": "2011-04-12",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 7.27,
+      "atr_val": 1.61,
+      "cluster_id": 2,
+      "regime_id": "MORPH_2",
+      "morphology": {
+        "ratio_range_atr": 4.53,
+        "ratio_trend": 0.96,
+        "ratio_delta_atr": 4.33,
+        "ratio_wick": 0.04,
+        "atr_val": 1.61,
+        "m_range": 7.27
+      },
+      "best_setup": {
+        "min_step_atr": 1.1,
+        "tp_single_atr": 1.25,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -0.5,
+        "pts_pnl": 1.81,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -1.64,
+        "bars_held": 14
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 94.6,
+        "avg_pts_pnl": 1.45
+      }
+    },
+    {
+      "date": "2011-04-13",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.2,
+      "atr_val": 1.3,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 3.24,
+        "ratio_trend": 0.67,
+        "ratio_delta_atr": 2.17,
+        "ratio_wick": 0.33,
+        "atr_val": 1.3,
+        "m_range": 4.2
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.71,
+        "pts_pnl": -1.09,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -1.44,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.42
+      }
+    },
+    {
+      "date": "2011-04-14",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.49,
+      "atr_val": 1.31,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 3.44,
+        "ratio_trend": 0.54,
+        "ratio_delta_atr": 1.85,
+        "ratio_wick": 0.46,
+        "atr_val": 1.31,
+        "m_range": 4.49
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -1.42,
+        "pts_pnl": -0.09,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -0.36,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.12
+      }
+    },
+    {
+      "date": "2011-04-15",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 5.17,
+      "atr_val": 1.04,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 4.97,
+        "ratio_trend": 0.57,
+        "ratio_delta_atr": 2.86,
+        "ratio_wick": 0.43,
+        "atr_val": 1.04,
+        "m_range": 5.17
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.8,
+        "pts_pnl": 1.7,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 2
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 85.7,
+        "avg_pts_pnl": 1.19
+      }
+    },
+    {
+      "date": "2011-04-18",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.31,
+      "atr_val": 1.33,
+      "cluster_id": 6,
+      "regime_id": "MORPH_6",
+      "morphology": {
+        "ratio_range_atr": 3.25,
+        "ratio_trend": 0.69,
+        "ratio_delta_atr": 2.25,
+        "ratio_wick": 0.31,
+        "atr_val": 1.33,
+        "m_range": 4.31
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.25,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:00",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 0.49,
+        "pts_pnl": 1.69,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 8
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 89.3,
+        "avg_pts_pnl": 1.14
+      }
+    },
+    {
+      "date": "2011-04-19",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 6.56,
+      "atr_val": 1.17,
+      "cluster_id": 2,
+      "regime_id": "MORPH_2",
+      "morphology": {
+        "ratio_range_atr": 5.61,
+        "ratio_trend": 0.8,
+        "ratio_delta_atr": 4.47,
+        "ratio_wick": 0.2,
+        "atr_val": 1.17,
+        "m_range": 6.56
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -1.0,
+        "pts_pnl": 1.95,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.71,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 71.4,
+        "avg_pts_pnl": 0.98
+      }
+    },
+    {
+      "date": "2011-04-20",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.31,
+      "atr_val": 1.02,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 4.23,
+        "ratio_trend": 0.34,
+        "ratio_delta_atr": 1.43,
+        "ratio_wick": 0.66,
+        "atr_val": 1.02,
+        "m_range": 4.31
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.22,
+        "pts_pnl": 2.32,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.01,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.83
+      }
+    },
+    {
+      "date": "2011-04-21",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 7.3,
+      "atr_val": 1.5,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 4.85,
+        "ratio_trend": 0.58,
+        "ratio_delta_atr": 2.82,
+        "ratio_wick": 0.42,
+        "atr_val": 1.5,
+        "m_range": 7.3
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.25,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.58,
+        "pts_pnl": 3.07,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.37,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 98.2,
+        "avg_pts_pnl": 1.67
+      }
+    },
+    {
+      "date": "2011-04-22",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.7,
+      "atr_val": 1.42,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 2.6,
+        "ratio_trend": 0.6,
+        "ratio_delta_atr": 1.57,
+        "ratio_wick": 0.4,
+        "atr_val": 1.42,
+        "m_range": 3.7
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:00",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 1.78,
+        "pts_pnl": 3.17,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.08,
+        "bars_held": 11
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 2.08
+      }
+    },
+    {
+      "date": "2011-04-25",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 2.69,
+      "atr_val": 1.2,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 2.25,
+        "ratio_trend": 0.34,
+        "ratio_delta_atr": 0.76,
+        "ratio_wick": 0.66,
+        "atr_val": 1.2,
+        "m_range": 2.69
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 2.87,
+        "pts_pnl": 3.97,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 2.43
+      }
+    },
+    {
+      "date": "2011-04-26",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 12.39,
+      "atr_val": 1.84,
+      "cluster_id": 2,
+      "regime_id": "MORPH_2",
+      "morphology": {
+        "ratio_range_atr": 6.75,
+        "ratio_trend": 0.75,
+        "ratio_delta_atr": 5.06,
+        "ratio_wick": 0.25,
+        "atr_val": 1.84,
+        "m_range": 12.39
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -2.27,
+        "pts_pnl": -0.63,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -1.07,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.71
+      }
+    },
+    {
+      "date": "2011-04-27",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.25,
+      "atr_val": 1.15,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 3.71,
+        "ratio_trend": 0.21,
+        "ratio_delta_atr": 0.79,
+        "ratio_wick": 0.79,
+        "atr_val": 1.15,
+        "m_range": 4.25
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.26,
+        "pts_pnl": 1.27,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.02,
+        "bars_held": 4
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 91.1,
+        "avg_pts_pnl": 0.96
+      }
+    },
+    {
+      "date": "2011-04-28",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 6.28,
+      "atr_val": 1.57,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 4.0,
+        "ratio_trend": 0.34,
+        "ratio_delta_atr": 1.37,
+        "ratio_wick": 0.66,
+        "atr_val": 1.57,
+        "m_range": 6.28
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.25,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 4.24,
+        "pts_pnl": 5.63,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.6,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 3.69
+      }
+    },
+    {
+      "date": "2011-04-29",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.95,
+      "atr_val": 1.36,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 3.63,
+        "ratio_trend": 0.28,
+        "ratio_delta_atr": 1.01,
+        "ratio_wick": 0.72,
+        "atr_val": 1.36,
+        "m_range": 4.95
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.04,
+        "pts_pnl": 1.99,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 3
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 94.6,
+        "avg_pts_pnl": 1.39
+      }
+    },
+    {
+      "date": "2011-05-02",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 15.18,
+      "atr_val": 3.76,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 4.04,
+        "ratio_trend": 0.54,
+        "ratio_delta_atr": 2.18,
+        "ratio_wick": 0.46,
+        "atr_val": 3.76,
+        "m_range": 15.18
+      },
+      "best_setup": {
+        "min_step_atr": 0.4,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -4.51,
+        "pts_pnl": 1.28,
+        "is_win": true,
+        "orders_count": 3,
+        "worst_dd_pts": -6.19,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 19.6,
+        "avg_pts_pnl": -3.02
+      }
+    },
+    {
+      "date": "2011-05-03",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 6.98,
+      "atr_val": 1.82,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.85,
+        "ratio_trend": 0.21,
+        "ratio_delta_atr": 0.81,
+        "ratio_wick": 0.79,
+        "atr_val": 1.82,
+        "m_range": 6.98
+      },
+      "best_setup": {
+        "min_step_atr": 1.1,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -5.39,
+        "pts_pnl": -0.03,
+        "is_win": false,
+        "orders_count": 3,
+        "worst_dd_pts": -4.53,
+        "bars_held": 14
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 17.9,
+        "avg_pts_pnl": -2.48
+      }
+    },
+    {
+      "date": "2011-05-04",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 5.66,
+      "atr_val": 1.8,
+      "cluster_id": 6,
+      "regime_id": "MORPH_6",
+      "morphology": {
+        "ratio_range_atr": 3.14,
+        "ratio_trend": 0.87,
+        "ratio_delta_atr": 2.73,
+        "ratio_wick": 0.13,
+        "atr_val": 1.8,
+        "m_range": 5.66
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.0,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 2.07,
+        "pts_pnl": 3.67,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 16
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.25
+      }
+    },
+    {
+      "date": "2011-05-05",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.85,
+      "atr_val": 1.41,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 2.02,
+        "ratio_trend": 0.59,
+        "ratio_delta_atr": 1.2,
+        "ratio_wick": 0.41,
+        "atr_val": 1.41,
+        "m_range": 2.85
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.44,
+        "pts_pnl": 0.72,
+        "is_win": true,
+        "orders_count": 3,
+        "worst_dd_pts": -2.52,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 32.1,
+        "avg_pts_pnl": -0.99
+      }
+    },
+    {
+      "date": "2011-05-06",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 17.36,
+      "atr_val": 2.97,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 5.84,
+        "ratio_trend": 0.94,
+        "ratio_delta_atr": 5.48,
+        "ratio_wick": 0.06,
+        "atr_val": 2.97,
+        "m_range": 17.36
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 4.21,
+        "pts_pnl": 5.64,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.35,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 3.59
+      }
+    },
+    {
+      "date": "2011-05-09",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 6.19,
+      "atr_val": 1.32,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.69,
+        "ratio_trend": 0.79,
+        "ratio_delta_atr": 3.68,
+        "ratio_wick": 0.21,
+        "atr_val": 1.32,
+        "m_range": 6.19
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -5.46,
+        "pts_pnl": -0.36,
+        "is_win": false,
+        "orders_count": 3,
+        "worst_dd_pts": -4.4,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.83
+      }
+    },
+    {
+      "date": "2011-05-10",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 5.34,
+      "atr_val": 1.48,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.61,
+        "ratio_trend": 0.17,
+        "ratio_delta_atr": 0.63,
+        "ratio_wick": 0.83,
+        "atr_val": 1.48,
+        "m_range": 5.34
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.25,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 2.01,
+        "pts_pnl": 3.79,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -1.07,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.96
+      }
+    },
+    {
+      "date": "2011-05-11",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 7.35,
+      "atr_val": 1.47,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.99,
+        "ratio_trend": 0.88,
+        "ratio_delta_atr": 4.41,
+        "ratio_wick": 0.12,
+        "atr_val": 1.47,
+        "m_range": 7.35
+      },
+      "best_setup": {
+        "min_step_atr": 1.1,
+        "tp_single_atr": 1.0,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -0.26,
+        "pts_pnl": 1.88,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -1.39,
+        "bars_held": 13
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.63
+      }
+    },
+    {
+      "date": "2011-05-12",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.34,
+      "atr_val": 1.17,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 2.84,
+        "ratio_trend": 0.61,
+        "ratio_delta_atr": 1.73,
+        "ratio_wick": 0.39,
+        "atr_val": 1.17,
+        "m_range": 3.34
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.58,
+        "pts_pnl": 2.94,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.12,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.67
+      }
+    },
+    {
+      "date": "2011-05-13",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.61,
+      "atr_val": 1.44,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.2,
+        "ratio_trend": 0.03,
+        "ratio_delta_atr": 0.1,
+        "ratio_wick": 0.97,
+        "atr_val": 1.44,
+        "m_range": 4.61
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:00",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 0.48,
+        "pts_pnl": 1.98,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.6,
+        "bars_held": 8
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 78.6,
+        "avg_pts_pnl": 0.72
+      }
+    },
+    {
+      "date": "2011-05-16",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 5.13,
+      "atr_val": 1.43,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.58,
+        "ratio_trend": 0.19,
+        "ratio_delta_atr": 0.67,
+        "ratio_wick": 0.81,
+        "atr_val": 1.43,
+        "m_range": 5.13
+      },
+      "best_setup": {
+        "min_step_atr": 1.1,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.11,
+        "pts_pnl": 3.21,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -1.29,
+        "bars_held": 13
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 57.1,
+        "avg_pts_pnl": 1.12
+      }
+    },
+    {
+      "date": "2011-05-17",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 5.21,
+      "atr_val": 1.02,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 5.11,
+        "ratio_trend": 0.86,
+        "ratio_delta_atr": 4.42,
+        "ratio_wick": 0.14,
+        "atr_val": 1.02,
+        "m_range": 5.21
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -0.33,
+        "pts_pnl": 1.28,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.72,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 83.9,
+        "avg_pts_pnl": 0.64
+      }
+    },
+    {
+      "date": "2011-05-18",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 7.95,
+      "atr_val": 1.48,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 5.37,
+        "ratio_trend": 0.9,
+        "ratio_delta_atr": 4.82,
+        "ratio_wick": 0.1,
+        "atr_val": 1.48,
+        "m_range": 7.95
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 2.38,
+        "pts_pnl": 3.93,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 15
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.26
+      }
+    },
+    {
+      "date": "2011-05-19",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 5.29,
+      "atr_val": 1.26,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 4.21,
+        "ratio_trend": 0.27,
+        "ratio_delta_atr": 1.12,
+        "ratio_wick": 0.73,
+        "atr_val": 1.26,
+        "m_range": 5.29
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -1.06,
+        "pts_pnl": 0.41,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.65,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 26.8,
+        "avg_pts_pnl": -0.6
+      }
+    },
+    {
+      "date": "2011-05-20",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 2.64,
+      "atr_val": 0.84,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.14,
+        "ratio_trend": 0.18,
+        "ratio_delta_atr": 0.56,
+        "ratio_wick": 0.82,
+        "atr_val": 0.84,
+        "m_range": 2.64
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:00",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 0.62,
+        "pts_pnl": 2.02,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 12
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.67
+      }
+    },
+    {
+      "date": "2011-05-23",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 8.23,
+      "atr_val": 1.91,
+      "cluster_id": 6,
+      "regime_id": "MORPH_6",
+      "morphology": {
+        "ratio_range_atr": 4.31,
+        "ratio_trend": 0.78,
+        "ratio_delta_atr": 3.36,
+        "ratio_wick": 0.22,
+        "atr_val": 1.91,
+        "m_range": 8.23
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.5,
+        "pts_pnl": 1.64,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.18,
+        "bars_held": 5
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 91.1,
+        "avg_pts_pnl": 1.13
+      }
+    },
+    {
+      "date": "2011-05-24",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.47,
+      "atr_val": 1.08,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.14,
+        "ratio_trend": 0.74,
+        "ratio_delta_atr": 3.07,
+        "ratio_wick": 0.26,
+        "atr_val": 1.08,
+        "m_range": 4.47
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.0,
+        "pts_pnl": 1.9,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 2
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 82.1,
+        "avg_pts_pnl": 1.35
+      }
+    },
+    {
+      "date": "2011-05-25",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 2.42,
+      "atr_val": 0.91,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 2.66,
+        "ratio_trend": 0.05,
+        "ratio_delta_atr": 0.14,
+        "ratio_wick": 0.95,
+        "atr_val": 0.91,
+        "m_range": 2.42
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -1.3,
+        "pts_pnl": 2.07,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.95,
+        "bars_held": 16
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 14.3,
+        "avg_pts_pnl": -0.53
+      }
+    },
+    {
+      "date": "2011-05-26",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.15,
+      "atr_val": 0.87,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 3.63,
+        "ratio_trend": 0.88,
+        "ratio_delta_atr": 3.18,
+        "ratio_wick": 0.12,
+        "atr_val": 0.87,
+        "m_range": 3.15
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -1.79,
+        "pts_pnl": -0.33,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -0.71,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 14.3,
+        "avg_pts_pnl": -0.74
+      }
+    },
+    {
+      "date": "2011-05-27",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.35,
+      "atr_val": 0.82,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 2.88,
+        "ratio_trend": 0.49,
+        "ratio_delta_atr": 1.41,
+        "ratio_wick": 0.51,
+        "atr_val": 0.82,
+        "m_range": 2.35
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.32,
+        "pts_pnl": 2.2,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.75,
+        "bars_held": 14
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 0.75
+      }
+    },
+    {
+      "date": "2011-05-30",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 1.96,
+      "atr_val": 0.78,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 2.53,
+        "ratio_trend": 0.32,
+        "ratio_delta_atr": 0.8,
+        "ratio_wick": 0.68,
+        "atr_val": 0.78,
+        "m_range": 1.96
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -1.45,
+        "pts_pnl": -0.24,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -0.24,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 14.3,
+        "avg_pts_pnl": -0.44
+      }
+    },
+    {
+      "date": "2011-05-31",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 6.03,
+      "atr_val": 1.26,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 4.78,
+        "ratio_trend": 0.34,
+        "ratio_delta_atr": 1.62,
+        "ratio_wick": 0.66,
+        "atr_val": 1.26,
+        "m_range": 6.03
+      },
+      "best_setup": {
+        "min_step_atr": 1.1,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:00",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -1.03,
+        "pts_pnl": 1.04,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -1.36,
+        "bars_held": 12
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 46.4,
+        "avg_pts_pnl": 0.22
+      }
+    },
+    {
+      "date": "2011-06-01",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 6.14,
+      "atr_val": 1.19,
+      "cluster_id": 2,
+      "regime_id": "MORPH_2",
+      "morphology": {
+        "ratio_range_atr": 5.15,
+        "ratio_trend": 0.88,
+        "ratio_delta_atr": 4.52,
+        "ratio_wick": 0.12,
+        "atr_val": 1.19,
+        "m_range": 6.14
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:00",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 1.36,
+        "pts_pnl": 2.77,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.03,
+        "bars_held": 12
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.72
+      }
+    },
+    {
+      "date": "2011-06-02",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 5.89,
+      "atr_val": 1.14,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 5.18,
+        "ratio_trend": 0.63,
+        "ratio_delta_atr": 3.25,
+        "ratio_wick": 0.37,
+        "atr_val": 1.14,
+        "m_range": 5.89
+      },
+      "best_setup": {
+        "min_step_atr": 1.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -1.84,
+        "pts_pnl": 1.29,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.76,
+        "bars_held": 13
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 28.6,
+        "avg_pts_pnl": -0.51
+      }
+    },
+    {
+      "date": "2011-06-03",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 2.92,
+      "atr_val": 0.83,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 3.5,
+        "ratio_trend": 0.6,
+        "ratio_delta_atr": 2.1,
+        "ratio_wick": 0.4,
+        "atr_val": 0.83,
+        "m_range": 2.92
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -2.62,
+        "pts_pnl": 0.52,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.69,
+        "bars_held": 14
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 28.6,
+        "avg_pts_pnl": -0.68
+      }
+    },
+    {
+      "date": "2011-06-06",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.1,
+      "atr_val": 1.18,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.47,
+        "ratio_trend": 0.21,
+        "ratio_delta_atr": 0.72,
+        "ratio_wick": 0.79,
+        "atr_val": 1.18,
+        "m_range": 4.1
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -1.87,
+        "pts_pnl": 1.82,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -2.58,
+        "bars_held": 16
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 14.3,
+        "avg_pts_pnl": -0.63
+      }
+    },
+    {
+      "date": "2011-06-07",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.51,
+      "atr_val": 0.84,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 4.21,
+        "ratio_trend": 0.38,
+        "ratio_delta_atr": 1.59,
+        "ratio_wick": 0.62,
+        "atr_val": 0.84,
+        "m_range": 3.51
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.03,
+        "pts_pnl": 2.08,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 5
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.59
+      }
+    },
+    {
+      "date": "2011-06-08",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 6.88,
+      "atr_val": 1.31,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 5.27,
+        "ratio_trend": 0.62,
+        "ratio_delta_atr": 3.28,
+        "ratio_wick": 0.38,
+        "atr_val": 1.31,
+        "m_range": 6.88
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:00",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -0.44,
+        "pts_pnl": 1.25,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.69,
+        "bars_held": 11
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 74.6,
+        "avg_pts_pnl": 0.27
+      }
+    },
+    {
+      "date": "2011-06-09",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.33,
+      "atr_val": 1.1,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.95,
+        "ratio_trend": 0.03,
+        "ratio_delta_atr": 0.14,
+        "ratio_wick": 0.97,
+        "atr_val": 1.1,
+        "m_range": 4.33
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.57,
+        "pts_pnl": 2.16,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.19,
+        "bars_held": 14
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 98.2,
+        "avg_pts_pnl": 0.83
+      }
+    },
+    {
+      "date": "2011-06-10",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.85,
+      "atr_val": 0.88,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 3.26,
+        "ratio_trend": 0.24,
+        "ratio_delta_atr": 0.79,
+        "ratio_wick": 0.76,
+        "atr_val": 0.88,
+        "m_range": 2.85
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.85,
+        "pts_pnl": 2.21,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.12,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.58
+      }
+    },
+    {
+      "date": "2011-06-13",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.17,
+      "atr_val": 1.26,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 3.32,
+        "ratio_trend": 0.37,
+        "ratio_delta_atr": 1.24,
+        "ratio_wick": 0.63,
+        "atr_val": 1.26,
+        "m_range": 4.17
+      },
+      "best_setup": {
+        "min_step_atr": 1.1,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -2.66,
+        "pts_pnl": 0.09,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.71,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 7.1,
+        "avg_pts_pnl": -0.84
+      }
+    },
+    {
+      "date": "2011-06-14",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.48,
+      "atr_val": 1.14,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 3.95,
+        "ratio_trend": 0.42,
+        "ratio_delta_atr": 1.68,
+        "ratio_wick": 0.58,
+        "atr_val": 1.14,
+        "m_range": 4.48
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:00",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 1.31,
+        "pts_pnl": 2.71,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 12
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.52
+      }
+    },
+    {
+      "date": "2011-06-15",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.1,
+      "atr_val": 0.85,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.65,
+        "ratio_trend": 0.12,
+        "ratio_delta_atr": 0.45,
+        "ratio_wick": 0.88,
+        "atr_val": 0.85,
+        "m_range": 3.1
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:00",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 0.71,
+        "pts_pnl": 1.91,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 8
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.43
+      }
+    },
+    {
+      "date": "2011-06-16",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.3,
+      "atr_val": 0.93,
+      "cluster_id": 6,
+      "regime_id": "MORPH_6",
+      "morphology": {
+        "ratio_range_atr": 3.54,
+        "ratio_trend": 0.95,
+        "ratio_delta_atr": 3.35,
+        "ratio_wick": 0.05,
+        "atr_val": 0.93,
+        "m_range": 3.3
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 0.3,
+        "pts_pnl": 2.25,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.8,
+        "bars_held": 15
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 71.4,
+        "avg_pts_pnl": 0.44
+      }
+    },
+    {
+      "date": "2011-06-17",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.2,
+      "atr_val": 1.09,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 3.86,
+        "ratio_trend": 0.48,
+        "ratio_delta_atr": 1.84,
+        "ratio_wick": 0.52,
+        "atr_val": 1.09,
+        "m_range": 4.2
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "14:00",
+        "hard_exit_hour": 14,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -1.14,
+        "pts_pnl": 0.88,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.85,
+        "bars_held": 16
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 14.3,
+        "avg_pts_pnl": -0.28
+      }
+    },
+    {
+      "date": "2011-06-20",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.0,
+      "atr_val": 0.82,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 3.67,
+        "ratio_trend": 0.41,
+        "ratio_delta_atr": 1.5,
+        "ratio_wick": 0.59,
+        "atr_val": 0.82,
+        "m_range": 3.0
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -1.88,
+        "pts_pnl": 1.29,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.83,
+        "bars_held": 13
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 42.9,
+        "avg_pts_pnl": -0.09
+      }
+    },
+    {
+      "date": "2011-06-21",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.05,
+      "atr_val": 0.91,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 3.35,
+        "ratio_trend": 0.57,
+        "ratio_delta_atr": 1.91,
+        "ratio_wick": 0.43,
+        "atr_val": 0.91,
+        "m_range": 3.05
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -2.08,
+        "pts_pnl": -0.55,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -0.76,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.08
+      }
+    },
+    {
+      "date": "2011-06-22",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 2.75,
+      "atr_val": 0.76,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 3.61,
+        "ratio_trend": 0.51,
+        "ratio_delta_atr": 1.85,
+        "ratio_wick": 0.49,
+        "atr_val": 0.76,
+        "m_range": 2.75
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -1.98,
+        "pts_pnl": -0.44,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -0.77,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -0.63
+      }
+    },
+    {
+      "date": "2011-06-23",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.11,
+      "atr_val": 0.94,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 4.39,
+        "ratio_trend": 0.21,
+        "ratio_delta_atr": 0.92,
+        "ratio_wick": 0.79,
+        "atr_val": 0.94,
+        "m_range": 4.11
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -0.17,
+        "pts_pnl": 0.93,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.02,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 42.9,
+        "avg_pts_pnl": -0.08
+      }
+    },
+    {
+      "date": "2011-06-24",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.32,
+      "atr_val": 1.17,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 3.68,
+        "ratio_trend": 0.61,
+        "ratio_delta_atr": 2.23,
+        "ratio_wick": 0.39,
+        "atr_val": 1.17,
+        "m_range": 4.32
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:00",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -1.66,
+        "pts_pnl": 1.25,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.42,
+        "bars_held": 12
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 42.9,
+        "avg_pts_pnl": -0.01
+      }
+    },
+    {
+      "date": "2011-06-27",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.43,
+      "atr_val": 1.13,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.93,
+        "ratio_trend": 0.12,
+        "ratio_delta_atr": 0.48,
+        "ratio_wick": 0.88,
+        "atr_val": 1.13,
+        "m_range": 4.43
+      },
+      "best_setup": {
+        "min_step_atr": 1.1,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": 0.02,
+        "pts_pnl": 3.21,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -2.49,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 2.87
+      }
+    },
+    {
+      "date": "2011-06-28",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.23,
+      "atr_val": 0.84,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 2.66,
+        "ratio_trend": 0.38,
+        "ratio_delta_atr": 1.01,
+        "ratio_wick": 0.62,
+        "atr_val": 0.84,
+        "m_range": 2.23
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.54,
+        "pts_pnl": 2.79,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.52
+      }
+    },
+    {
+      "date": "2011-06-29",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.07,
+      "atr_val": 0.9,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.52,
+        "ratio_trend": 0.87,
+        "ratio_delta_atr": 3.94,
+        "ratio_wick": 0.13,
+        "atr_val": 0.9,
+        "m_range": 4.07
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.48,
+        "pts_pnl": 1.38,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 2
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 85.7,
+        "avg_pts_pnl": 0.88
+      }
+    },
+    {
+      "date": "2011-06-30",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.05,
+      "atr_val": 0.88,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 4.61,
+        "ratio_trend": 0.65,
+        "ratio_delta_atr": 3.01,
+        "ratio_wick": 0.35,
+        "atr_val": 0.88,
+        "m_range": 4.05
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:00",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": 1.04,
+        "pts_pnl": 2.68,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.48,
+        "bars_held": 12
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 0.99
+      }
+    },
+    {
+      "date": "2011-07-01",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.67,
+      "atr_val": 1.15,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.18,
+        "ratio_trend": 0.18,
+        "ratio_delta_atr": 0.58,
+        "ratio_wick": 0.82,
+        "atr_val": 1.15,
+        "m_range": 3.67
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.68,
+        "pts_pnl": 2.66,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -1.06,
+        "bars_held": 13
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 71.4,
+        "avg_pts_pnl": 1.16
+      }
+    },
+    {
+      "date": "2011-07-04",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.75,
+      "atr_val": 0.93,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.05,
+        "ratio_trend": 0.88,
+        "ratio_delta_atr": 3.57,
+        "ratio_wick": 0.12,
+        "atr_val": 0.93,
+        "m_range": 3.75
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:00",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 0
+      },
+      "best_metrics": {
+        "day_score": -1.33,
+        "pts_pnl": 0.18,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.63,
+        "bars_held": 8
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 57.1,
+        "avg_pts_pnl": -0.09
+      }
+    },
+    {
+      "date": "2011-07-05",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.99,
+      "atr_val": 0.88,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 3.38,
+        "ratio_trend": 0.65,
+        "ratio_delta_atr": 2.21,
+        "ratio_wick": 0.35,
+        "atr_val": 0.88,
+        "m_range": 2.99
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": 0.83,
+        "pts_pnl": 2.34,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.72,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.68
+      }
+    },
+    {
+      "date": "2011-07-06",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 1.98,
+      "atr_val": 0.74,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 2.69,
+        "ratio_trend": 0.42,
+        "ratio_delta_atr": 1.14,
+        "ratio_wick": 0.58,
+        "atr_val": 0.74,
+        "m_range": 1.98
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.3,
+        "pts_pnl": 0.7,
+        "is_win": true,
+        "orders_count": 3,
+        "worst_dd_pts": -2.2,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 14.3,
+        "avg_pts_pnl": -1.05
+      }
+    },
+    {
+      "date": "2011-07-07",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.27,
+      "atr_val": 0.9,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 4.76,
+        "ratio_trend": 0.4,
+        "ratio_delta_atr": 1.89,
+        "ratio_wick": 0.6,
+        "atr_val": 0.9,
+        "m_range": 4.27
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.66,
+        "pts_pnl": -1.11,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -1.3,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 14.3,
+        "avg_pts_pnl": -1.33
+      }
+    },
+    {
+      "date": "2011-07-08",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.94,
+      "atr_val": 0.71,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 4.12,
+        "ratio_trend": 0.28,
+        "ratio_delta_atr": 1.15,
+        "ratio_wick": 0.72,
+        "atr_val": 0.71,
+        "m_range": 2.94
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -0.82,
+        "pts_pnl": 0.39,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.22,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 28.6,
+        "avg_pts_pnl": -0.21
+      }
+    },
+    {
+      "date": "2011-07-11",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 2.93,
+      "atr_val": 0.84,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 3.48,
+        "ratio_trend": 0.4,
+        "ratio_delta_atr": 1.38,
+        "ratio_wick": 0.6,
+        "atr_val": 0.84,
+        "m_range": 2.93
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": 0.65,
+        "pts_pnl": 2.09,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.59,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.72
+      }
+    },
+    {
+      "date": "2011-07-12",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.98,
+      "atr_val": 1.24,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 3.21,
+        "ratio_trend": 0.0,
+        "ratio_delta_atr": 0.01,
+        "ratio_wick": 1.0,
+        "atr_val": 1.24,
+        "m_range": 3.98
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.57,
+        "pts_pnl": 3.1,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.06,
+        "bars_held": 14
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 98.2,
+        "avg_pts_pnl": 2.01
+      }
+    },
+    {
+      "date": "2011-07-13",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.46,
+      "atr_val": 1.07,
+      "cluster_id": 3,
+      "regime_id": "MORPH_3",
+      "morphology": {
+        "ratio_range_atr": 4.16,
+        "ratio_trend": 0.53,
+        "ratio_delta_atr": 2.21,
+        "ratio_wick": 0.47,
+        "atr_val": 1.07,
+        "m_range": 4.46
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 2.64,
+        "pts_pnl": 4.14,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 14
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.18
+      }
+    },
+    {
+      "date": "2011-07-14",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.25,
+      "atr_val": 1.39,
+      "cluster_id": 6,
+      "regime_id": "MORPH_6",
+      "morphology": {
+        "ratio_range_atr": 3.05,
+        "ratio_trend": 0.74,
+        "ratio_delta_atr": 2.27,
+        "ratio_wick": 0.26,
+        "atr_val": 1.39,
+        "m_range": 4.25
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.8,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.48,
+        "pts_pnl": 2.73,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.29,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 98.2,
+        "avg_pts_pnl": 2.2
+      }
+    },
+    {
+      "date": "2011-07-15",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 5.82,
+      "atr_val": 1.18,
+      "cluster_id": 2,
+      "regime_id": "MORPH_2",
+      "morphology": {
+        "ratio_range_atr": 4.92,
+        "ratio_trend": 0.72,
+        "ratio_delta_atr": 3.55,
+        "ratio_wick": 0.28,
+        "atr_val": 1.18,
+        "m_range": 5.82
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.33,
+        "pts_pnl": 2.08,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.99,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 85.7,
+        "avg_pts_pnl": 1.09
+      }
+    },
+    {
+      "date": "2011-07-18",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 5.33,
+      "atr_val": 1.36,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 3.92,
+        "ratio_trend": 0.37,
+        "ratio_delta_atr": 1.44,
+        "ratio_wick": 0.63,
+        "atr_val": 1.36,
+        "m_range": 5.33
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.79,
+        "pts_pnl": 3.04,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 2.23
+      }
+    },
+    {
+      "date": "2011-07-19",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 2.92,
+      "atr_val": 1.13,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 2.6,
+        "ratio_trend": 0.24,
+        "ratio_delta_atr": 0.61,
+        "ratio_wick": 0.76,
+        "atr_val": 1.13,
+        "m_range": 2.92
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -3.52,
+        "pts_pnl": -0.48,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -2.17,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -1.7
+      }
+    },
+    {
+      "date": "2011-07-20",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.82,
+      "atr_val": 0.91,
+      "cluster_id": 5,
+      "regime_id": "MORPH_5",
+      "morphology": {
+        "ratio_range_atr": 5.27,
+        "ratio_trend": 0.35,
+        "ratio_delta_atr": 1.86,
+        "ratio_wick": 0.65,
+        "atr_val": 0.91,
+        "m_range": 4.82
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.2,
+        "pts_pnl": 2.55,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.2,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 71.4,
+        "avg_pts_pnl": 1.49
+      }
+    },
+    {
+      "date": "2011-07-21",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 5.91,
+      "atr_val": 1.12,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 5.28,
+        "ratio_trend": 0.58,
+        "ratio_delta_atr": 3.05,
+        "ratio_wick": 0.42,
+        "atr_val": 1.12,
+        "m_range": 5.91
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 1.09,
+        "pts_pnl": 2.37,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.07,
+        "bars_held": 9
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 94.6,
+        "avg_pts_pnl": 1.27
+      }
+    },
+    {
+      "date": "2011-07-22",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 3.1,
+      "atr_val": 0.82,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 3.78,
+        "ratio_trend": 0.41,
+        "ratio_delta_atr": 1.54,
+        "ratio_wick": 0.59,
+        "atr_val": 0.82,
+        "m_range": 3.1
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 2.2,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 0.84,
+        "pts_pnl": 2.24,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.19,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 1.4
+      }
+    },
+    {
+      "date": "2011-07-25",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 6.87,
+      "atr_val": 1.77,
+      "cluster_id": 7,
+      "regime_id": "MORPH_7",
+      "morphology": {
+        "ratio_range_atr": 3.88,
+        "ratio_trend": 0.43,
+        "ratio_delta_atr": 1.68,
+        "ratio_wick": 0.57,
+        "atr_val": 1.77,
+        "m_range": 6.87
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 1.5,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "13:30",
+        "hard_exit_hour": 13,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": 2.94,
+        "pts_pnl": 4.39,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": 0.0,
+        "bars_held": 13
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 100.0,
+        "avg_pts_pnl": 2.06
+      }
+    },
+    {
+      "date": "2011-07-26",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 3.89,
+      "atr_val": 1.48,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 2.63,
+        "ratio_trend": 0.16,
+        "ratio_delta_atr": 0.41,
+        "ratio_wick": 0.84,
+        "atr_val": 1.48,
+        "m_range": 3.89
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -0.3,
+        "pts_pnl": 1.03,
+        "is_win": true,
+        "orders_count": 1,
+        "worst_dd_pts": -0.46,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 48.2,
+        "avg_pts_pnl": 0.18
+      }
+    },
+    {
+      "date": "2011-07-27",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 4.9,
+      "atr_val": 1.06,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 4.63,
+        "ratio_trend": 0.46,
+        "ratio_delta_atr": 2.12,
+        "ratio_wick": 0.54,
+        "atr_val": 1.06,
+        "m_range": 4.9
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:45",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 45
+      },
+      "best_metrics": {
+        "day_score": -1.76,
+        "pts_pnl": -0.31,
+        "is_win": false,
+        "orders_count": 1,
+        "worst_dd_pts": -0.62,
+        "bars_held": 7
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 14.3,
+        "avg_pts_pnl": -0.85
+      }
+    },
+    {
+      "date": "2011-07-28",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 4.09,
+      "atr_val": 0.92,
+      "cluster_id": 1,
+      "regime_id": "MORPH_1",
+      "morphology": {
+        "ratio_range_atr": 4.44,
+        "ratio_trend": 0.85,
+        "ratio_delta_atr": 3.77,
+        "ratio_wick": 0.15,
+        "atr_val": 0.92,
+        "m_range": 4.09
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.59,
+        "pts_pnl": -0.97,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -1.44,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -0.93
+      }
+    },
+    {
+      "date": "2011-07-29",
+      "year": 2011,
+      "direction": "BUY",
+      "m_range": 5.15,
+      "atr_val": 1.19,
+      "cluster_id": 4,
+      "regime_id": "MORPH_4",
+      "morphology": {
+        "ratio_range_atr": 4.34,
+        "ratio_trend": 0.65,
+        "ratio_delta_atr": 2.82,
+        "ratio_wick": 0.35,
+        "atr_val": 1.19,
+        "m_range": 5.15
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.25,
+        "hard_exit": "11:30",
+        "hard_exit_hour": 11,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -3.84,
+        "pts_pnl": -0.97,
+        "is_win": false,
+        "orders_count": 2,
+        "worst_dd_pts": -1.94,
+        "bars_held": 6
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 0.0,
+        "avg_pts_pnl": -2.15
+      }
+    },
+    {
+      "date": "2011-08-01",
+      "year": 2011,
+      "direction": "SELL",
+      "m_range": 8.42,
+      "atr_val": 1.93,
+      "cluster_id": 0,
+      "regime_id": "MORPH_0",
+      "morphology": {
+        "ratio_range_atr": 4.35,
+        "ratio_trend": 0.17,
+        "ratio_delta_atr": 0.72,
+        "ratio_wick": 0.83,
+        "atr_val": 1.93,
+        "m_range": 8.42
+      },
+      "best_setup": {
+        "min_step_atr": 0.3,
+        "tp_single_atr": 0.4,
+        "tp_dca_atr": 0.75,
+        "hard_exit": "12:30",
+        "hard_exit_hour": 12,
+        "hard_exit_minute": 30
+      },
+      "best_metrics": {
+        "day_score": -1.26,
+        "pts_pnl": 1.58,
+        "is_win": true,
+        "orders_count": 2,
+        "worst_dd_pts": -1.49,
+        "bars_held": 10
+      },
+      "stats_across_1200_setups": {
+        "win_rate_percent": 66.1,
+        "avg_pts_pnl": 0.56
+      }
+    }
+  ],
+  "total_records_count": 2577
+}

@@ -1,0 +1,146 @@
+[
+  {
+    "run_id": "run_20261017_170109_6321",
+    "created_at": "2026-10-17 17:01:09",
+    "strategy_name": "Rocket 10h VN M15 - Dynamic AI Adaptive Engine",
+    "params": {
+      "min_step_atr": 0.5,
+      "tp_single_atr": 0.8,
+      "tp_dca_atr": 0.5,
+      "hard_exit_hour": 14,
+      "hard_exit_minute": 0,
+      "filter_ratio_range": 5.0,
+      "filter_range_min": 25.0,
+      "filter_atr_max": 18.0,
+      "initial_balance": 10000.0,
+      "sizing_mode": "atr_risk",
+      "risk_percent": 0.5,
+      "lot_step_capital": 5000.0,
+      "mode": "dynamic_ai"
+    },
+    "test_summary": {
+      "win_rate": 65.85,
+      "net_pnl": -41.3,
+      "final_balance": 9958.7,
+      "max_dd_percent": 16.18,
+      "profit_factor": 1.0,
+      "total_trades": 1221,
+      "max_layers": 4
+    },
+    "train_summary": {
+      "win_rate": 58.4,
+      "net_pnl": -3905.47,
+      "max_dd_percent": 44.47,
+      "profit_factor": 0.9,
+      "total_trades": 2560,
+      "max_layers": 4
+    },
+    "all_time_summary": {
+      "win_rate": 60.8,
+      "net_pnl": -4198.29,
+      "max_dd_percent": 48.65,
+      "profit_factor": 0.92,
+      "total_trades": 3781,
+      "max_layers": 4
+    },
+    "filtered_days_count": 40,
+    "file_name": "run_20261017_170109_6321.json",
+    "file_size_mb": 25.37
+  },
+  {
+    "run_id": "run_20261017_164107_8ce6",
+    "created_at": "2026-10-17 16:41:07",
+    "strategy_name": "Rocket 10h VN M15 - Dynamic AI Adaptive Engine",
+    "params": {
+      "min_step_atr": 0.5,
+      "tp_single_atr": 0.8,
+      "tp_dca_atr": 0.5,
+      "hard_exit_hour": 14,
+      "hard_exit_minute": 0,
+      "filter_ratio_range": 5.0,
+      "filter_range_min": 25.0,
+      "filter_atr_max": 18.0,
+      "initial_balance": 10000.0,
+      "sizing_mode": "atr_risk",
+      "risk_percent": 0.5,
+      "lot_step_capital": 5000.0,
+      "mode": "dynamic_ai"
+    },
+    "test_summary": {
+      "win_rate": 72.56,
+      "net_pnl": -1362.26,
+      "final_balance": 8637.74,
+      "max_dd_percent": 36.37,
+      "profit_factor": 0.97,
+      "total_trades": 1221,
+      "max_layers": 4
+    },
+    "train_summary": {
+      "win_rate": 66.72,
+      "net_pnl": -5800.39,
+      "max_dd_percent": 60.94,
+      "profit_factor": 0.88,
+      "total_trades": 2560,
+      "max_layers": 5
+    },
+    "all_time_summary": {
+      "win_rate": 68.61,
+      "net_pnl": -6276.18,
+      "max_dd_percent": 69.69,
+      "profit_factor": 0.91,
+      "total_trades": 3781,
+      "max_layers": 5
+    },
+    "filtered_days_count": 40,
+    "file_name": "run_20261017_164107_8ce6.json",
+    "file_size_mb": 25.21
+  },
+  {
+    "run_id": "run_20261017_160518_4d52",
+    "created_at": "2026-10-17 16:05:17",
+    "strategy_name": "Rocket 10h VN M15 - Dynamic AI Adaptive Engine",
+    "params": {
+      "min_step_atr": 0.5,
+      "tp_single_atr": 0.8,
+      "tp_dca_atr": 0.5,
+      "hard_exit_hour": 14,
+      "hard_exit_minute": 0,
+      "filter_ratio_range": 5.0,
+      "filter_range_min": 25.0,
+      "filter_atr_max": 18.0,
+      "initial_balance": 10000.0,
+      "sizing_mode": "atr_risk",
+      "risk_percent": 0.5,
+      "lot_step_capital": 5000.0,
+      "mode": "dynamic_ai"
+    },
+    "test_summary": {
+      "win_rate": 87.22,
+      "net_pnl": -5663.03,
+      "final_balance": 4336.97,
+      "max_dd_percent": 69.72,
+      "profit_factor": 0.89,
+      "total_trades": 1221,
+      "max_layers": 7
+    },
+    "train_summary": {
+      "win_rate": 82.3,
+      "net_pnl": -7588.63,
+      "max_dd_percent": 91.09,
+      "profit_factor": 0.9,
+      "total_trades": 2560,
+      "max_layers": 7
+    },
+    "all_time_summary": {
+      "win_rate": 83.89,
+      "net_pnl": -8650.22,
+      "max_dd_percent": 95.59,
+      "profit_factor": 0.9,
+      "total_trades": 3781,
+      "max_layers": 7
+    },
+    "filtered_days_count": 40,
+    "file_name": "run_20261017_160518_4d52.json",
+    "file_size_mb": 26.27
+  }
+]
