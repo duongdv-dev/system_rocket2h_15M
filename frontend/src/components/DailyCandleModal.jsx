@@ -37,6 +37,158 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
     }
   }, [isOpen, activeDate]);
 
+  // 1. Phục hồi toàn bộ các tầng lệnh DCA cho phiên này (Hỗ trợ cả bản chạy mới và baseline lịch sử cũ)
+  const { resolvedOrders, idxEntry, exitIdx } = useMemo(() => {
+    if (!trade || candles.length === 0) {
+      return { resolvedOrders: [], idxEntry: -1, exitIdx: -1 };
+    }
+
+    // 1.1. Xác định nến vào lệnh gốc L1 (lúc 10:15 VN)
+    let entryIdx = -1;
+    if (trade.orders && trade.orders.length > 0 && trade.orders[0].timestamp) {
+      let minDiff = Infinity;
+      candles.forEach((c, idx) => {
+        const diff = Math.abs(c.timestamp - trade.orders[0].timestamp);
+        if (diff < minDiff) {
+          minDiff = diff;
+          entryIdx = idx;
+        }
+      });
+    }
+    if (entryIdx === -1) {
+      entryIdx = candles.findIndex(c => c.time === '10:15');
+    }
+    if (entryIdx === -1) {
+      entryIdx = candles.findIndex(c => c.time >= '10:15');
+    }
+    if (entryIdx === -1) {
+      const idx10h = candles.findIndex(c => c.time === '10:00');
+      entryIdx = idx10h !== -1 ? idx10h + 1 : Math.floor(candles.length / 2);
+    }
+
+    // 1.2. Xác định nến thoát lệnh (Exit)
+    let closeIdx = -1;
+    if (trade.close_time) {
+      let minDiff = Infinity;
+      candles.forEach((c, idx) => {
+        const diff = Math.abs(c.timestamp - trade.close_time);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closeIdx = idx;
+        }
+      });
+    }
+    if (closeIdx === -1 && trade.bars_held && entryIdx !== -1) {
+      closeIdx = Math.min(candles.length - 1, entryIdx + trade.bars_held);
+    }
+    if (closeIdx === -1) {
+      const idx14h = candles.findIndex(c => c.time === '14:00');
+      closeIdx = idx14h !== -1 ? idx14h : Math.min(candles.length - 1, entryIdx + 4);
+    }
+    if (closeIdx < entryIdx) closeIdx = entryIdx;
+
+    // Trường hợp A: Trade đã có sẵn danh sách `orders` (từ các bản backtest mới nhất)
+    if (trade.orders && trade.orders.length > 0) {
+      const ords = trade.orders.map((ord, i) => {
+        let cIdx = -1;
+        let minDiff = Infinity;
+        candles.forEach((c, idx) => {
+          const diff = Math.abs(c.timestamp - ord.timestamp);
+          if (diff < minDiff) {
+            minDiff = diff;
+            cIdx = idx;
+          }
+        });
+        const finalIdx = cIdx !== -1 ? cIdx : Math.min(candles.length - 1, entryIdx + i);
+        return {
+          layer: ord.layer || i + 1,
+          entry_price: ord.entry_price,
+          candleIdx: finalIdx,
+          time: ord.time || candles[finalIdx]?.time || '--',
+          lot: ord.lot || trade.lot_size || 0.01
+        };
+      });
+      return { resolvedOrders: ords, idxEntry: entryIdx, exitIdx: closeIdx };
+    }
+
+    // Trường hợp B: Bản chạy cũ chưa có mảng `orders` -> Tái hiện đầy đủ tất cả các tầng lệnh theo thuật toán DCA chiến lược
+    const firstPrice = trade.first_entry ?? trade.entry_price ?? trade.avg_entry;
+    const targetCount = trade.orders_count || 1;
+    const isSell = trade.direction === 'SELL';
+    const atr = trade.atr_at_entry || 2.5;
+    const minDist = Math.max(0.4 * atr, 0.8);
+
+    const reconstructed = [{
+      layer: 1,
+      entry_price: firstPrice,
+      candleIdx: entryIdx,
+      time: candles[entryIdx]?.time || '10:15',
+      lot: trade.lot_size || 0.01
+    }];
+
+    if (targetCount > 1 && closeIdx > entryIdx) {
+      let lastEntry = firstPrice;
+      // Vòng quét 1: Quét các nến thuận điều kiện nhồi DCA (SELL: nến xanh tăng giá; BUY: nến đỏ giảm giá)
+      for (let cIdx = entryIdx + 1; cIdx <= closeIdx; cIdx++) {
+        if (reconstructed.length >= targetCount) break;
+        const c = candles[cIdx];
+        if (!c) continue;
+
+        const isGreen = c.close >= c.open;
+        const matchesColor = isSell ? isGreen : !isGreen;
+        const dist = isSell ? (c.close - lastEntry) : (lastEntry - c.close);
+
+        if (matchesColor && dist >= minDist) {
+          reconstructed.push({
+            layer: reconstructed.length + 1,
+            entry_price: c.close,
+            candleIdx: cIdx,
+            time: c.time,
+            lot: trade.lot_size || 0.01
+          });
+          lastEntry = c.close;
+        }
+      }
+
+      // Vòng quét 2: Nếu chưa đủ số tầng lệnh (do bước ATR thực tế sai số nhỏ), bổ sung các nến đỉnh/đáy ngược vị thế cao nhất
+      if (reconstructed.length < targetCount) {
+        const needed = targetCount - reconstructed.length;
+        const chosen = new Set(reconstructed.map(o => o.candleIdx));
+        const pool = [];
+
+        for (let cIdx = entryIdx + 1; cIdx <= closeIdx; cIdx++) {
+          if (!chosen.has(cIdx) && candles[cIdx]) {
+            pool.push({
+              cIdx,
+              c: candles[cIdx],
+              score: isSell ? candles[cIdx].high : -candles[cIdx].low
+            });
+          }
+        }
+
+        pool.sort((a, b) => b.score - a.score);
+        const added = pool.slice(0, needed);
+        added.forEach(item => {
+          reconstructed.push({
+            layer: 0,
+            entry_price: item.c.close,
+            candleIdx: item.cIdx,
+            time: item.c.time,
+            lot: trade.lot_size || 0.01
+          });
+        });
+
+        // Sắp xếp thứ tự thời gian và gán số thứ tự layer 1..N
+        reconstructed.sort((a, b) => a.candleIdx - b.candleIdx);
+        reconstructed.forEach((ord, idx) => {
+          ord.layer = idx + 1;
+        });
+      }
+    }
+
+    return { resolvedOrders: reconstructed, idxEntry: entryIdx, exitIdx: closeIdx };
+  }, [trade, candles]);
+
   // Vẽ biểu đồ nến Canvas
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -183,55 +335,7 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
     });
 
     // 4. Vẽ Các Điểm Vào Lệnh (Entries), Đường Giá Trung Bình & Điểm Thoát Lệnh (Exit)
-    if (trade) {
-      // 4.1. Xác định nến vào lệnh đầu tiên (Lệnh 1 lúc 10:15 VN)
-      let idxEntry = -1;
-      if (trade.orders && trade.orders.length > 0 && trade.orders[0].timestamp) {
-        let minDiff = Infinity;
-        candles.forEach((c, idx) => {
-          const diff = Math.abs(c.timestamp - trade.orders[0].timestamp);
-          if (diff < minDiff) {
-            minDiff = diff;
-            idxEntry = idx;
-          }
-        });
-      }
-      if (idxEntry === -1) {
-        idxEntry = candles.findIndex(c => c.time === '10:15');
-      }
-      if (idxEntry === -1) {
-        idxEntry = candles.findIndex(c => c.time >= '10:15');
-      }
-      if (idxEntry === -1 && idx10h !== -1) {
-        idxEntry = idx10h + 1;
-      }
-      if (idxEntry === -1) idxEntry = Math.floor(candles.length / 2);
-
-      // 4.2. Xác định nến thoát lệnh (Exit)
-      let exitIdx = -1;
-      if (trade.close_time) {
-        let minDiff = Infinity;
-        candles.forEach((c, idx) => {
-          const diff = Math.abs(c.timestamp - trade.close_time);
-          if (diff < minDiff) {
-            minDiff = diff;
-            exitIdx = idx;
-          }
-        });
-      }
-      if (exitIdx === -1 && trade.bars_held && idxEntry !== -1) {
-        exitIdx = Math.min(candles.length - 1, idxEntry + trade.bars_held);
-      }
-      if (exitIdx === -1 && idx14h !== -1) {
-        exitIdx = idx14h;
-      }
-      if (exitIdx === -1) {
-        exitIdx = Math.min(candles.length - 1, idxEntry + 4);
-      }
-
-      // Đảm bảo exitIdx >= idxEntry
-      if (exitIdx < idxEntry) exitIdx = idxEntry;
-
+    if (trade && idxEntry !== -1 && exitIdx !== -1) {
       const xStart = getX(idxEntry);
       const xEnd = getX(exitIdx);
       const isProfit = trade.is_win;
@@ -267,45 +371,21 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
         ctx.restore();
       }
 
-      // 4.5. Chuẩn bị danh sách lệnh (Hỗ trợ cả bản chạy mới và các bản lịch sử cũ)
-      let ordersToDraw = [];
-      if (trade.orders && trade.orders.length > 0) {
-        ordersToDraw = trade.orders.map((ord, i) => {
-          let cIdx = -1;
-          let minDiff = Infinity;
-          candles.forEach((c, idx) => {
-            const diff = Math.abs(c.timestamp - ord.timestamp);
-            if (diff < minDiff) {
-              minDiff = diff;
-              cIdx = idx;
-            }
-          });
-          return {
-            layer: ord.layer || i + 1,
-            entry_price: ord.entry_price,
-            candleIdx: cIdx !== -1 ? cIdx : (idxEntry + i)
-          };
-        });
-      } else {
-        // Fallback cho lịch sử cũ
-        const firstPrice = trade.first_entry ?? trade.entry_price ?? trade.avg_entry;
-        ordersToDraw = [{
-          layer: 1,
-          entry_price: firstPrice,
-          candleIdx: idxEntry
-        }];
-      }
-
-      // 4.6. Vẽ từng Điểm Vào Lệnh
-      ordersToDraw.forEach((ord) => {
+      // 4.5. Vẽ từng Điểm Vào Lệnh (Lớp 1 & các tầng DCA)
+      resolvedOrders.forEach((ord) => {
         const cIdx = Math.min(candles.length - 1, Math.max(0, ord.candleIdx));
         const xOrd = getX(cIdx);
         const yOrd = getY(ord.entry_price);
+        const isDca = ord.layer > 1;
 
         // Vòng tròn phát sáng tại mức giá vào
         ctx.beginPath();
-        ctx.arc(xOrd, yOrd, 7, 0, Math.PI * 2);
-        ctx.fillStyle = trade.direction === 'BUY' ? '#3B82F6' : '#EC4899';
+        ctx.arc(xOrd, yOrd, isDca ? 6 : 7.5, 0, Math.PI * 2);
+        if (isDca) {
+          ctx.fillStyle = '#F59E0B'; // Vàng cam nổi bật cho tầng DCA
+        } else {
+          ctx.fillStyle = trade.direction === 'BUY' ? '#3B82F6' : '#EC4899'; // Xanh/Hồng cho lệnh gốc L1
+        }
         ctx.fill();
         ctx.strokeStyle = '#FFFFFF';
         ctx.lineWidth = 2;
@@ -314,7 +394,7 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
         // Đường gióng nét đứt từ râu nến tới điểm vào
         ctx.save();
         ctx.setLineDash([2, 2]);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.strokeStyle = isDca ? 'rgba(245, 158, 11, 0.45)' : 'rgba(255, 255, 255, 0.4)';
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(xOrd, padTop);
@@ -324,21 +404,31 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
 
         // Hộp nhãn nổi bật
         const isBuy = trade.direction === 'BUY';
-        const badgeText = ord.layer > 1 
+        const badgeText = isDca 
           ? `DCA #${ord.layer}: $${ord.entry_price.toFixed(2)}` 
           : `VÀO ${trade.direction}: $${ord.entry_price.toFixed(2)}`;
         
         ctx.font = 'bold 10px JetBrains Mono';
         const textW = ctx.measureText(badgeText).width;
-        const badgeY = isBuy ? yOrd + 10 : yOrd - 26;
 
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+        // Tránh trùng lắp nhãn bằng cách so le vị trí Y theo tầng lẻ/chẵn
+        const isStaggered = ord.layer % 2 === 0;
+        let badgeY;
+        if (isBuy) {
+          badgeY = isStaggered ? yOrd + 10 : yOrd + 30;
+          if (badgeY > height - padBottom - 20) badgeY = yOrd - 26;
+        } else {
+          badgeY = isStaggered ? yOrd - 26 : yOrd - 46;
+          if (badgeY < padTop + 8) badgeY = yOrd + 10;
+        }
+
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
         ctx.fillRect(xOrd - textW / 2 - 6, badgeY, textW + 12, 18);
-        ctx.strokeStyle = isBuy ? '#3B82F6' : '#EC4899';
+        ctx.strokeStyle = isDca ? '#F59E0B' : (isBuy ? '#3B82F6' : '#EC4899');
         ctx.lineWidth = 1.5;
         ctx.strokeRect(xOrd - textW / 2 - 6, badgeY, textW + 12, 18);
 
-        ctx.fillStyle = '#FFFFFF';
+        ctx.fillStyle = isDca ? '#FDE68A' : '#FFFFFF';
         ctx.textAlign = 'center';
         ctx.fillText(badgeText, xOrd, badgeY + 13);
       });
@@ -415,7 +505,7 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
       ctx.restore();
     }
 
-  }, [candles, trade, mousePos]);
+  }, [candles, trade, mousePos, resolvedOrders, idxEntry, exitIdx]);
 
   // Bắt sự kiện chuột di chuyển để hiện Crosshair và Tooltip
   const handleMouseMove = (e) => {
@@ -610,6 +700,39 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
             style={{ width: '100%', height: '100%', display: 'block', cursor: 'crosshair' }}
           />
         </div>
+
+        {/* DCA Layers Detail Strip */}
+        {resolvedOrders && resolvedOrders.length > 1 && (
+          <div style={{
+            padding: '10px 24px',
+            background: 'rgba(245, 158, 11, 0.08)',
+            borderTop: '1px solid rgba(245, 158, 11, 0.25)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            flexWrap: 'wrap',
+            fontSize: '11px',
+            fontFamily: 'var(--font-mono)'
+          }}>
+            <span style={{ color: '#F59E0B', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span>🪜</span> CÁC TẦNG LỆNH DCA ({resolvedOrders.length} LỆNH):
+            </span>
+            {resolvedOrders.map((ord) => (
+              <div 
+                key={ord.layer}
+                style={{
+                  background: ord.layer === 1 ? 'rgba(59, 130, 246, 0.2)' : 'rgba(245, 158, 11, 0.18)',
+                  border: `1px solid ${ord.layer === 1 ? 'rgba(59, 130, 246, 0.5)' : 'rgba(245, 158, 11, 0.5)'}`,
+                  padding: '3px 8px',
+                  borderRadius: '4px',
+                  color: ord.layer === 1 ? '#93C5FD' : '#FDE68A'
+                }}
+              >
+                <b>{ord.layer === 1 ? `L1 (Gốc)` : `DCA #${ord.layer}`}:</b> ${ord.entry_price.toFixed(2)} ({ord.time})
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Modal Footer Summary */}
         {trade && (
