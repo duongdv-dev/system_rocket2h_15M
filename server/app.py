@@ -112,6 +112,23 @@ class QuantApiHandler(SimpleHTTPRequestHandler):
                 self.send_json_response(active_data)
             else:
                 self.send_json_error("Chưa có dữ liệu nào trong lịch sử.", 404)
+            return
+
+        # 4b. API: Lấy Danh mục Hình Thái & Setup Huấn Luyện 10 Năm
+        if self.path == '/api/train-catalog':
+            from engine.regime_synthesizer import load_saved_catalog
+            cat = load_saved_catalog()
+            if cat:
+                self.send_json_response({
+                    "status": "success",
+                    "catalog": cat
+                })
+            else:
+                self.send_json_response({
+                    "status": "not_trained",
+                    "message": "Chưa có danh mục huấn luyện."
+                })
+            return
         # 5. API: Lấy nến M15 của một ngày (/api/candles?date=YYYY-MM-DD)
         if self.path.startswith('/api/candles'):
             from urllib.parse import urlparse, parse_qs
@@ -228,6 +245,30 @@ class QuantApiHandler(SimpleHTTPRequestHandler):
                 })
             else:
                 self.send_json_error(f"Không tìm thấy bản chạy '{run_id}'.", 404)
+            return
+
+        # 3. API: Kích hoạt Huấn Luyện Sâu 10 Năm (1,200 setups/ngày, gom cụm)
+        if self.path == '/api/train-deep':
+            if IS_TRAINING:
+                self.send_json_error("Đang có một tiến trình huấn luyện đang chạy. Vui lòng đợi trong giây lát.", 409)
+                return
+
+            with TRAINING_LOCK:
+                IS_TRAINING = True
+
+            try:
+                from engine.backtest_ai import run_10_years_deep_training
+                catalog = run_10_years_deep_training()
+                self.send_json_response({
+                    "status": "success",
+                    "message": "Huấn luyện chuyên sâu 10 năm và tự động gom cụm thành công!",
+                    "catalog": catalog
+                })
+            except Exception as e:
+                self.send_json_error(f"Lỗi huấn luyện: {str(e)}", 500)
+            finally:
+                with TRAINING_LOCK:
+                    IS_TRAINING = False
             return
 
         self.send_json_error(f"Endpoint POST '{self.path}' không tồn tại.", 404)

@@ -10,6 +10,7 @@ import RiskDaysInspector from './components/RiskDaysInspector';
 import TradeLogTable from './components/TradeLogTable';
 import DailyCandleModal from './components/DailyCandleModal';
 import AiRegimeMatrixCard from './components/AiRegimeMatrixCard';
+import TrainingReportModal from './components/TrainingReportModal';
 import { 
   checkServerStatus, 
   fetchInitialData, 
@@ -17,7 +18,9 @@ import {
   fetchRunDetail, 
   triggerBacktestRun,
   selectActiveRun,
-  deleteHistoricalRun 
+  deleteHistoricalRun,
+  fetchTrainCatalog,
+  triggerDeepTraining
 } from './services/api';
 
 export default function App() {
@@ -31,6 +34,9 @@ export default function App() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(true);
   const [toastMessage, setToastMessage] = useState(null);
   const [inspectTarget, setInspectTarget] = useState(null);
+  const [catalogData, setCatalogData] = useState(null);
+  const [isTrainingReportOpen, setIsTrainingReportOpen] = useState(false);
+  const [isDeepTraining, setIsDeepTraining] = useState(false);
 
   const handleInspectTrade = (trade, filteredDay = null) => {
     setInspectTarget({ trade, filteredDay });
@@ -44,10 +50,11 @@ export default function App() {
   const loadDataAndHistory = async () => {
     setIsLoading(true);
     try {
-      const [status, initial, runs] = await Promise.all([
+      const [status, initial, runs, catRes] = await Promise.all([
         checkServerStatus(),
         fetchInitialData(),
-        fetchHistory()
+        fetchHistory(),
+        fetchTrainCatalog()
       ]);
 
       setServerStatus(status);
@@ -55,8 +62,14 @@ export default function App() {
         setRawData(initial);
         const rId = initial.metadata?.run_id || status?.active_run_id || "active_run";
         setActiveRunId(rId);
+        if (initial.training_catalog) {
+          setCatalogData(initial.training_catalog);
+        }
       }
       setHistoryRuns(runs || []);
+      if (catRes?.catalog) {
+        setCatalogData(catRes.catalog);
+      }
     } catch (err) {
       console.error("Lỗi nạp dữ liệu:", err);
     } finally {
@@ -88,6 +101,31 @@ export default function App() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handler: Kích hoạt huấn luyện sâu 10 năm (1,200 setups/ngày)
+  const handleTriggerDeepTraining = async () => {
+    setIsDeepTraining(true);
+    try {
+      showToast("🔬 Đang quét 1,200 setups x 2,500 ngày huấn luyện (3,000,000 lượt)...");
+      const res = await triggerDeepTraining();
+      if (res && res.catalog) {
+        setCatalogData(res.catalog);
+        setIsTrainingReportOpen(true);
+        showToast("✓ Đã hoàn tất huấn luyện 10 năm & gom cụm thành công!");
+      }
+    } catch (err) {
+      alert(`Lỗi huấn luyện sâu: ${err.message}`);
+    } finally {
+      setIsDeepTraining(false);
+    }
+  };
+
+  // Handler: Phê duyệt bộ setup từ báo cáo huấn luyện và chạy backtest 2021-2025
+  const handleApproveAndBacktest = async () => {
+    setIsTrainingReportOpen(false);
+    showToast("✅ Đã phê duyệt bộ setup! Bắt đầu chạy kiểm định Backtest (2021-2025)...");
+    await handleTriggerRun({ mode: 'dynamic_ai' });
   };
 
   // Handler: Chọn xem lại một bản chạy lịch sử cụ thể
@@ -166,6 +204,11 @@ export default function App() {
       <ControlPanel 
         onRefresh={loadDataAndHistory}
         onTriggerRun={handleTriggerRun}
+        onTriggerDeepTraining={handleTriggerDeepTraining}
+        onOpenTrainingReport={() => setIsTrainingReportOpen(true)}
+        hasTrainingCatalog={!!catalogData}
+        isDeepTraining={isDeepTraining}
+        catalogCount={catalogData?.cluster_summaries?.length || 4}
         onToggleHistory={() => setIsHistoryOpen(!isHistoryOpen)}
         historyCount={historyRuns.length}
         isHistoryOpen={isHistoryOpen}
@@ -188,7 +231,10 @@ export default function App() {
       )}
 
       {/* 3.5. AI Market Regime Matrix & Auto-Tuned Parameters */}
-      <AiRegimeMatrixCard data={rawData} />
+      <AiRegimeMatrixCard 
+        data={rawData} 
+        onOpenTrainingReport={catalogData ? () => setIsTrainingReportOpen(true) : handleTriggerDeepTraining} 
+      />
 
       {/* 4. Metrics Grid & Head-to-Head Comparison */}
       <MetricsGrid 
@@ -276,6 +322,15 @@ export default function App() {
         onClose={() => setInspectTarget(null)}
         trade={inspectTarget?.trade}
         filteredDay={inspectTarget?.filteredDay}
+      />
+
+      {/* 12. Pre-Backtest 10-Year Deep Training Report Modal */}
+      <TrainingReportModal 
+        isOpen={isTrainingReportOpen}
+        onClose={() => setIsTrainingReportOpen(false)}
+        catalogData={catalogData}
+        onApproveAndBacktest={handleApproveAndBacktest}
+        isBacktesting={isLoading}
       />
     </div>
   );

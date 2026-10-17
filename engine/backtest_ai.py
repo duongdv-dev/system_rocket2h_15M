@@ -239,7 +239,7 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
     if params is None:
         params = {}
 
-    from engine.ai_regime_optimizer import classify_session_regime
+    from engine.regime_synthesizer import classify_session_with_catalog
 
     min_step_atr = float(params.get('min_step_atr', 0.5))
     tp_single_atr = float(params.get('tp_single_atr', 0.8))
@@ -262,7 +262,7 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
 
     for s in sessions:
         # Xác định nhóm hình thái phiên sáng qua mô hình phân cụm K-Means
-        regime_id = s.get('regime') or classify_session_regime(s, regime_models)
+        regime_id = s.get('regime') or classify_session_with_catalog(s, {'morphology_catalog': regime_models})
         s['regime'] = regime_id
 
         regime_info = regime_models.get(regime_id, {}) if regime_models else {}
@@ -533,13 +533,19 @@ def execute_backtest(params, data_dir=None):
     train_sessions = [s for s in sessions if s['year'] in TRAIN_YEARS]
     test_sessions  = [s for s in sessions if s['year'] in TEST_YEARS]
 
-    # 1. Huấn luyện Ma Trận Hình Thái Thị Trường (AI Regime Optimizer trên 10 năm Train 2011-2020)
-    from engine.ai_regime_optimizer import train_regime_matrix, classify_session_regime
-    regime_models = train_regime_matrix(train_sessions, candles, params)
+    # 1. Huấn luyện Sâu 10 Năm (2011-2020): Quét 1,200 setups/ngày & Gom cụm tự động
+    from engine.regime_synthesizer import load_saved_catalog, synthesize_training_catalog, classify_session_with_catalog
+    catalog_data = load_saved_catalog()
+    if not catalog_data or params.get('force_retrain', False):
+        from engine.daily_deep_trainer import train_10_years_deep
+        training_results = train_10_years_deep(train_sessions, candles)
+        catalog_data = synthesize_training_catalog(training_results, train_sessions, candles)
+
+    regime_models = catalog_data.get('morphology_catalog', {})
 
     # Gán hình thái tự động học cho toàn bộ sessions
     for s in sessions:
-        s['regime'] = classify_session_regime(s, regime_models)
+        s['regime'] = classify_session_with_catalog(s, catalog_data)
 
     # 2. Mô phỏng kiểm định
     print("[3/4] Mô phỏng Tập Test (2021-2025): Baseline Tĩnh vs Dynamic AI...")
@@ -593,6 +599,7 @@ def execute_backtest(params, data_dir=None):
         },
         'mode': mode,
         'regime_matrix': regime_models,
+        'training_catalog': catalog_data,
         'dynamic_ai_comparison': {
             'static_baseline': {
                 'win_rate': test_static_ai['win_rate'],
@@ -639,3 +646,23 @@ def execute_backtest(params, data_dir=None):
     }
 
     return stats
+
+
+def run_10_years_deep_training(data_dir=None):
+    """
+    Tiến trình độc lập Huấn luyện Chuyên sâu 10 Năm (2011-2020):
+    1. Quét 1,200 setups/ngày trên toàn bộ ~2,500 ngày.
+    2. Rút trích setup Top 1 và đặc trưng hình thái sóng sáng của từng ngày.
+    3. Phân cụm K-Means và may đo bộ setup đại diện tối thượng cho từng hình thái.
+    4. Trả về catalog dữ liệu để báo cáo kết quả trước khi chạy backtest kiểm định.
+    """
+    from engine.daily_deep_trainer import train_10_years_deep
+    from engine.regime_synthesizer import synthesize_training_catalog
+
+    candles = load_candles(data_dir)
+    sessions = extract_daily_sessions(candles, {})
+    train_sessions = [s for s in sessions if s['year'] in TRAIN_YEARS]
+
+    training_results = train_10_years_deep(train_sessions, candles)
+    catalog = synthesize_training_catalog(training_results, train_sessions, candles)
+    return catalog

@@ -3,6 +3,11 @@ import React, { useState, useEffect } from 'react';
 export default function ControlPanel({ 
   onRefresh, 
   onTriggerRun, 
+  onTriggerDeepTraining,
+  onOpenTrainingReport,
+  hasTrainingCatalog = false,
+  isDeepTraining = false,
+  catalogCount = 4,
   onToggleHistory, 
   historyCount = 0,
   isHistoryOpen = false,
@@ -524,11 +529,42 @@ export default function ControlPanel({
             type="button" 
             className="preset-btn"
             onClick={onRefresh}
-            disabled={isLoading}
+            disabled={isLoading || isDeepTraining}
             style={{ padding: '11px 16px', fontSize: '13px' }}
             title="Đọc lại dữ liệu từ Server"
           >
             🔄 Tải Lại
+          </button>
+
+          <button 
+            type="button" 
+            onClick={hasTrainingCatalog ? onOpenTrainingReport : onTriggerDeepTraining}
+            disabled={isLoading || isDeepTraining}
+            style={{
+              padding: '11px 18px',
+              fontSize: '13px',
+              fontWeight: 700,
+              borderRadius: '8px',
+              border: '1px solid rgba(168, 85, 247, 0.4)',
+              background: isDeepTraining 
+                ? 'rgba(168, 85, 247, 0.3)' 
+                : 'linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(126, 34, 206, 0.35))',
+              color: '#E9D5FF',
+              cursor: (isLoading || isDeepTraining) ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 4px 14px rgba(168, 85, 247, 0.25)',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            {isDeepTraining ? (
+              <>⏳ ĐANG QUÉT 3 TRIỆU SETUPS 10 NĂM...</>
+            ) : hasTrainingCatalog ? (
+              <>📊 BÁO CÁO 10 NĂM ({catalogCount} HÌNH THÁI)</>
+            ) : (
+              <>🔬 HUẤN LUYỆN SÂU 10 NĂM (1,200 SETUPS/NGÀY)</>
+            )}
           </button>
 
           <button 

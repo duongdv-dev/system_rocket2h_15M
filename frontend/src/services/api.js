@@ -94,6 +94,32 @@ export async function deleteHistoricalRun(runId) {
   return await res.json();
 }
 
+export async function fetchTrainCatalog() {
+  try {
+    const res = await fetch('/api/train-catalog');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.warn("Chưa lấy được catalog huấn luyện:", err);
+    return null;
+  }
+}
+
+export async function triggerDeepTraining() {
+  const res = await fetch('/api/train-deep', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({}),
+  });
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.message || `Lỗi máy chủ HTTP ${res.status}`);
+  }
+
+  return await res.json();
 export async function fetchDayCandles(date) {
   try {
     const res = await fetch(`/api/candles?date=${date}`);
@@ -105,4 +131,3 @@ export async function fetchDayCandles(date) {
     return [];
   }
 }
-
