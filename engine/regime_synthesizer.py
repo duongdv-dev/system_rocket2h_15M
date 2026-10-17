@@ -134,14 +134,14 @@ def find_consensus_setup_for_cluster(cluster_days, all_candidate_setups):
     candidate_scores.sort(key=lambda x: x[0], reverse=True)
     top_candidates = [x[1] for x in candidate_scores[:12]]
 
-    # Giai đoạn 2: Tối ưu hóa sâu Toàn Diện Quản Trị Vốn Tự Trị (100% Autonomous Risk, Dynamic SL & Lot Sizing)
+    # Giai đoạn 2: Tối ưu hóa sâu Toàn Diện Quản Trị Vốn Tự Trị TRONG SÂN NHÀ PHIÊN Á
     # AI tự học và quét qua các mức:
     # - % Rủi ro vốn (risk_pct): [0.8, 1.0, 1.2]
-    # - Trần số tầng DCA tối đa (max_layers): [2, 3, 4, 6]
-    # - Ngưỡng Đóng Sớm Linh Hoạt (sl_atr): [2.2, 2.8, 3.5, 4.5, 6.0]
+    # - Trần số tầng DCA tối đa (max_layers): [4, 5, 6, 7] (khôi phục tầng nhồi bình quân an toàn phiên Á)
+    # - Ngưỡng Đóng Sớm Linh Hoạt (sl_atr): [2.2, 2.8, 3.5, 4.5]
     GRID_RISK_PCT = [0.8, 1.0, 1.2]
-    GRID_MAX_LAYERS = [2, 3, 4, 6]
-    GRID_SL_ATR = [2.2, 2.8, 3.5, 4.5, 6.0]
+    GRID_MAX_LAYERS = [4, 5, 6, 7]
+    GRID_SL_ATR = [2.2, 2.8, 3.5, 4.5]
 
     best_score = -999999.0
     best_setup = None
@@ -267,11 +267,11 @@ def synthesize_training_catalog(training_results, train_sessions, candles):
         d['cluster_id'] = labels[i]
         d['regime_id'] = f"MORPH_{labels[i]}"
 
-    # Gắn thêm fast_candles vào để tính consensus setup (mở rộng tới 70 nến M15 = qua nửa đêm đến 24h)
+    # Gắn thêm fast_candles vào để tính consensus setup (giới hạn hoàn toàn trong Sân Nhà Phiên Á tới 14h30 VN)
     for i, s in enumerate(train_sessions):
         c_idx = s['candle_idx']
         fast_c = []
-        for j in range(c_idx + 1, min(len(candles), c_idx + 70)):
+        for j in range(c_idx + 1, min(len(candles), c_idx + 20)):
             cur_c = candles[j]
             dt_utc = datetime.fromtimestamp(cur_c[0] / 1000.0, tz=timezone.utc)
             dt_vn = dt_utc.astimezone(VN_TZ)

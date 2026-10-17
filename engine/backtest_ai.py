@@ -285,6 +285,11 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
             eff_h_exit = hard_exit_hour
             eff_m_exit = hard_exit_min
 
+        # KHÓA CỨNG BỨC TƯỜNG LỬA PHIÊN Á: Tuyệt đối không vượt quá 14:00 VN (tránh xa phiên Âu & Mỹ)
+        if eff_h_exit > 14 or (eff_h_exit == 14 and eff_m_exit > 0):
+            eff_h_exit = 14
+            eff_m_exit = 0
+
         eff_risk_pct = float(reg_params.get('risk_percent', risk_percent)) if regime_models else risk_percent
         eff_max_layers = int(reg_params.get('max_dca_layers', 7)) if regime_models else 7
         eff_sl_atr = float(reg_params.get('sl_atr', 3.5)) if regime_models else 3.5
@@ -322,9 +327,9 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
         close_time = 0
         bars_held = 0
 
-        # Vòng lặp các nến M15 tiếp theo (hỗ trợ giữ lệnh tới 24h đêm)
+        # Vòng lặp các nến M15 phiên Á (tối đa tới 15:00 VN)
         j = c_idx + 1
-        while j < min(len(candles), c_idx + 70):
+        while j < min(len(candles), c_idx + 24):
             cur_c = candles[j]
             c_open, c_high, c_low, c_close = cur_c[1], cur_c[2], cur_c[3], cur_c[4]
             bars_held += 1

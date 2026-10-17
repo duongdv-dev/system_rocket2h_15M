@@ -21,21 +21,20 @@ import os
 
 VN_TZ = zoneinfo.ZoneInfo("Asia/Ho_Chi_Minh")
 
-# Siêu Lưới 3,072 setups thử nghiệm chuyên sâu cho từng ngày
-GRID_MIN_STEP_ATR = [0.25, 0.35, 0.45, 0.55, 0.70, 0.85, 1.05, 1.30]  # 8 mức
-GRID_TP_SINGLE_ATR = [0.40, 0.60, 0.80, 1.00, 1.30, 1.60, 2.10, 2.80] # 8 mức (gồng lời tới 2.8x ATR)
-GRID_TP_DCA_ATR = [0.25, 0.35, 0.50, 0.65, 0.80, 1.00]                # 6 mức
+# Siêu Lưới 2,688 setups may đo cho Sân Nhà Phiên Á (10h15 - 14h00 VN)
+GRID_MIN_STEP_ATR = [0.30, 0.40, 0.50, 0.60, 0.75, 0.90, 1.10, 1.30]   # 8 mức
+GRID_TP_SINGLE_ATR = [0.40, 0.60, 0.80, 1.00, 1.25, 1.50, 1.80, 2.20]  # 8 mức
+GRID_TP_DCA_ATR = [0.25, 0.35, 0.45, 0.60, 0.75, 0.90]                 # 6 mức
 GRID_HARD_EXITS = [
+    (11, 30, '11:30'),
+    (11, 45, '11:45'),
     (12, 0,  '12:00'),
     (12, 30, '12:30'),
+    (13, 0,  '13:00'),
     (13, 30, '13:30'),
-    (14, 30, '14:30'),
-    (16, 0,  '16:00'),
-    (18, 0,  '18:00'),
-    (20, 30, '20:30'),
-    (23, 45, '23:45')
-]  # 8 mốc trải dài từ trưa đến 24h đêm (cuối ngày)
-# Tổng số setups = 8 * 8 * 6 * 8 = 3,072 setups / ngày (gần 8 triệu lượt mô phỏng 10 năm)
+    (14, 0,  '14:00')
+]  # 7 mốc chuẩn xác trong Sân Nhà Phiên Á (kết thúc hoàn toàn trước phiên Âu)
+# Tổng số setups = 8 * 8 * 6 * 7 = 2,688 setups / ngày (quét nhanh & tối ưu triệt để)
 
 ALL_SETUPS = []
 for s in GRID_MIN_STEP_ATR:
@@ -227,7 +226,7 @@ def train_10_years_deep(train_sessions, candles):
         first_c = candles[c_idx]
 
         fast_c = []
-        limit_j = min(len(candles), c_idx + 70)
+        limit_j = min(len(candles), c_idx + 20) # Giới hạn hoàn toàn trong phiên Á (tới 14h30 VN)
         for j in range(c_idx + 1, limit_j):
             cur_c = candles[j]
             dt_utc = datetime.fromtimestamp(cur_c[0] / 1000.0, tz=timezone.utc)
