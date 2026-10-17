@@ -1,67 +1,23 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 export default function AiRegimeMatrixCard({ data }) {
   const regimeMatrix = data?.regime_matrix;
   const comparison = data?.dynamic_ai_comparison;
   const isDynamicMode = data?.mode === 'dynamic_ai' || data?.metadata?.mode === 'dynamic_ai';
 
-  // Fallback metadata nếu chưa có matrix
-  const regimes = [
-    {
-      id: 'QUIET_SIDEWAY',
-      name: 'Sóng Sáng Tích Lũy / Biên Hẹp',
-      icon: '🧘',
-      tag: 'TÍCH LŨY',
-      color: '#38BDF8',
-      bg: 'rgba(56, 189, 248, 0.08)',
-      border: 'rgba(56, 189, 248, 0.25)',
-      desc: 'Phiên sáng đi ngang hẹp, không có tin tức. AI tự động tối ưu DCA bước nhỏ, TP gọn và cắt sớm để chốt lãi nhanh trước phiên Âu.',
-      defaultParams: { min_step_atr: 0.45, tp_single_atr: 0.5, tp_dca_atr: 0.4, hard_exit: '13:00', risk_percent: 0.5 },
-      defaultMetrics: { win_rate: 94.8, profit_factor: 3.4 }
-    },
-    {
-      id: 'TREND_MOMENTUM',
-      name: 'Sóng Sáng Đột Phá Xu Hướng',
-      icon: '🌊',
-      tag: 'TREND MẠNH',
-      color: '#818CF8',
-      bg: 'rgba(129, 140, 248, 0.08)',
-      border: 'rgba(129, 140, 248, 0.25)',
-      desc: 'Phiên sáng có lực đẩy một chiều dứt khoát. AI tự động nới bước DCA lớn để né nhồi sớm và kỳ vọng TP lớn hơn khi giá hồi phục.',
-      defaultParams: { min_step_atr: 0.65, tp_single_atr: 1.0, tp_dca_atr: 0.6, hard_exit: '14:30', risk_percent: 0.5 },
-      defaultMetrics: { win_rate: 91.2, profit_factor: 2.8 }
-    },
-    {
-      id: 'WIDE_EXPANSION',
-      name: 'Sóng Sáng Giằng Co Biên Rộng',
-      icon: '⚡',
-      tag: 'GIẰNG CO',
-      color: '#F59E0B',
-      bg: 'rgba(245, 158, 11, 0.08)',
-      border: 'rgba(245, 158, 11, 0.25)',
-      desc: 'Biên độ sáng lớn nhưng râu nến 2 chiều co giật mạnh. AI duy trì bước giá chuẩn và kiểm soát chặt chẽ điểm cắt lỗ 14:00.',
-      defaultParams: { min_step_atr: 0.5, tp_single_atr: 0.8, tp_dca_atr: 0.5, hard_exit: '14:00', risk_percent: 0.4 },
-      defaultMetrics: { win_rate: 89.6, profit_factor: 2.5 }
-    },
-    {
-      id: 'EXTREME_SHOCK',
-      name: 'Bão Giá Cực Đại (Shock Filter)',
-      icon: '🛡️',
-      tag: 'NÉ BÃO',
-      color: '#EF4444',
-      bg: 'rgba(239, 68, 68, 0.08)',
-      border: 'rgba(239, 68, 68, 0.25)',
-      desc: 'Biến động bất thường vượt ngưỡng an toàn. AI kích hoạt Volatility Guard né hoàn toàn phiên giao dịch để bảo vệ tài khoản.',
-      defaultParams: { action: 'SKIP_SESSION', hard_exit: 'Né giao dịch' },
-      defaultMetrics: { win_rate: 100.0, profit_factor: 99.0 }
-    }
-  ];
+  // Trích xuất danh sách các cụm thực tế từ kết quả học máy K-Means
+  const clusters = useMemo(() => {
+    if (!regimeMatrix) return [];
+    return Object.keys(regimeMatrix)
+      .filter(key => !key.startsWith('_')) // Loại bỏ metadata phân cụm nội bộ
+      .map(key => regimeMatrix[key]);
+  }, [regimeMatrix]);
 
   return (
     <section className="section-card" style={{
-      background: 'linear-gradient(180deg, rgba(30, 27, 75, 0.4) 0%, rgba(15, 23, 42, 0.7) 100%)',
-      border: '1px solid rgba(129, 140, 248, 0.3)',
-      boxShadow: '0 8px 32px rgba(99, 102, 241, 0.12)',
+      background: 'linear-gradient(180deg, rgba(30, 27, 75, 0.45) 0%, rgba(15, 23, 42, 0.75) 100%)',
+      border: '1px solid rgba(129, 140, 248, 0.35)',
+      boxShadow: '0 8px 32px rgba(99, 102, 241, 0.15)',
       marginBottom: '24px'
     }}>
       {/* Header */}
@@ -69,16 +25,16 @@ export default function AiRegimeMatrixCard({ data }) {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '24px' }}>🧠</span>
-            <h2 style={{ fontSize: '17px', fontWeight: 800, color: '#FFF', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              HỆ THỐNG AI TỰ ĐỘNG THÍCH ỨNG THEO HÌNH THÁI THỊ TRƯỜNG
+            <h2 style={{ fontSize: '17px', fontWeight: 800, color: '#FFF', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              HỆ THỐNG PHÂN CỤM HỌC MÁY & TỐI ƯU HÌNH THÁI TỰ ĐỘNG
               <span className="badge badge-live" style={{ background: '#6366F1', color: '#FFF' }}>
-                AI DYNAMIC REGIME ENGINE
+                K-MEANS CLUSTERING & AUTO-TUNER
               </span>
             </h2>
           </div>
-          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', maxWidth: '850px', lineHeight: '1.5' }}>
-            Không cần nhập tham số thủ công! Hệ thống AI quét 12 cây nến M15 phiên sáng (07h-10h VN), 
-            tự động nhận diện <b>hình thái thị trường</b> và kích hoạt <b>bộ tham số (DCA, TP, Giờ Cắt Lỗ)</b> được may đo tối ưu riêng cho ngày hôm đó.
+          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', maxWidth: '880px', lineHeight: '1.5' }}>
+            <b>100% Học từ Dữ liệu Thật:</b> AI tự động chạy quét đủ các tổ hợp tham số trên từng ngày trong 10 năm huấn luyện (2011–2020), 
+            sau đó dùng thuật toán phân cụm K-Means gom nhóm theo đặc tính sóng sáng thực tế, tự sinh đặc tả và may đo bộ tham số tối ưu riêng cho từng nhóm.
           </p>
         </div>
 
@@ -123,120 +79,180 @@ export default function AiRegimeMatrixCard({ data }) {
         )}
       </div>
 
-      {/* 4 Market Regimes Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-        gap: '14px'
-      }}>
-        {regimes.map((reg) => {
-          const liveInfo = regimeMatrix?.[reg.id];
-          const opt = liveInfo?.optimal_params || reg.defaultParams;
-          const metrics = liveInfo?.train_metrics || reg.defaultMetrics;
-          const sessionCount = liveInfo?.train_sessions_count;
+      {/* Hiển thị các Nhóm được AI tự động phân cụm */}
+      {clusters.length > 0 ? (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '16px'
+        }}>
+          {clusters.map((cluster) => {
+            const opt = cluster.optimal_params || {};
+            const metrics = cluster.train_metrics || {};
+            const centroid = cluster.centroid_metrics || {};
 
-          return (
-            <div
-              key={reg.id}
-              style={{
-                background: reg.bg,
-                border: `1px solid ${reg.border}`,
-                borderRadius: '12px',
-                padding: '14px 16px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                transition: 'all 0.2s',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-            >
-              {/* Top Row */}
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '20px' }}>{reg.icon}</span>
-                    <span style={{ fontWeight: 800, fontSize: '13px', color: '#FFF' }}>{reg.name}</span>
+            return (
+              <div
+                key={cluster.regime_id}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.65)',
+                  border: `1px solid ${cluster.color ? cluster.color + '55' : 'rgba(255,255,255,0.15)'}`,
+                  borderTop: `3px solid ${cluster.color || '#6366F1'}`,
+                  borderRadius: '12px',
+                  padding: '16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  transition: 'all 0.2s',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                {/* Top Row: Icon, Tên nhóm, Tag */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '22px' }}>{cluster.icon || '🎯'}</span>
+                      <span style={{ fontWeight: 800, fontSize: '13px', color: '#FFF' }}>
+                        {cluster.name}
+                      </span>
+                    </div>
+                    <span 
+                      style={{
+                        background: cluster.color || '#6366F1',
+                        color: '#0B0F19',
+                        fontSize: '10px',
+                        fontWeight: 800,
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        fontFamily: 'var(--font-mono)'
+                      }}
+                    >
+                      {cluster.tag || 'CỤM AI'}
+                    </span>
                   </div>
-                  <span 
-                    style={{
-                      background: reg.color,
-                      color: '#0B0F19',
-                      fontSize: '10px',
-                      fontWeight: 800,
-                      padding: '2px 6px',
-                      borderRadius: '4px',
-                      fontFamily: 'var(--font-mono)'
-                    }}
-                  >
-                    {reg.tag}
-                  </span>
-                </div>
 
-                <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '12px', lineHeight: '1.4' }}>
-                  {reg.desc}
-                </p>
-              </div>
+                  <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '12px', lineHeight: '1.4' }}>
+                    {cluster.desc}
+                  </p>
 
-              {/* Optimal Parameters Box */}
-              <div style={{
-                background: 'rgba(15, 23, 42, 0.75)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '8px',
-                padding: '10px 12px',
-                fontSize: '11px',
-                fontFamily: 'var(--font-mono)'
-              }}>
-                <div style={{ color: reg.color, fontWeight: 700, marginBottom: '6px', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  🤖 Bộ Tham Số AI Tự Áp Dụng:
-                </div>
-
-                {opt.action === 'SKIP_SESSION' ? (
-                  <div style={{ color: '#EF4444', fontWeight: 700, padding: '4px 0' }}>
-                    🛡️ KÍCH HOẠT LÁ CHẮN: NÉ VÀO LỆNH (0% RỦI RO)
-                  </div>
-                ) : (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-                    <div>
-                      <span style={{ color: 'var(--text-muted)' }}>Khoảng cách DCA:</span>
-                      <div style={{ color: '#FFF', fontWeight: 700 }}>{opt.min_step_atr} x ATR14</div>
-                    </div>
-                    <div>
-                      <span style={{ color: 'var(--text-muted)' }}>Chốt Lời TP:</span>
-                      <div style={{ color: 'var(--accent-green)', fontWeight: 700 }}>{opt.tp_single_atr} / {opt.tp_dca_atr} ATR</div>
-                    </div>
-                    <div>
-                      <span style={{ color: 'var(--text-muted)' }}>Giờ Cắt Ép Buộc:</span>
-                      <div style={{ color: '#FCD34D', fontWeight: 700 }}>{opt.hard_exit} VN</div>
-                    </div>
-                    <div>
-                      <span style={{ color: 'var(--text-muted)' }}>Quản Trị Vốn:</span>
-                      <div style={{ color: '#A78BFA', fontWeight: 700 }}>{opt.risk_percent}% rủi ro</div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Training Metric Footer */}
-                {metrics && metrics.win_rate > 0 && (
+                  {/* Centroid Characteristics Box */}
                   <div style={{
-                    marginTop: '8px',
-                    paddingTop: '6px',
-                    borderTop: '1px dashed rgba(255, 255, 255, 0.1)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
+                    background: 'rgba(0, 0, 0, 0.25)',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                    borderRadius: '6px',
+                    padding: '8px 10px',
+                    marginBottom: '12px',
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '6px',
                     fontSize: '10px',
-                    color: 'var(--text-muted)'
+                    fontFamily: 'var(--font-mono)'
                   }}>
-                    <span>Win Rate Train: <b style={{ color: 'var(--accent-green)' }}>{metrics.win_rate}%</b></span>
-                    <span>Profit Factor: <b style={{ color: 'var(--accent-gold)' }}>{metrics.profit_factor}</b></span>
-                    {sessionCount && <span>Mẫu: <b>{sessionCount} ngày</b></span>}
+                    <div>
+                      <span style={{ color: 'var(--text-muted)' }}>Mẫu Huấn Luyện:</span>
+                      <div style={{ color: '#E2E8F0', fontWeight: 700 }}>
+                        {cluster.train_sessions_count} ngày ({cluster.sample_percent}%)
+                      </div>
+                    </div>
+                    <div>
+                      <span style={{ color: 'var(--text-muted)' }}>Biên Độ Sáng TB:</span>
+                      <div style={{ color: '#38BDF8', fontWeight: 700 }}>
+                        ${centroid.avg_morning_range || '--'} ({centroid.avg_range_to_atr || '--'}x ATR)
+                      </div>
+                    </div>
+                    <div>
+                      <span style={{ color: 'var(--text-muted)' }}>Độ Định Hướng (Trend):</span>
+                      <div style={{ color: '#FCD34D', fontWeight: 700 }}>
+                        {centroid.avg_trend_efficiency || '--'}% thân nến
+                      </div>
+                    </div>
+                    <div>
+                      <span style={{ color: 'var(--text-muted)' }}>ATR14 Trung Bình:</span>
+                      <div style={{ color: '#A78BFA', fontWeight: 700 }}>
+                        ${centroid.avg_atr || '--'} giá
+                      </div>
+                    </div>
                   </div>
-                )}
+                </div>
+
+                {/* Optimal Parameters Box */}
+                <div style={{
+                  background: 'rgba(15, 23, 42, 0.9)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '8px',
+                  padding: '10px 12px',
+                  fontSize: '11px',
+                  fontFamily: 'var(--font-mono)'
+                }}>
+                  <div style={{ color: cluster.color || '#818CF8', fontWeight: 700, marginBottom: '6px', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    🤖 Bộ Tham Số AI Tối Ưu Cho Nhóm Này:
+                  </div>
+
+                  {opt.action === 'SKIP_SESSION' ? (
+                    <div style={{ color: '#EF4444', fontWeight: 700, padding: '4px 0' }}>
+                      🛡️ KÍCH HOẠT LÁ CHẮN: NÉ VÀO LỆNH (0% RỦI RO)
+                    </div>
+                  ) : (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)' }}>Bước DCA:</span>
+                        <div style={{ color: '#FFF', fontWeight: 700 }}>{opt.min_step_atr} x ATR14</div>
+                      </div>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)' }}>Chốt Lời TP:</span>
+                        <div style={{ color: 'var(--accent-green)', fontWeight: 700 }}>{opt.tp_single_atr} / {opt.tp_dca_atr} ATR</div>
+                      </div>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)' }}>Giờ Cắt Lỗ:</span>
+                        <div style={{ color: '#FCD34D', fontWeight: 700 }}>{opt.hard_exit} VN</div>
+                      </div>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)' }}>Quản Trị Vốn:</span>
+                        <div style={{ color: '#A78BFA', fontWeight: 700 }}>{opt.risk_percent}% rủi ro</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Real Training Metrics */}
+                  {metrics && (
+                    <div style={{
+                      marginTop: '8px',
+                      paddingTop: '6px',
+                      borderTop: '1px dashed rgba(255, 255, 255, 0.1)',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '10px',
+                      color: 'var(--text-muted)'
+                    }}>
+                      <span>Win Rate Train: <b style={{ color: 'var(--accent-green)' }}>{metrics.win_rate}%</b></span>
+                      <span>Profit Factor: <b style={{ color: 'var(--accent-gold)' }}>{metrics.profit_factor}</b></span>
+                      <span>Drawdown: <b style={{ color: '#F87171' }}>{metrics.max_dd_percent}%</b></span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div style={{
+          padding: '24px',
+          textAlign: 'center',
+          background: 'rgba(15, 23, 42, 0.5)',
+          borderRadius: '12px',
+          border: '1px dashed rgba(99, 102, 241, 0.3)'
+        }}>
+          <span style={{ fontSize: '32px', display: 'block', marginBottom: '8px' }}>🤖</span>
+          <h3 style={{ fontSize: '15px', color: '#FFF', fontWeight: 700 }}>
+            HỆ THỐNG SẴN SÀNG HUẤN LUYỆN TỰ ĐỘNG PHÂN CỤM THEO DỮ LIỆU
+          </h3>
+          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', maxWidth: '650px', margin: '6px auto 14px' }}>
+            Nhấn nút <b>"⚡ HUẤN LUYỆN & CHẠY AI TỰ ĐỘNG THÍCH ỨNG"</b> ở bảng điều khiển bên dưới. 
+            AI sẽ duyệt qua từng ngày trong 10 năm lịch sử (2011–2020), thử nghiệm mọi tổ hợp tham số và dùng thuật toán máy học K-Means để tự động sinh ra các nhóm hình thái thực tế.
+          </p>
+        </div>
+      )}
     </section>
   );
 }

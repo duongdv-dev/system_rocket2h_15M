@@ -6,14 +6,33 @@ export default function TradeLogTable({ trades, onInspectTrade }) {
   const [page, setPage] = useState(1);
   const pageSize = 25;
 
+  // Tự động trích xuất các nhóm hình thái thực tế xuất hiện trong danh sách giao dịch
+  const availableRegimes = useMemo(() => {
+    if (!trades) return [];
+    const map = new Map();
+    trades.forEach(t => {
+      if (t.regime_id && !map.has(t.regime_id)) {
+        map.set(t.regime_id, {
+          id: t.regime_id,
+          name: t.regime_name || t.regime_id,
+          icon: t.regime_icon || '🎯',
+          tag: t.regime_tag || 'CỤM'
+        });
+      }
+    });
+    return Array.from(map.values());
+  }, [trades]);
+
   const filteredTrades = useMemo(() => {
     if (!trades) return [];
     return trades.filter(t => {
       if (filterType === 'win' && !t.is_win) return false;
       if (filterType === 'loss' && t.is_win) return false;
       if (filterType === 'deep' && t.orders_count < 4) return false;
-      if (filterType === 'trend' && t.regime_id !== 'TREND_MOMENTUM') return false;
-      if (filterType === 'sideway' && t.regime_id !== 'QUIET_SIDEWAY') return false;
+      if (filterType.startsWith('cluster_')) {
+        const cId = filterType.replace('cluster_', '');
+        if (t.regime_id !== cId) return false;
+      }
       if (searchDate && !t.date.includes(searchDate)) return false;
       return true;
     });
@@ -71,18 +90,15 @@ export default function TradeLogTable({ trades, onInspectTrade }) {
             >
               Thua (Cắt)
             </button>
-            <button 
-              className={`tab-btn ${filterType === 'trend' ? 'active' : ''}`}
-              onClick={() => { setFilterType('trend'); setPage(1); }}
-            >
-              🌊 Trend Mạnh
-            </button>
-            <button 
-              className={`tab-btn ${filterType === 'sideway' ? 'active' : ''}`}
-              onClick={() => { setFilterType('sideway'); setPage(1); }}
-            >
-              🧘 Tích Lũy
-            </button>
+            {availableRegimes.map(reg => (
+              <button 
+                key={reg.id}
+                className={`tab-btn ${filterType === `cluster_${reg.id}` ? 'active' : ''}`}
+                onClick={() => { setFilterType(`cluster_${reg.id}`); setPage(1); }}
+              >
+                {reg.icon} {reg.tag}
+              </button>
+            ))}
             <button 
               className={`tab-btn ${filterType === 'deep' ? 'active' : ''}`}
               onClick={() => { setFilterType('deep'); setPage(1); }}
@@ -122,11 +138,11 @@ export default function TradeLogTable({ trades, onInspectTrade }) {
                   <td>
                     {t.regime_name ? (
                       <span 
-                        title={`AI Auto-Params: DCA ${t.dynamic_params?.min_step_atr} ATR | TP ${t.dynamic_params?.tp_single_atr}/${t.dynamic_params?.tp_dca_atr} ATR | Cắt ${t.dynamic_params?.hard_exit} VN`}
+                        title={`AI May Đo: ${t.regime_name} | DCA ${t.dynamic_params?.min_step_atr}x ATR | TP ${t.dynamic_params?.tp_single_atr}/${t.dynamic_params?.tp_dca_atr} ATR | Cắt ${t.dynamic_params?.hard_exit} VN`}
                         style={{
-                          background: t.regime_id === 'QUIET_SIDEWAY' ? 'rgba(56, 189, 248, 0.15)' : (t.regime_id === 'TREND_MOMENTUM' ? 'rgba(129, 140, 248, 0.18)' : 'rgba(245, 158, 11, 0.15)'),
-                          border: `1px solid ${t.regime_id === 'QUIET_SIDEWAY' ? 'rgba(56, 189, 248, 0.4)' : (t.regime_id === 'TREND_MOMENTUM' ? 'rgba(129, 140, 248, 0.4)' : 'rgba(245, 158, 11, 0.4)')}`,
-                          color: t.regime_id === 'QUIET_SIDEWAY' ? '#38BDF8' : (t.regime_id === 'TREND_MOMENTUM' ? '#A5B4FC' : '#FCD34D'),
+                          background: 'rgba(99, 102, 241, 0.16)',
+                          border: '1px solid rgba(129, 140, 248, 0.4)',
+                          color: '#A5B4FC',
                           padding: '3px 8px',
                           borderRadius: '6px',
                           fontSize: '11px',
@@ -138,7 +154,7 @@ export default function TradeLogTable({ trades, onInspectTrade }) {
                         }}
                       >
                         <span>{t.regime_icon || '🎯'}</span>
-                        <span>{t.regime_tag || 'CHUẨN'}</span>
+                        <span>{t.regime_tag || 'CỤM AI'}</span>
                       </span>
                     ) : (
                       <span style={{ color: 'var(--text-muted)', fontSize: '11px' }}>--</span>

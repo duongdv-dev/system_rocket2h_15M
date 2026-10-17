@@ -239,7 +239,7 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
     if params is None:
         params = {}
 
-    from engine.ai_regime_optimizer import classify_session_regime, REGIME_METADATA
+    from engine.ai_regime_optimizer import classify_session_regime
 
     min_step_atr = float(params.get('min_step_atr', 0.5))
     tp_single_atr = float(params.get('tp_single_atr', 0.8))
@@ -261,8 +261,8 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
     layer_counts = {}
 
     for s in sessions:
-        # Xác định hình thái phiên sáng
-        regime_id = s.get('regime') or classify_session_regime(s)
+        # Xác định nhóm hình thái phiên sáng qua mô hình phân cụm K-Means
+        regime_id = s.get('regime') or classify_session_regime(s, regime_models)
         s['regime'] = regime_id
 
         regime_info = regime_models.get(regime_id, {}) if regime_models else {}
@@ -410,7 +410,7 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
         num_orders = len(orders)
         layer_counts[num_orders] = layer_counts.get(num_orders, 0) + 1
 
-        meta_reg = REGIME_METADATA.get(regime_id, {})
+        meta_reg = regime_info if regime_info else {}
         trades.append({
             'trade_idx': len(trades) + 1,
             'date': s['date'],
@@ -537,9 +537,9 @@ def execute_backtest(params, data_dir=None):
     from engine.ai_regime_optimizer import train_regime_matrix, classify_session_regime
     regime_models = train_regime_matrix(train_sessions, candles, params)
 
-    # Gán hình thái cho toàn bộ sessions
+    # Gán hình thái tự động học cho toàn bộ sessions
     for s in sessions:
-        s['regime'] = classify_session_regime(s)
+        s['regime'] = classify_session_regime(s, regime_models)
 
     # 2. Mô phỏng kiểm định
     print("[3/4] Mô phỏng Tập Test (2021-2025): Baseline Tĩnh vs Dynamic AI...")
