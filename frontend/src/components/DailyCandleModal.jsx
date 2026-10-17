@@ -182,92 +182,213 @@ export default function DailyCandleModal({ isOpen, onClose, trade, filteredDay }
       }
     });
 
-    // 4. Nếu có Lệnh Giao Dịch: Vẽ các Điểm Vào Lệnh (DCA Entries) & Đường Giá Trung Bình
-    if (trade && trade.orders && trade.orders.length > 0) {
-      // Đường Giá Trung Bình (Avg Entry Line)
-      if (trade.avg_entry) {
-        const yAvg = getY(trade.avg_entry);
+    // 4. Vẽ Các Điểm Vào Lệnh (Entries), Đường Giá Trung Bình & Điểm Thoát Lệnh (Exit)
+    if (trade) {
+      // 4.1. Xác định nến vào lệnh đầu tiên (Lệnh 1 lúc 10:15 VN)
+      let idxEntry = -1;
+      if (trade.orders && trade.orders.length > 0 && trade.orders[0].timestamp) {
+        let minDiff = Infinity;
+        candles.forEach((c, idx) => {
+          const diff = Math.abs(c.timestamp - trade.orders[0].timestamp);
+          if (diff < minDiff) {
+            minDiff = diff;
+            idxEntry = idx;
+          }
+        });
+      }
+      if (idxEntry === -1) {
+        idxEntry = candles.findIndex(c => c.time === '10:15');
+      }
+      if (idxEntry === -1) {
+        idxEntry = candles.findIndex(c => c.time >= '10:15');
+      }
+      if (idxEntry === -1 && idx10h !== -1) {
+        idxEntry = idx10h + 1;
+      }
+      if (idxEntry === -1) idxEntry = Math.floor(candles.length / 2);
+
+      // 4.2. Xác định nến thoát lệnh (Exit)
+      let exitIdx = -1;
+      if (trade.close_time) {
+        let minDiff = Infinity;
+        candles.forEach((c, idx) => {
+          const diff = Math.abs(c.timestamp - trade.close_time);
+          if (diff < minDiff) {
+            minDiff = diff;
+            exitIdx = idx;
+          }
+        });
+      }
+      if (exitIdx === -1 && trade.bars_held && idxEntry !== -1) {
+        exitIdx = Math.min(candles.length - 1, idxEntry + trade.bars_held);
+      }
+      if (exitIdx === -1 && idx14h !== -1) {
+        exitIdx = idx14h;
+      }
+      if (exitIdx === -1) {
+        exitIdx = Math.min(candles.length - 1, idxEntry + 4);
+      }
+
+      // Đảm bảo exitIdx >= idxEntry
+      if (exitIdx < idxEntry) exitIdx = idxEntry;
+
+      const xStart = getX(idxEntry);
+      const xEnd = getX(exitIdx);
+      const isProfit = trade.is_win;
+
+      // 4.3. Tô màu vùng thời gian giao dịch (Trade Holding Period)
+      ctx.fillStyle = isProfit ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)';
+      ctx.fillRect(xStart - 4, padTop, Math.max(16, xEnd - xStart + 8), plotH);
+
+      ctx.strokeStyle = isProfit ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(xStart - 4, padTop);
+      ctx.lineTo(xEnd + 4, padTop);
+      ctx.stroke();
+
+      // 4.4. Vẽ Đường Giá Trung Bình (Avg Entry Line)
+      const avgPrice = trade.avg_entry ?? trade.first_entry ?? trade.entry_price;
+      if (avgPrice) {
+        const yAvg = getY(avgPrice);
         ctx.save();
-        ctx.setLineDash([5, 5]);
+        ctx.setLineDash([4, 4]);
         ctx.strokeStyle = '#F59E0B';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 1.8;
         ctx.beginPath();
-        ctx.moveTo(padLeft, yAvg);
-        ctx.lineTo(width - padRight, yAvg);
+        ctx.moveTo(xStart - 4, yAvg);
+        ctx.lineTo(Math.max(xEnd + 20, width - padRight), yAvg);
         ctx.stroke();
 
         ctx.fillStyle = '#F59E0B';
-        ctx.font = '11px JetBrains Mono';
-        ctx.fillText(`AVG ENTRY: $${trade.avg_entry.toFixed(2)}`, width - padRight - 130, yAvg - 5);
+        ctx.font = 'bold 11px JetBrains Mono';
+        ctx.textAlign = 'right';
+        ctx.fillText(`AVG ENTRY: $${avgPrice.toFixed(2)}`, width - padRight - 8, yAvg - 5);
         ctx.restore();
       }
 
-      // Đánh dấu từng lệnh DCA
-      trade.orders.forEach((ord) => {
-        // Tìm nến gần nhất với thời gian lệnh
-        let bestIdx = -1;
-        let minDiff = Infinity;
-        candles.forEach((c, idx) => {
-          const diff = Math.abs(c.timestamp - ord.timestamp);
-          if (diff < minDiff) {
-            minDiff = diff;
-            bestIdx = idx;
-          }
-        });
-
-        if (bestIdx !== -1) {
-          const x = getX(bestIdx);
-          const y = getY(ord.entry_price);
-
-          // Vẽ chấm phát sáng
-          ctx.beginPath();
-          ctx.arc(x, y, 5, 0, Math.PI * 2);
-          ctx.fillStyle = trade.direction === 'BUY' ? '#3B82F6' : '#EC4899';
-          ctx.fill();
-          ctx.strokeStyle = '#FFF';
-          ctx.lineWidth = 1.5;
-          ctx.stroke();
-
-          // Nhãn lệnh (L1, L2, L3...)
-          ctx.fillStyle = '#FFF';
-          ctx.font = 'bold 10px JetBrains Mono';
-          ctx.textAlign = 'center';
-          const label = `L${ord.layer}: ${ord.entry_price.toFixed(2)}`;
-          ctx.fillText(label, x, y - 10);
-        }
-      });
-
-      // Đánh dấu Điểm Thoát Lệnh (Exit)
-      if (trade.close_price) {
-        let exitIdx = -1;
-        if (trade.close_time) {
+      // 4.5. Chuẩn bị danh sách lệnh (Hỗ trợ cả bản chạy mới và các bản lịch sử cũ)
+      let ordersToDraw = [];
+      if (trade.orders && trade.orders.length > 0) {
+        ordersToDraw = trade.orders.map((ord, i) => {
+          let cIdx = -1;
           let minDiff = Infinity;
           candles.forEach((c, idx) => {
-            const diff = Math.abs(c.timestamp - trade.close_time);
+            const diff = Math.abs(c.timestamp - ord.timestamp);
             if (diff < minDiff) {
               minDiff = diff;
-              exitIdx = idx;
+              cIdx = idx;
             }
           });
-        }
-        if (exitIdx === -1 && idx14h !== -1) exitIdx = idx14h;
-        if (exitIdx === -1) exitIdx = candles.length - 1;
+          return {
+            layer: ord.layer || i + 1,
+            entry_price: ord.entry_price,
+            candleIdx: cIdx !== -1 ? cIdx : (idxEntry + i)
+          };
+        });
+      } else {
+        // Fallback cho lịch sử cũ
+        const firstPrice = trade.first_entry ?? trade.entry_price ?? trade.avg_entry;
+        ordersToDraw = [{
+          layer: 1,
+          entry_price: firstPrice,
+          candleIdx: idxEntry
+        }];
+      }
 
-        const xExit = getX(exitIdx);
-        const yExit = getY(trade.close_price);
+      // 4.6. Vẽ từng Điểm Vào Lệnh
+      ordersToDraw.forEach((ord) => {
+        const cIdx = Math.min(candles.length - 1, Math.max(0, ord.candleIdx));
+        const xOrd = getX(cIdx);
+        const yOrd = getY(ord.entry_price);
 
+        // Vòng tròn phát sáng tại mức giá vào
         ctx.beginPath();
-        ctx.arc(xExit, yExit, 6, 0, Math.PI * 2);
-        ctx.fillStyle = trade.is_win ? '#10B981' : '#EF4444';
+        ctx.arc(xOrd, yOrd, 7, 0, Math.PI * 2);
+        ctx.fillStyle = trade.direction === 'BUY' ? '#3B82F6' : '#EC4899';
         ctx.fill();
-        ctx.strokeStyle = '#FFF';
+        ctx.strokeStyle = '#FFFFFF';
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        ctx.fillStyle = trade.is_win ? '#34D399' : '#F87171';
-        ctx.font = 'bold 11px JetBrains Mono';
+        // Đường gióng nét đứt từ râu nến tới điểm vào
+        ctx.save();
+        ctx.setLineDash([2, 2]);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(xOrd, padTop);
+        ctx.lineTo(xOrd, height - padBottom);
+        ctx.stroke();
+        ctx.restore();
+
+        // Hộp nhãn nổi bật
+        const isBuy = trade.direction === 'BUY';
+        const badgeText = ord.layer > 1 
+          ? `DCA #${ord.layer}: $${ord.entry_price.toFixed(2)}` 
+          : `VÀO ${trade.direction}: $${ord.entry_price.toFixed(2)}`;
+        
+        ctx.font = 'bold 10px JetBrains Mono';
+        const textW = ctx.measureText(badgeText).width;
+        const badgeY = isBuy ? yOrd + 10 : yOrd - 26;
+
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+        ctx.fillRect(xOrd - textW / 2 - 6, badgeY, textW + 12, 18);
+        ctx.strokeStyle = isBuy ? '#3B82F6' : '#EC4899';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(xOrd - textW / 2 - 6, badgeY, textW + 12, 18);
+
+        ctx.fillStyle = '#FFFFFF';
         ctx.textAlign = 'center';
-        ctx.fillText(trade.is_win ? '🎯 TP' : '✂️ CUT 14h', xExit, yExit - 12);
+        ctx.fillText(badgeText, xOrd, badgeY + 13);
+      });
+
+      // 4.7. Vẽ Điểm Thoát Lệnh (Exit Point)
+      const closePrice = trade.close_price;
+      if (closePrice) {
+        const xExit = getX(exitIdx);
+        const yExit = getY(closePrice);
+
+        // Chấm tròn điểm thoát
+        ctx.beginPath();
+        ctx.arc(xExit, yExit, 8, 0, Math.PI * 2);
+        ctx.fillStyle = trade.is_win ? '#10B981' : '#EF4444';
+        ctx.fill();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Đường gióng dọc điểm thoát
+        ctx.save();
+        ctx.setLineDash([2, 2]);
+        ctx.strokeStyle = trade.is_win ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(xExit, padTop);
+        ctx.lineTo(xExit, height - padBottom);
+        ctx.stroke();
+        ctx.restore();
+
+        // Exit Badge nổi bật
+        const isCut = (trade.close_reason && trade.close_reason.includes('Cắt lỗ')) || !trade.is_win;
+        const pts = Math.abs(closePrice - (avgPrice || closePrice)).toFixed(1);
+        const exitLabel = isCut 
+          ? `✂️ CẮT LỖ: $${closePrice.toFixed(2)} (-${pts} giá)`
+          : `🎯 CHỐT TP: $${closePrice.toFixed(2)} (+${pts} giá)`;
+
+        ctx.font = 'bold 11px JetBrains Mono';
+        const eTextW = ctx.measureText(exitLabel).width;
+        const eBadgeY = yExit < padTop + 40 ? yExit + 12 : yExit - 28;
+
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+        ctx.fillRect(xExit - eTextW / 2 - 8, eBadgeY, eTextW + 16, 20);
+        ctx.strokeStyle = isCut ? '#EF4444' : '#10B981';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(xExit - eTextW / 2 - 8, eBadgeY, eTextW + 16, 20);
+
+        ctx.fillStyle = isCut ? '#F87171' : '#34D399';
+        ctx.textAlign = 'center';
+        ctx.fillText(exitLabel, xExit, eBadgeY + 14);
       }
     }
 
