@@ -272,7 +272,7 @@ export default function App() {
           isDeepTraining={isDeepTraining}
           isLoading={isLoading}
           hasTrainingCatalog={!!catalogData}
-          catalogCount={catalogData?.cluster_summaries?.length || 4}
+          catalogCount={catalogData?.cluster_summaries?.length || 8}
           historyCount={historyRuns.length}
           isHistoryOpen={isHistoryOpen}
           activeRunId={activeRunId}
@@ -286,7 +286,7 @@ export default function App() {
           onOpenTrainingReport={() => setIsTrainingReportOpen(true)}
           hasTrainingCatalog={!!catalogData}
           isDeepTraining={isDeepTraining}
-          catalogCount={catalogData?.cluster_summaries?.length || 4}
+          catalogCount={catalogData?.cluster_summaries?.length || 8}
           onToggleHistory={() => setIsHistoryOpen(!isHistoryOpen)}
           historyCount={historyRuns.length}
           isHistoryOpen={isHistoryOpen}

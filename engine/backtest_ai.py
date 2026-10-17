@@ -320,9 +320,9 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
         close_time = 0
         bars_held = 0
 
-        # Vòng lặp các nến M15 tiếp theo
+        # Vòng lặp các nến M15 tiếp theo (hỗ trợ giữ lệnh tới 24h đêm)
         j = c_idx + 1
-        while j < min(len(candles), c_idx + 60):
+        while j < min(len(candles), c_idx + 70):
             cur_c = candles[j]
             c_open, c_high, c_low, c_close = cur_c[1], cur_c[2], cur_c[3], cur_c[4]
             bars_held += 1

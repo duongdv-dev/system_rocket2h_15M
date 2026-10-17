@@ -180,10 +180,10 @@ export default function AutonomousAiBar({
               boxShadow: '0 4px 14px rgba(147, 51, 234, 0.2)',
               transition: 'all 0.2s ease'
             }}
-            title="Quét lại 3,000,000 lượt mô phỏng trên 10 năm và tự động huấn luyện lại chính mình"
+            title="Quét lại 8,000,000 lượt mô phỏng trên 10 năm và tự động huấn luyện lại chính mình"
           >
             {isDeepTraining ? (
-              <>⏳ ĐANG QUÉT 3 TRIỆU SETUPS...</>
+              <>⏳ ĐANG QUÉT 8 TRIỆU SETUPS...</>
             ) : (
               <>🔄 TỰ ĐỘNG HUẤN LUYỆN LẠI 10 NĂM</>
             )}

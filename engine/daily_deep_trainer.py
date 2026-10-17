@@ -21,18 +21,21 @@ import os
 
 VN_TZ = zoneinfo.ZoneInfo("Asia/Ho_Chi_Minh")
 
-# Lưới 1,200 setups thử nghiệm cho từng ngày
-GRID_MIN_STEP_ATR = [0.25, 0.35, 0.45, 0.55, 0.65, 0.80, 1.00, 1.25]  # 8 mức
-GRID_TP_SINGLE_ATR = [0.40, 0.60, 0.80, 1.00, 1.30, 1.60]              # 6 mức
-GRID_TP_DCA_ATR = [0.25, 0.40, 0.55, 0.70, 0.90]                       # 5 mức
+# Siêu Lưới 3,072 setups thử nghiệm chuyên sâu cho từng ngày
+GRID_MIN_STEP_ATR = [0.25, 0.35, 0.45, 0.55, 0.70, 0.85, 1.05, 1.30]  # 8 mức
+GRID_TP_SINGLE_ATR = [0.40, 0.60, 0.80, 1.00, 1.30, 1.60, 2.10, 2.80] # 8 mức (gồng lời tới 2.8x ATR)
+GRID_TP_DCA_ATR = [0.25, 0.35, 0.50, 0.65, 0.80, 1.00]                # 6 mức
 GRID_HARD_EXITS = [
+    (12, 0,  '12:00'),
     (12, 30, '12:30'),
-    (13, 0,  '13:00'),
     (13, 30, '13:30'),
-    (14, 0,  '14:00'),
-    (14, 30, '14:30')
-]  # 5 mốc
-# Tổng số setups = 8 * 6 * 5 * 5 = 1,200 setups / ngày
+    (14, 30, '14:30'),
+    (16, 0,  '16:00'),
+    (18, 0,  '18:00'),
+    (20, 30, '20:30'),
+    (23, 45, '23:45')
+]  # 8 mốc trải dài từ trưa đến 24h đêm (cuối ngày)
+# Tổng số setups = 8 * 8 * 6 * 8 = 3,072 setups / ngày (gần 8 triệu lượt mô phỏng 10 năm)
 
 ALL_SETUPS = []
 for s in GRID_MIN_STEP_ATR:
@@ -215,7 +218,7 @@ def train_10_years_deep(train_sessions, candles):
         first_c = candles[c_idx]
 
         fast_c = []
-        limit_j = min(len(candles), c_idx + 40)
+        limit_j = min(len(candles), c_idx + 70)
         for j in range(c_idx + 1, limit_j):
             cur_c = candles[j]
             dt_utc = datetime.fromtimestamp(cur_c[0] / 1000.0, tz=timezone.utc)

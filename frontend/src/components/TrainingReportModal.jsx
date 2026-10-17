@@ -81,7 +81,7 @@ export default function TrainingReportModal({
               </h2>
             </div>
             <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
-              Kết quả quét chuyên sâu: <b>{metadata.total_training_days || 2500} ngày</b> × <b>{metadata.setups_evaluated_per_day || 1200} setups/ngày</b> = <b>{(metadata.total_simulations_executed || 3000000).toLocaleString()} lượt mô phỏng</b> ({metadata.training_elapsed_seconds || 3}s).
+              Kết quả quét chuyên sâu: <b>{metadata.total_training_days || 2577} ngày</b> × <b>{metadata.setups_evaluated_per_day || 3072} setups/ngày</b> = <b>{(metadata.total_simulations_executed || 7916544).toLocaleString()} lượt mô phỏng</b> ({metadata.training_elapsed_seconds || 15}s).
             </p>
           </div>
 
