@@ -296,13 +296,24 @@ export default function TrainingReportModal({
                         <div style={{
                           paddingTop: '8px',
                           borderTop: '1px dashed rgba(255, 255, 255, 0.12)',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          fontSize: '11px'
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(3, 1fr)',
+                          gap: '6px',
+                          textAlign: 'center',
+                          fontSize: '10px'
                         }}>
-                          <span>Win Rate: <b style={{ color: 'var(--accent-green)' }}>{metrics.win_rate}%</b></span>
-                          <span>Profit Factor: <b style={{ color: 'var(--accent-gold)' }}>{metrics.profit_factor}</b></span>
-                          <span>Max DD: <b style={{ color: '#F87171' }}>{metrics.max_dd_percent}%</b></span>
+                          <div style={{ background: 'rgba(255, 255, 255, 0.04)', padding: '5px 2px', borderRadius: '4px' }}>
+                            <div style={{ color: 'var(--text-muted)', marginBottom: '2px', fontSize: '9px', textTransform: 'uppercase' }}>Win Rate</div>
+                            <div style={{ color: 'var(--accent-green)', fontWeight: 700, fontSize: '11px' }}>{metrics.win_rate}%</div>
+                          </div>
+                          <div style={{ background: 'rgba(255, 255, 255, 0.04)', padding: '5px 2px', borderRadius: '4px' }}>
+                            <div style={{ color: 'var(--text-muted)', marginBottom: '2px', fontSize: '9px', textTransform: 'uppercase' }}>Profit Factor</div>
+                            <div style={{ color: 'var(--accent-gold)', fontWeight: 700, fontSize: '11px' }}>{metrics.profit_factor}</div>
+                          </div>
+                          <div style={{ background: 'rgba(255, 255, 255, 0.04)', padding: '5px 2px', borderRadius: '4px' }}>
+                            <div style={{ color: 'var(--text-muted)', marginBottom: '2px', fontSize: '9px', textTransform: 'uppercase' }}>Max DD</div>
+                            <div style={{ color: '#F87171', fontWeight: 700, fontSize: '11px' }}>{metrics.max_dd_percent}%</div>
+                          </div>
                         </div>
                       </div>
                     </div>

@@ -238,31 +238,37 @@ def synthesize_training_catalog(training_results, train_sessions, candles):
         avg_trend = sum(d['morphology']['ratio_trend'] for d in c_days) / count
         avg_wick = sum(d['morphology']['ratio_wick'] for d in c_days) / count
 
-        # Tự động gán nhãn thực nghiệm dựa vào trọng tâm số học của cụm
-        if avg_atr >= 15.0 or avg_range_atr >= 2.6:
-            name = f"Hình Thái {c_id + 1}: Sóng Đột Biến / Biến Động Cực Đại"
-            tag = "BIẾN ĐỘNG CAO"
+        # Tự động gán nhãn thực nghiệm dựa vào tỷ lệ định hướng (Trend Efficiency) và biên độ:
+        if avg_atr >= 4.0 or avg_range >= 14.0 or avg_range_atr >= 6.0:
+            name = f"Hình Thái {c_id + 1}: Sóng Đột Biến & Bão Giá Rủi Ro Cao"
+            tag = "BÃO GIÁ"
             icon = "🛡️"
             color = "#EF4444"
-            desc = f"Biên độ sóng sáng rất rộng (${avg_range:.1f}, gấp {avg_range_atr:.1f}x ATR). Thị trường biến động dữ dội, AI ưu tiên quản trị rủi ro chặt chẽ."
-        elif avg_trend >= 0.50:
+            desc = f"Biên độ sáng đột biến rất lớn (${avg_range:.2f}, gấp {avg_range_atr:.1f}x ATR). Thị trường giật mạnh, AI tăng cường quản trị rủi ro tối đa."
+        elif avg_trend >= 0.65:
             name = f"Hình Thái {c_id + 1}: Sóng Xu Hướng Một Chiều Rõ Nét"
             tag = "TREND MẠNH"
             icon = "🌊"
             color = "#818CF8"
-            desc = f"Tỷ lệ định hướng sóng sáng rất cao ({avg_trend*100:.0f}% thân nến), biên độ TB ${avg_range:.1f}. Xung lực một chiều mạnh mẽ."
-        elif avg_range_atr <= 1.45:
-            name = f"Hình Thái {c_id + 1}: Sóng Nén Tích Lũy Biên Hẹp"
+            desc = f"Tỷ lệ thân nến định hướng chiếm tới {avg_trend*100:.1f}%, biên độ sáng TB ${avg_range:.2f}. Xung lực một chiều áp đảo, cần giãn bước DCA để tránh nhồi sớm."
+        elif avg_trend >= 0.45:
+            name = f"Hình Thái {c_id + 1}: Sóng Đột Phá Biên Độ Mở Rộng"
+            tag = "ĐỘT PHÁ"
+            icon = "🚀"
+            color = "#38BDF8"
+            desc = f"Biên độ sáng đạt ${avg_range:.2f} ({avg_range_atr:.1f}x ATR) với tỷ lệ thân nến {avg_trend*100:.1f}%. Thị trường mở rộng biên độ giao dịch rõ rệt."
+        elif avg_trend <= 0.25:
+            name = f"Hình Thái {c_id + 1}: Sóng Nén Tích Lũy / Doji Biên Hẹp"
             tag = "TÍCH LŨY"
             icon = "🧘"
-            color = "#38BDF8"
-            desc = f"Biên độ sáng hẹp chỉ ${avg_range:.1f} ({avg_range_atr:.1f}x ATR). Dao động êm đềm, AI tối ưu bước DCA gọn để ăn nhanh."
+            color = "#10B981"
+            desc = f"Biên độ sáng chỉ ${avg_range:.2f} với tỷ lệ thân nến cực thấp ({avg_trend*100:.1f}%), chủ yếu nén doji. Dao động êm đềm, rất thích hợp DCA bước ngắn chốt lời gọn."
         else:
             name = f"Hình Thái {c_id + 1}: Sóng Giằng Co Hai Chiều Rút Râu"
             tag = "GIẰNG CO"
             icon = "⚡"
             color = "#F59E0B"
-            desc = f"Biên độ sáng TB ${avg_range:.1f}, râu nến co giật 2 đầu (tỷ lệ rút râu {avg_wick*100:.0f}%). Cần kiên nhẫn điểm hồi."
+            desc = f"Biên độ sáng ${avg_range:.2f}, râu nến 2 chiều co giật liên tục (rút râu {avg_wick*100:.1f}%). Thích hợp kiên nhẫn điểm hồi."
 
         # May đo bộ setup đại diện tối thượng cho cụm
         best_setup, best_metrics = find_consensus_setup_for_cluster(c_days, ALL_SETUPS)
