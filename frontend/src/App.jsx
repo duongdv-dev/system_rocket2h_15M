@@ -227,6 +227,8 @@ export default function App() {
       <AiRegimeMatrixCard 
         data={rawData || (catalogData ? { regime_matrix: catalogData.morphology_catalog } : null)} 
         onOpenTrainingReport={catalogData ? () => setIsTrainingReportOpen(true) : handleTriggerDeepTraining} 
+        onRetrain={handleTriggerDeepTraining}
+        isDeepTraining={isDeepTraining}
       />
 
       {/* 4. Hiển thị Kết Quả Kiểm Định (Chỉ hiện khi bạn bấm Chạy hoặc chọn từ Lịch Sử) */}
@@ -353,6 +355,8 @@ export default function App() {
         catalogData={catalogData}
         onApproveAndBacktest={handleApproveAndBacktest}
         isBacktesting={isLoading}
+        onRetrain={handleTriggerDeepTraining}
+        isRetraining={isDeepTraining}
       />
     </div>
   );

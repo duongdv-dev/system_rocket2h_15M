@@ -536,36 +536,91 @@ export default function ControlPanel({
             🔄 Tải Lại
           </button>
 
-          <button 
-            type="button" 
-            onClick={hasTrainingCatalog ? onOpenTrainingReport : onTriggerDeepTraining}
-            disabled={isLoading || isDeepTraining}
-            style={{
-              padding: '11px 18px',
-              fontSize: '13px',
-              fontWeight: 700,
-              borderRadius: '8px',
-              border: '1px solid rgba(168, 85, 247, 0.4)',
-              background: isDeepTraining 
-                ? 'rgba(168, 85, 247, 0.3)' 
-                : 'linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(126, 34, 206, 0.35))',
-              color: '#E9D5FF',
-              cursor: (isLoading || isDeepTraining) ? 'not-allowed' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 4px 14px rgba(168, 85, 247, 0.25)',
-              transition: 'all 0.2s ease'
-            }}
-          >
-            {isDeepTraining ? (
-              <>⏳ ĐANG QUÉT 3 TRIỆU SETUPS 10 NĂM...</>
-            ) : hasTrainingCatalog ? (
-              <>📊 BÁO CÁO 10 NĂM ({catalogCount} HÌNH THÁI)</>
-            ) : (
-              <>🔬 HUẤN LUYỆN SÂU 10 NĂM (1,200 SETUPS/NGÀY)</>
-            )}
-          </button>
+          {hasTrainingCatalog ? (
+            <>
+              <button 
+                type="button" 
+                onClick={onOpenTrainingReport}
+                disabled={isLoading || isDeepTraining}
+                style={{
+                  padding: '11px 16px',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  borderRadius: '8px',
+                  border: '1px solid rgba(168, 85, 247, 0.4)',
+                  background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(126, 34, 206, 0.35))',
+                  color: '#E9D5FF',
+                  cursor: (isLoading || isDeepTraining) ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 4px 14px rgba(168, 85, 247, 0.25)',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                📊 BÁO CÁO 10 NĂM ({catalogCount} HÌNH THÁI)
+              </button>
+
+              <button 
+                type="button" 
+                onClick={onTriggerDeepTraining}
+                disabled={isLoading || isDeepTraining}
+                style={{
+                  padding: '11px 16px',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  borderRadius: '8px',
+                  border: '1px solid rgba(147, 51, 234, 0.5)',
+                  background: isDeepTraining 
+                    ? 'rgba(147, 51, 234, 0.3)' 
+                    : 'linear-gradient(135deg, rgba(147, 51, 234, 0.3), rgba(109, 40, 217, 0.4))',
+                  color: '#F3E8FF',
+                  cursor: (isLoading || isDeepTraining) ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 4px 14px rgba(147, 51, 234, 0.2)',
+                  transition: 'all 0.2s ease'
+                }}
+                title="Quét lại 1,200 setups/ngày trên toàn bộ 10 năm và gom cụm lại"
+              >
+                {isDeepTraining ? (
+                  <>⏳ ĐANG QUÉT 3 TRIỆU SETUPS...</>
+                ) : (
+                  <>🔄 HUẤN LUYỆN LẠI 10 NĂM</>
+                )}
+              </button>
+            </>
+          ) : (
+            <button 
+              type="button" 
+              onClick={onTriggerDeepTraining}
+              disabled={isLoading || isDeepTraining}
+              style={{
+                padding: '11px 18px',
+                fontSize: '13px',
+                fontWeight: 700,
+                borderRadius: '8px',
+                border: '1px solid rgba(168, 85, 247, 0.4)',
+                background: isDeepTraining 
+                  ? 'rgba(168, 85, 247, 0.3)' 
+                  : 'linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(126, 34, 206, 0.35))',
+                color: '#E9D5FF',
+                cursor: (isLoading || isDeepTraining) ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 4px 14px rgba(168, 85, 247, 0.25)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {isDeepTraining ? (
+                <>⏳ ĐANG QUÉT 3 TRIỆU SETUPS 10 NĂM...</>
+              ) : (
+                <>🔬 HUẤN LUYỆN SÂU 10 NĂM (1,200 SETUPS/NGÀY)</>
+              )}
+            </button>
+          )}
 
           <button 
             type="button" 

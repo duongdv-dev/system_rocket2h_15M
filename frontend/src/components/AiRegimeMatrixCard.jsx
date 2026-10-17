@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-export default function AiRegimeMatrixCard({ data, onOpenTrainingReport }) {
+export default function AiRegimeMatrixCard({ data, onOpenTrainingReport, onRetrain, isDeepTraining }) {
   const regimeMatrix = data?.regime_matrix;
   const comparison = data?.dynamic_ai_comparison;
   const isDynamicMode = data?.mode === 'dynamic_ai' || data?.metadata?.mode === 'dynamic_ai';
@@ -36,29 +36,55 @@ export default function AiRegimeMatrixCard({ data, onOpenTrainingReport }) {
             <b>100% Học từ Dữ liệu Thật:</b> AI tự động chạy quét đủ các tổ hợp tham số trên từng ngày trong 10 năm huấn luyện (2011–2020), 
             sau đó dùng thuật toán phân cụm K-Means gom nhóm theo đặc tính sóng sáng thực tế, tự sinh đặc tả và may đo bộ tham số tối ưu riêng cho từng nhóm.
           </p>
-          {onOpenTrainingReport && (
-            <button
-              type="button"
-              onClick={onOpenTrainingReport}
-              style={{
-                background: 'rgba(99, 102, 241, 0.2)',
-                border: '1px solid rgba(129, 140, 248, 0.4)',
-                color: '#C7D2FE',
-                padding: '5px 12px',
-                borderRadius: '6px',
-                fontSize: '11px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                marginTop: '8px',
-                transition: 'all 0.2s'
-              }}
-            >
-              <span>🔬</span> Mở Báo Cáo Chi Tiết Huấn Luyện 10 Năm (Tra Cứu Từng Ngày)
-            </button>
-          )}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '8px', flexWrap: 'wrap' }}>
+            {onOpenTrainingReport && (
+              <button
+                type="button"
+                onClick={onOpenTrainingReport}
+                style={{
+                  background: 'rgba(99, 102, 241, 0.2)',
+                  border: '1px solid rgba(129, 140, 248, 0.4)',
+                  color: '#C7D2FE',
+                  padding: '5px 12px',
+                  borderRadius: '6px',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <span>🔬</span> Mở Báo Cáo Chi Tiết Huấn Luyện 10 Năm (Tra Cứu Từng Ngày)
+              </button>
+            )}
+
+            {onRetrain && (
+              <button
+                type="button"
+                onClick={onRetrain}
+                disabled={isDeepTraining}
+                style={{
+                  background: 'rgba(168, 85, 247, 0.2)',
+                  border: '1px solid rgba(168, 85, 247, 0.45)',
+                  color: '#E9D5FF',
+                  padding: '5px 12px',
+                  borderRadius: '6px',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  cursor: isDeepTraining ? 'not-allowed' : 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transition: 'all 0.2s'
+                }}
+                title="Quét lại 1,200 setups/ngày trên 10 năm huấn luyện"
+              >
+                <span>{isDeepTraining ? '⏳' : '🔄'}</span> {isDeepTraining ? 'Đang Quét 3 Triệu Setups...' : 'Huấn Luyện Lại 10 Năm'}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Alpha Lift Comparison Pill */}

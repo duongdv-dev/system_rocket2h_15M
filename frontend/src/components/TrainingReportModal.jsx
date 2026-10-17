@@ -5,7 +5,9 @@ export default function TrainingReportModal({
   onClose, 
   catalogData, 
   onApproveAndBacktest, 
-  isBacktesting 
+  isBacktesting,
+  onRetrain,
+  isRetraining
 }) {
   const [selectedClusterId, setSelectedClusterId] = useState('ALL');
   const [searchDate, setSearchDate] = useState('');
@@ -83,11 +85,39 @@ export default function TrainingReportModal({
             </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {onRetrain && (
+              <button
+                type="button"
+                onClick={onRetrain}
+                disabled={isRetraining || isBacktesting}
+                style={{
+                  background: isRetraining 
+                    ? 'rgba(168, 85, 247, 0.3)' 
+                    : 'linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(126, 34, 206, 0.35))',
+                  color: '#E9D5FF',
+                  border: '1px solid rgba(168, 85, 247, 0.5)',
+                  padding: '10px 16px',
+                  borderRadius: '8px',
+                  fontWeight: 700,
+                  fontSize: '13px',
+                  cursor: (isRetraining || isBacktesting) ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  boxShadow: '0 4px 14px rgba(168, 85, 247, 0.25)',
+                  transition: 'all 0.2s'
+                }}
+                title="Chạy lại toàn bộ 3,000,000 lượt mô phỏng trên 10 năm và gom cụm lại từ đầu"
+              >
+                {isRetraining ? '⏳ Đang Huấn Luyện Lại...' : '🔄 Huấn Luyện Lại 10 Năm'}
+              </button>
+            )}
+
             <button
               type="button"
               onClick={onApproveAndBacktest}
-              disabled={isBacktesting}
+              disabled={isBacktesting || isRetraining}
               style={{
                 background: isBacktesting ? '#475569' : 'linear-gradient(135deg, #10B981, #059669)',
                 color: '#FFF',
@@ -96,7 +126,7 @@ export default function TrainingReportModal({
                 borderRadius: '8px',
                 fontWeight: 800,
                 fontSize: '13px',
-                cursor: isBacktesting ? 'not-allowed' : 'pointer',
+                cursor: (isBacktesting || isRetraining) ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -446,6 +476,29 @@ export default function TrainingReportModal({
           </div>
 
           <div style={{ display: 'flex', gap: '10px' }}>
+            {onRetrain && (
+              <button
+                type="button"
+                onClick={onRetrain}
+                disabled={isRetraining || isBacktesting}
+                style={{
+                  background: 'rgba(168, 85, 247, 0.2)',
+                  color: '#E9D5FF',
+                  border: '1px solid rgba(168, 85, 247, 0.4)',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: (isRetraining || isBacktesting) ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                {isRetraining ? '⏳ Đang Quét 3 Triệu Setups...' : '🔄 Huấn Luyện Lại 10 Năm'}
+              </button>
+            )}
+
             <button
               type="button"
               className="preset-btn"
@@ -458,7 +511,7 @@ export default function TrainingReportModal({
             <button
               type="button"
               onClick={onApproveAndBacktest}
-              disabled={isBacktesting}
+              disabled={isBacktesting || isRetraining}
               style={{
                 background: 'linear-gradient(135deg, #10B981, #059669)',
                 color: '#FFF',
@@ -467,7 +520,7 @@ export default function TrainingReportModal({
                 borderRadius: '8px',
                 fontWeight: 700,
                 fontSize: '13px',
-                cursor: isBacktesting ? 'not-allowed' : 'pointer',
+                cursor: (isBacktesting || isRetraining) ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px'
