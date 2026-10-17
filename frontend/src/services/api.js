@@ -120,6 +120,8 @@ export async function triggerDeepTraining() {
   }
 
   return await res.json();
+}
+
 export async function fetchDayCandles(date) {
   try {
     const res = await fetch(`/api/candles?date=${date}`);
@@ -131,3 +133,4 @@ export async function fetchDayCandles(date) {
     return [];
   }
 }
+
