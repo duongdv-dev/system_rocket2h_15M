@@ -152,9 +152,6 @@ export default function TradeLogTable({ trades, onInspectTrade }) {
                     </button>
                   </td>
                 </tr>
-              )){t.close_reason}
-                  </td>
-                </tr>
               ))
             ) : (
               <tr>
