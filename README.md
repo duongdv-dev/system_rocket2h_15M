@@ -111,7 +111,7 @@ docker compose up
 ```
 
 - **Giao diện Web UI (chế độ phát triển Dev có Hot Reload):** `http://localhost:5173`
-- **Máy chủ Backend API & History:** `http://localhost:8080`
+- **Máy chủ Backend API & History:** `http://localhost:8088` (hoặc `http://<IP_VPS>:8088`)
 - Dữ liệu nến (`data/`) và lịch sử các lần chạy (`server/history/`) được mount trực tiếp nên sẽ được lưu vĩnh viễn trên máy của bạn.
 
 ### Dừng các container:
