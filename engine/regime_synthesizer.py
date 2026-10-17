@@ -99,80 +99,123 @@ def run_kmeans(vectors, k=4, max_iter=30):
 def find_consensus_setup_for_cluster(cluster_days, all_candidate_setups):
     """
     Tìm 1 bộ setup đồng thuận tối ưu nhất cho toàn bộ các ngày trong cụm.
-    Tối đa hóa hàm mục tiêu Score: WinRate, Profit Factor, và phạt Max Drawdown.
+    TỐI ƯU TOÀN DIỆN MỌI CHỈ SỐ: Min Step, TP Single/DCA, Giờ Cắt Lỗ, % Rủi Ro Vốn & Trần Tầng DCA.
     """
     from engine.daily_deep_trainer import evaluate_setup_on_day
 
-    best_score = -999999.0
-    best_setup = None
-    best_metrics = None
+    n = len(cluster_days)
+    if n == 0:
+        return {}, {}
+
+    # Giai đoạn 1: Lọc nhanh Top 10 setups có tổng điểm PnL và tỷ lệ thắng tốt nhất
+    sample_days = cluster_days if n <= 200 else cluster_days[::2]
+    candidate_scores = []
 
     for setup in all_candidate_setups:
+        tot_pts = 0.0
         wins = 0
-        gross_win = 0.0
-        gross_loss = 0.0
-        balance = 10000.0
-        peak = 10000.0
-        max_dd = 0.0
-        total_layers = 0
-
-        for day in cluster_days:
-            # Mô phỏng nhanh setup này trên ngày
+        for day in sample_days:
             res = evaluate_setup_on_day(
                 day['fast_candles'],
                 day['first_candle'][4],
                 day['direction'] == 'SELL',
                 day['atr_val'],
-                setup
+                setup,
+                max_layers=7
             )
-
-            # Quy đổi PnL dollar theo 0.5% risk
-            risk_dollars = balance * 0.005
-            lot = max(0.01, round(risk_dollars / (max(12.0, day['atr_val'] * 5.0) * 100.0), 2))
-            tot_lot = lot * res['orders_count']
-            pnl_d = res['final_pts'] * tot_lot * 100.0
-
-            total_layers += res['orders_count']
+            tot_pts += res['final_pts']
             if res['is_win']:
                 wins += 1
-                gross_win += pnl_d
-            else:
-                gross_loss += abs(pnl_d)
+        s_score = tot_pts + (wins / len(sample_days) * 100.0)
+        candidate_scores.append((s_score, setup))
 
-            balance += pnl_d
-            if balance > peak:
-                peak = balance
-            dd = peak - balance
-            if dd > max_dd:
-                max_dd = dd
+    candidate_scores.sort(key=lambda x: x[0], reverse=True)
+    top_candidates = [x[1] for x in candidate_scores[:10]]
 
-        n = len(cluster_days)
-        win_rate = (wins / n * 100.0) if n > 0 else 0.0
-        pf = (gross_win / (gross_loss + 1e-6)) if gross_loss > 0 else 9.99
-        net_pnl = balance - 10000.0
-        max_dd_pct = (max_dd / peak * 100.0) if peak > 0 else 0.0
+    # Giai đoạn 2: Tối ưu hóa sâu Quản Trị Vốn Tự Trị (100% Autonomous Risk & Lot Sizing)
+    # AI tự học và quét qua các mức % rủi ro vốn và trần số tầng DCA tối đa
+    GRID_RISK_PCT = [0.8, 1.0, 1.2, 1.5]
+    GRID_MAX_LAYERS = [3, 4, 5, 7]
 
-        score = (win_rate * 0.45) + (min(pf, 5.0) * 15.0) - (max_dd_pct * 1.3) + (net_pnl / 2000.0)
+    best_score = -999999.0
+    best_setup = None
+    best_metrics = None
 
-        if score > best_score:
-            best_score = score
-            best_setup = {
-                'min_step_atr': setup[0],
-                'tp_single_atr': setup[1],
-                'tp_dca_atr': setup[2],
-                'hard_exit': setup[5],
-                'hard_exit_hour': setup[3],
-                'hard_exit_minute': setup[4],
-                'risk_percent': 0.5
-            }
-            best_metrics = {
-                'win_rate': round(win_rate, 2),
-                'profit_factor': round(min(pf, 99.0), 2),
-                'total_pnl': round(net_pnl, 2),
-                'max_dd_percent': round(max_dd_pct, 2),
-                'avg_layers': round(total_layers / n, 2) if n > 0 else 1.0,
-                'total_trades': n
-            }
+    for setup in top_candidates:
+        for max_layers in GRID_MAX_LAYERS:
+            for risk_pct in GRID_RISK_PCT:
+                wins = 0
+                gross_win = 0.0
+                gross_loss = 0.0
+                balance = 10000.0
+                peak = 10000.0
+                max_dd = 0.0
+                total_layers = 0
+
+                for day in cluster_days:
+                    res = evaluate_setup_on_day(
+                        day['fast_candles'],
+                        day['first_candle'][4],
+                        day['direction'] == 'SELL',
+                        day['atr_val'],
+                        setup,
+                        max_layers=max_layers
+                    )
+
+                    # Quy đổi PnL dollar theo % rủi ro vốn thực tế
+                    risk_dollars = balance * (risk_pct / 100.0)
+                    risk_points = max(7.0, day['atr_val'] * 4.0)
+                    lot = max(0.01, round(risk_dollars / (risk_points * 100.0), 2))
+                    tot_lot = lot * res['orders_count']
+                    pnl_d = res['final_pts'] * tot_lot * 100.0
+
+                    total_layers += res['orders_count']
+                    if res['is_win']:
+                        wins += 1
+                        gross_win += pnl_d
+                    else:
+                        gross_loss += abs(pnl_d)
+
+                    balance += pnl_d
+                    if balance > peak:
+                        peak = balance
+                    dd = peak - balance
+                    if dd > max_dd:
+                        max_dd = dd
+
+                win_rate = (wins / n * 100.0)
+                pf = (gross_win / (gross_loss + 1e-6)) if gross_loss > 0 else 9.99
+                net_pnl = balance - 10000.0
+                max_dd_pct = (max_dd / peak * 100.0) if peak > 0 else 0.0
+
+                # Hàm mục tiêu Sharpe/Calmar lượng hóa rủi ro: ưu tiên PnL cao, winrate ổn định và khống chế DD
+                score = (net_pnl * 0.4) - (max_dd_pct * 80.0) + (win_rate * 15.0) + (min(pf, 3.5) * 50.0)
+
+                if score > best_score:
+                    best_score = score
+                    est_base_lot = max(0.02, round((10000.0 * (risk_pct / 100.0)) / (7.5 * 100.0), 2))
+                    best_setup = {
+                        'min_step_atr': setup[0],
+                        'tp_single_atr': setup[1],
+                        'tp_dca_atr': setup[2],
+                        'hard_exit': setup[5],
+                        'hard_exit_hour': setup[3],
+                        'hard_exit_minute': setup[4],
+                        'risk_percent': risk_pct,
+                        'base_lot_per_10k': est_base_lot,
+                        'max_dca_layers': max_layers
+                    }
+                    best_metrics = {
+                        'win_rate': round(win_rate, 2),
+                        'profit_factor': round(min(pf, 99.0), 2),
+                        'total_pnl': round(net_pnl, 2),
+                        'max_dd_percent': round(max_dd_pct, 2),
+                        'avg_layers': round(total_layers / n, 2),
+                        'total_trades': n,
+                        'auto_risk_percent': risk_pct,
+                        'auto_base_lot': est_base_lot,
+                        'auto_max_layers': max_layers
+                    }
 
     return best_setup, best_metrics
 

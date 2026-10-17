@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
+import AutonomousAiBar from './components/AutonomousAiBar';
 import ControlPanel from './components/ControlPanel';
 import HistoryPanel from './components/HistoryPanel';
 import MetricsGrid from './components/MetricsGrid';
@@ -24,6 +25,8 @@ import {
 } from './services/api';
 
 export default function App() {
+  const [activeAppTab, setActiveAppTab] = useState('autonomous_ai'); // 'autonomous_ai' | 'manual_lab'
+  const [aiCapital, setAiCapital] = useState(10000);
   const [rawData, setRawData] = useState(null);
   const [currentPeriod, setCurrentPeriod] = useState('test');
   const [currentMode, setCurrentMode] = useState('ai');
@@ -45,6 +48,14 @@ export default function App() {
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const handleTriggerAiBacktest = () => {
+    handleTriggerRun({
+      mode: 'dynamic_ai',
+      initial_balance: aiCapital,
+      sizing_mode: 'atr_risk'
+    });
   };
 
   const loadDataAndHistory = async () => {
@@ -193,23 +204,98 @@ export default function App() {
         isHistoryOpen={isHistoryOpen}
       />
 
-      {/* 2. Control Panel with Inputs & Run Trigger */}
-      <ControlPanel 
-        onRefresh={loadDataAndHistory}
-        onTriggerRun={handleTriggerRun}
-        onTriggerDeepTraining={handleTriggerDeepTraining}
-        onOpenTrainingReport={() => setIsTrainingReportOpen(true)}
-        hasTrainingCatalog={!!catalogData}
-        isDeepTraining={isDeepTraining}
-        catalogCount={catalogData?.cluster_summaries?.length || 4}
-        onToggleHistory={() => setIsHistoryOpen(!isHistoryOpen)}
-        historyCount={historyRuns.length}
-        isHistoryOpen={isHistoryOpen}
-        isLoading={isLoading} 
-        activeParams={rawData?.metadata?.active_params}
-        dataStatus={serverStatus}
-        activeRunId={activeRunId}
-      />
+      {/* 1.5. Primary Tab Switcher: Autonomous AI vs Manual Lab */}
+      <div style={{
+        display: 'flex',
+        gap: '10px',
+        margin: '18px 0 16px 0',
+        background: 'rgba(15, 23, 42, 0.85)',
+        padding: '5px',
+        borderRadius: '12px',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        width: 'fit-content'
+      }}>
+        <button
+          type="button"
+          onClick={() => setActiveAppTab('autonomous_ai')}
+          style={{
+            padding: '10px 22px',
+            borderRadius: '8px',
+            fontSize: '13px',
+            fontWeight: 800,
+            cursor: 'pointer',
+            border: activeAppTab === 'autonomous_ai' ? '1px solid #6366F1' : '1px solid transparent',
+            background: activeAppTab === 'autonomous_ai' ? 'linear-gradient(135deg, #6366F1, #4338CA)' : 'transparent',
+            color: activeAppTab === 'autonomous_ai' ? '#FFF' : 'var(--text-secondary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            transition: 'all 0.2s ease',
+            boxShadow: activeAppTab === 'autonomous_ai' ? '0 4px 16px rgba(99, 102, 241, 0.4)' : 'none'
+          }}
+        >
+          🤖 100% QUANT AI AUTONOMOUS (TỰ TRỊ)
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveAppTab('manual_lab')}
+          style={{
+            padding: '10px 22px',
+            borderRadius: '8px',
+            fontSize: '13px',
+            fontWeight: 800,
+            cursor: 'pointer',
+            border: activeAppTab === 'manual_lab' ? '1px solid #3B82F6' : '1px solid transparent',
+            background: activeAppTab === 'manual_lab' ? 'linear-gradient(135deg, #2563EB, #1D4ED8)' : 'transparent',
+            color: activeAppTab === 'manual_lab' ? '#FFF' : 'var(--text-secondary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            transition: 'all 0.2s ease',
+            boxShadow: activeAppTab === 'manual_lab' ? '0 4px 16px rgba(37, 99, 235, 0.4)' : 'none'
+          }}
+        >
+          ⚙️ MANUAL BACKTEST LAB (THỬ NGHIỆM THỦ CÔNG)
+        </button>
+      </div>
+
+      {/* 2. TAB CONTENT: Control Panel */}
+      {activeAppTab === 'autonomous_ai' ? (
+        <AutonomousAiBar 
+          balance={aiCapital}
+          setBalance={setAiCapital}
+          onTriggerAiBacktest={handleTriggerAiBacktest}
+          onTriggerDeepTraining={handleTriggerDeepTraining}
+          onOpenTrainingReport={() => setIsTrainingReportOpen(true)}
+          onToggleHistory={() => setIsHistoryOpen(!isHistoryOpen)}
+          isDeepTraining={isDeepTraining}
+          isLoading={isLoading}
+          hasTrainingCatalog={!!catalogData}
+          catalogCount={catalogData?.cluster_summaries?.length || 4}
+          historyCount={historyRuns.length}
+          isHistoryOpen={isHistoryOpen}
+          activeRunId={activeRunId}
+          onRefresh={loadDataAndHistory}
+        />
+      ) : (
+        <ControlPanel 
+          onRefresh={loadDataAndHistory}
+          onTriggerRun={handleTriggerRun}
+          onTriggerDeepTraining={handleTriggerDeepTraining}
+          onOpenTrainingReport={() => setIsTrainingReportOpen(true)}
+          hasTrainingCatalog={!!catalogData}
+          isDeepTraining={isDeepTraining}
+          catalogCount={catalogData?.cluster_summaries?.length || 4}
+          onToggleHistory={() => setIsHistoryOpen(!isHistoryOpen)}
+          historyCount={historyRuns.length}
+          isHistoryOpen={isHistoryOpen}
+          isLoading={isLoading} 
+          activeParams={rawData?.metadata?.active_params}
+          dataStatus={serverStatus}
+          activeRunId={activeRunId}
+        />
+      )}
 
       {/* 3. History Panel (Xem lại toàn bộ lịch sử các lần chạy) */}
       {isHistoryOpen && (

@@ -285,7 +285,8 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
             eff_h_exit = hard_exit_hour
             eff_m_exit = hard_exit_min
 
-        eff_risk_pct = reg_params.get('risk_percent', risk_percent) if regime_models else risk_percent
+        eff_risk_pct = float(reg_params.get('risk_percent', risk_percent)) if regime_models else risk_percent
+        eff_max_layers = int(reg_params.get('max_dca_layers', 7)) if regime_models else 7
 
         c_idx = s['candle_idx']
         atr = s['atr_val']
@@ -293,10 +294,10 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
         tp_target_single = max(1.5, eff_tp_single * atr)
         tp_target_dca = max(1.5, eff_tp_dca * atr)
 
-        # Tính lot theo % rủi ro vốn co giãn động theo ATR(14)
+        # Tính lot theo % rủi ro vốn do AI tự may đo cho hình thái này:
         if sizing_mode == 'atr_risk' or 'risk_percent' in params or regime_models:
             risk_dollars = balance * (eff_risk_pct / 100.0)
-            risk_points = max(12.0, atr * 5.0)
+            risk_points = max(7.0, atr * 4.0)
             lot_size = max(0.01, round(risk_dollars / (risk_points * 100.0), 2))
         else:
             lot_size = max(0.01, round((balance / lot_step_capital) * 0.01, 2))
@@ -365,14 +366,14 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
             last_entry = orders[-1]['entry_price']
 
             if direction == "BUY" and not c_is_green:
-                if (last_entry - c_close) >= min_dist:
+                if len(orders) < eff_max_layers and (last_entry - c_close) >= min_dist:
                     orders.append({
                         'entry_price': c_close,
                         'lot': lot_size,
                         'time': cur_c[0]
                     })
             elif direction == "SELL" and c_is_green:
-                if (c_close - last_entry) >= min_dist:
+                if len(orders) < eff_max_layers and (c_close - last_entry) >= min_dist:
                     orders.append({
                         'entry_price': c_close,
                         'lot': lot_size,
@@ -424,7 +425,9 @@ def simulate_dataset(sessions, candles, use_filter=True, params=None, regime_mod
                 'tp_single_atr': eff_tp_single,
                 'tp_dca_atr': eff_tp_dca,
                 'hard_exit': f"{eff_h_exit:02d}:{eff_m_exit:02d}",
-                'risk_percent': eff_risk_pct
+                'risk_percent': eff_risk_pct,
+                'max_dca_layers': eff_max_layers,
+                'base_lot': lot_size
             },
             'ai_rationale': meta_reg.get('desc', ''),
             'orders_count': num_orders,

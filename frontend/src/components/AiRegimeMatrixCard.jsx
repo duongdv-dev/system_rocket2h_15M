@@ -260,6 +260,18 @@ export default function AiRegimeMatrixCard({ data, onOpenTrainingReport, onRetra
                         <span style={{ color: 'var(--text-muted)' }}>Quản Trị Vốn:</span>
                         <div style={{ color: '#A78BFA', fontWeight: 700 }}>{opt.risk_percent}% rủi ro</div>
                       </div>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)' }}>Lot AI Tự Tính:</span>
+                        <div style={{ color: '#38BDF8', fontWeight: 700 }}>
+                          {opt.base_lot_per_10k ? `${opt.base_lot_per_10k} lot / $10k` : 'Tự co giãn'}
+                        </div>
+                      </div>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)' }}>Trần Nhồi DCA:</span>
+                        <div style={{ color: '#F472B6', fontWeight: 700 }}>
+                          Max {opt.max_dca_layers || 7} tầng lệnh
+                        </div>
+                      </div>
                     </div>
                   )}
 

@@ -42,10 +42,11 @@ for s in GRID_MIN_STEP_ATR:
                 ALL_SETUPS.append((s, tp_s, tp_d, h, m, h_str))
 
 
-def evaluate_setup_on_day(fast_candles, first_close, is_green, atr, setup):
+def evaluate_setup_on_day(fast_candles, first_close, is_green, atr, setup, max_layers=8):
     """
     Mô phỏng siêu tốc 1 setup trên danh sách nến của 1 ngày.
     setup: (min_step_atr, tp_single_atr, tp_dca_atr, h_exit, m_exit, h_str)
+    max_layers: số tầng DCA tối đa do AI khống chế (mặc định 8)
     """
     min_step_atr, tp_single_atr, tp_dca_atr, h_exit, m_exit, h_str = setup
 
@@ -86,19 +87,20 @@ def evaluate_setup_on_day(fast_candles, first_close, is_green, atr, setup):
             close_price = c_close
             break
 
-        # 3. Kiểm tra nhồi lệnh DCA (Nến đóng cùng màu hướng ngược)
-        if direction_is_sell and (c_close > c_open):
-            if (c_close - last_order_p) >= min_dist:
-                orders.append(c_close)
-                orders_sum += c_close
-                orders_cnt += 1
-                last_order_p = c_close
-        elif (not direction_is_sell) and (c_close < c_open):
-            if (last_order_p - c_close) >= min_dist:
-                orders.append(c_close)
-                orders_sum += c_close
-                orders_cnt += 1
-                last_order_p = c_close
+        # 3. Kiểm tra nhồi lệnh DCA nếu chưa chạm trần max_layers
+        if orders_cnt < max_layers:
+            if direction_is_sell and (c_close > c_open):
+                if (c_close - last_order_p) >= min_dist:
+                    orders.append(c_close)
+                    orders_sum += c_close
+                    orders_cnt += 1
+                    last_order_p = c_close
+            elif (not direction_is_sell) and (c_close < c_open):
+                if (last_order_p - c_close) >= min_dist:
+                    orders.append(c_close)
+                    orders_sum += c_close
+                    orders_cnt += 1
+                    last_order_p = c_close
 
     if not closed and fast_candles:
         close_price = fast_candles[-1][3]

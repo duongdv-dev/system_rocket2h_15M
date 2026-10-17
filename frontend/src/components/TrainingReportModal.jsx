@@ -320,6 +320,18 @@ export default function TrainingReportModal({
                             <span style={{ color: 'var(--text-muted)' }}>Quản Trị Rủi Ro:</span>
                             <div style={{ color: '#A78BFA', fontWeight: 700, fontSize: '12px' }}>{opt.risk_percent}% vốn</div>
                           </div>
+                          <div>
+                            <span style={{ color: 'var(--text-muted)' }}>Lot AI Tự Tính:</span>
+                            <div style={{ color: '#38BDF8', fontWeight: 700, fontSize: '12px' }}>
+                              {opt.base_lot_per_10k ? `${opt.base_lot_per_10k} lot / $10k` : 'Tự co giãn'}
+                            </div>
+                          </div>
+                          <div>
+                            <span style={{ color: 'var(--text-muted)' }}>Trần Nhồi DCA:</span>
+                            <div style={{ color: '#F472B6', fontWeight: 700, fontSize: '12px' }}>
+                              Max {opt.max_dca_layers || 7} tầng lệnh
+                            </div>
+                          </div>
                         </div>
 
                         {/* Empirical Training Metrics */}
