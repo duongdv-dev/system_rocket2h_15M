@@ -117,67 +117,79 @@ class PureQuantExecutionEngine:
                 m = dt.minute
 
                 # A. KIỂM TRA ĐIỀU KIỆN M15 ĐÓNG NẾN (đúng các phút 15, 30, 45, 00)
-                if m in (0, 15, 30, 45):
-                    # Tìm nến M15 vừa đóng
-                    # Nếu chưa có lệnh nào mở (Chờ Lệnh 1)
-                    if len(orders) == 0:
-                        should_enter_layer1 = False
+                mins_from_10h = (h - 10) * 60 + m
+                if m in (0, 15, 30, 45) and mins_from_10h >= 15:
+                    offset_m15 = (mins_from_10h // 15) - 1
+                    closed_m15_idx = c_10h_idx + offset_m15
 
-                        if s.regime == SessionRegime.SIDEWAY and h == 10 and m == 15:
-                            should_enter_layer1 = True
-                        elif s.regime == SessionRegime.UPTREND and (h < 12 or (h == 12 and m <= 30)):
-                            # Nến M15 vừa đóng là nến ĐỎ
-                            if m1.close < m1.open:
-                                should_enter_layer1 = True
-                        elif s.regime == SessionRegime.DOWNTREND and (h < 12 or (h == 12 and m <= 30)):
-                            # Nến M15 vừa đóng là nến XANH
-                            if m1.close > m1.open:
-                                should_enter_layer1 = True
+                    if 0 <= closed_m15_idx < n_m15:
+                        closed_m15 = candles_m15[closed_m15_idx]
+                        m15_is_red = closed_m15.close < closed_m15.open
+                        m15_is_green = closed_m15.close > closed_m15.open
 
-                        if should_enter_layer1:
+                        # Nếu chưa có lệnh nào mở (Chờ Lệnh 1)
+                        if len(orders) == 0:
+                            should_enter_layer1 = False
+
+                            if s.regime == SessionRegime.SIDEWAY and h == 10 and m == 15:
+                                if m15_is_green:
+                                    direction = "BUY"
+                                    should_enter_layer1 = True
+                                elif m15_is_red:
+                                    direction = "SELL"
+                                    should_enter_layer1 = True
+                            elif s.regime == SessionRegime.UPTREND and (h < 12 or (h == 12 and m <= 30)):
+                                # Cây nến M15 vừa đóng là nến ĐỎ (Pullback)
+                                if m15_is_red:
+                                    should_enter_layer1 = True
+                            elif s.regime == SessionRegime.DOWNTREND and (h < 12 or (h == 12 and m <= 30)):
+                                # Cây nến M15 vừa đóng là nến XANH (Pullback)
+                                if m15_is_green:
+                                    should_enter_layer1 = True
+
+                            if should_enter_layer1:
+                                if direction == "BUY":
+                                    e_price = round(closed_m15.close + (spread / 2.0) + slippage, 3)
+                                else:
+                                    e_price = round(closed_m15.close - (spread / 2.0) - slippage, 3)
+
+                                orders.append(Order(
+                                    layer=1,
+                                    entry_time=dt.strftime("%Y-%m-%d %H:%M"),
+                                    entry_price=e_price,
+                                    lot=base_lot,
+                                    direction=direction
+                                ))
+                                m1_start_time = m1.timestamp
+
+                        # Nếu ĐÃ CÓ LỆNH và đang xem xét nhồi DCA (Tầng 2, 3, 4)
+                        elif len(orders) < max_layers and (h < 13 or (h == 13 and m <= 30)):
+                            last_order = orders[-1]
+                            should_dca = False
+
                             if direction == "BUY":
-                                e_price = round(m1.close + (spread / 2.0) + slippage, 3)
-                            else:
-                                e_price = round(m1.close - (spread / 2.0) - slippage, 3)
+                                # Nến M15 đóng nến Đỏ VÀ giá giảm cách lệnh trước ít nhất min_dca_dist
+                                if m15_is_red and (last_order.entry_price - closed_m15.close) >= min_dca_dist:
+                                    should_dca = True
+                            else:  # SELL
+                                # Nến M15 đóng nến Xanh VÀ giá tăng cách lệnh trước ít nhất min_dca_dist
+                                if m15_is_green and (closed_m15.close - last_order.entry_price) >= min_dca_dist:
+                                    should_dca = True
 
-                            orders.append(Order(
-                                layer=1,
-                                entry_time=dt.strftime("%Y-%m-%d %H:%M"),
-                                entry_price=e_price,
-                                lot=base_lot,
-                                direction=direction
-                            ))
-                            m1_start_time = m1.timestamp
+                            if should_dca:
+                                if direction == "BUY":
+                                    e_price = round(closed_m15.close + (spread / 2.0) + slippage, 3)
+                                else:
+                                    e_price = round(closed_m15.close - (spread / 2.0) - slippage, 3)
 
-                    # Nếu ĐÃ CÓ LỆNH và đang xem xét nhồi DCA (Tầng 2, 3, 4)
-                    elif len(orders) < max_layers and (h < 13 or (h == 13 and m <= 30)):
-                        last_order = orders[-1]
-                        should_dca = False
-
-                        if direction == "BUY":
-                            # Nến M15 đóng nến Đỏ VÀ giá giảm cách lệnh trước ít nhất min_dca_dist
-                            if m1.close < m1.open and (last_order.entry_price - m1.close) >= min_dca_dist:
-                                should_dca = True
-                        else:  # SELL
-                            # Nến M15 đóng nến Xanh VÀ giá tăng cách lệnh trước ít nhất min_dca_dist
-                            if m1.close > m1.open and (m1.close - last_order.entry_price) >= min_dca_dist:
-                                should_dca = True
-
-                        if should_dca:
-                            if direction == "BUY":
-                                e_price = round(m1.close + (spread / 2.0) + slippage, 3)
-                            else:
-                                e_price = round(m1.close - (spread / 2.0) - slippage, 3)
-
-                            # Tăng nhẹ lot tầng nhồi để kéo giá trung bình nhanh hơn
-                            next_lot = round(base_lot * (1.2 ** len(orders)), 2)
-                            orders.append(Order(
-                                layer=len(orders) + 1,
-                                entry_time=dt.strftime("%Y-%m-%d %H:%M"),
-                                entry_price=e_price,
-                                lot=next_lot,
-                                direction=direction
-                            ))
+                                next_lot = round(base_lot * (1.2 ** len(orders)), 2)
+                                orders.append(Order(
+                                    layer=len(orders) + 1,
+                                    entry_time=dt.strftime("%Y-%m-%d %H:%M"),
+                                    entry_price=e_price,
+                                    lot=next_lot,
+                                    direction=direction
+                                ))
 
                 # B. KIỂM TRA ĐIỀU KIỆN CHỐT LỜI / THOÁT LỆNH TRONG TỪNG PHÚT M1
                 if len(orders) > 0:

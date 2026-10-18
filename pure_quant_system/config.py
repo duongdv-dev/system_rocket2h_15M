@@ -38,8 +38,8 @@ DEFAULT_CONFIG = {
     "sideway_atr_ratio": 0.15,       # Ngưỡng sideway = 0.15 x ATR14
     
     # Cầu chì bão giá (Circuit Breaker)
-    "circuit_stretch_ratio": 3.5,    # Sóng sáng giãn >= 3.5x ATR -> Bỏ qua
-    "circuit_relative_atr_pct": 0.70,# ATR14 >= 0.70% giá trị Vàng 10h -> Bỏ qua bão giá
+    "circuit_stretch_ratio": 4.2,    # Sóng sáng giãn >= 4.2x ATR -> Bỏ qua
+    "circuit_relative_atr_pct": 1.25,# ATR14 >= 1.25% giá trị Vàng 10h -> Bỏ qua bão giá cực đoan
     
     # Thuật toán nhồi lệnh DCA
     "max_dca_layers": 4,             # Tối đa 4 tầng lệnh / rổ (tuyệt đối không nhồi vô tận)
