@@ -52,7 +52,7 @@ def run_train_phase(config, m1_cache):
     print("📐 BƯỚC 1: QUANT GRID SEARCH TỐI ƯU THAM SỐ TRÊN 2011-2020")
     print("-" * 88)
     optimizer = PureQuantOptimizer()
-    best_params, top_results = optimizer.optimize_on_2011_2020(candles_m15, sessions)
+    best_params, top_results = optimizer.optimize_on_2011_2020(candles_m15, sessions, m1_cache=m1_cache)
 
     print("    -> TOP 3 CẤU HÌNH TỐI ƯU NHẤT QUA QUANT GRID SEARCH:")
     for rank, res in enumerate(top_results, 1):

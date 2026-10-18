@@ -19,6 +19,9 @@ from pure_quant_system.metrics import calculate_metrics
 from pure_quant_system.config import QUANT_SEARCH_SPACE, OPTIMAL_PARAMS_FILE, DEFAULT_CONFIG
 
 
+from pure_quant_system.data_loader import M1TradingWindowCache
+
+
 class PureQuantOptimizer:
     def __init__(self, search_space: Dict[str, List[Any]] = QUANT_SEARCH_SPACE):
         self.search_space = search_space
@@ -26,8 +29,12 @@ class PureQuantOptimizer:
     def optimize_on_2011_2020(
         self,
         candles_m15: List[Candle],
-        sessions: List[SessionData]
+        sessions: List[SessionData],
+        m1_cache: Optional[M1TradingWindowCache] = None
     ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
+        if m1_cache is None:
+            m1_cache = M1TradingWindowCache()
+
         keys = list(self.search_space.keys())
         values = list(self.search_space.values())
         combinations = list(itertools.product(*values))
@@ -35,12 +42,12 @@ class PureQuantOptimizer:
         print(f"[*] Đang thực hiện Quant Grid Search qua {len(combinations)} tổ hợp tham số trên 2011-2020...")
 
         results = []
-        for combo in combinations:
+        for idx, combo in enumerate(combinations, 1):
             cfg = dict(DEFAULT_CONFIG)
             for k, v in zip(keys, combo):
                 cfg[k] = v
 
-            engine = PureQuantExecutionEngine(cfg)
+            engine = PureQuantExecutionEngine(cfg, m1_cache=m1_cache)
             trades, _, circuit_skips = engine.run_simulation(candles_m15, sessions)
             m = calculate_metrics(trades, cfg["initial_balance"], len(sessions), circuit_skips)
 
@@ -55,6 +62,10 @@ class PureQuantOptimizer:
                 "max_dd_pct": m.max_drawdown_pct,
                 "score": score
             })
+
+            # In tiến trình trực quan
+            if idx % 3 == 0 or idx == len(combinations):
+                print(f"    -> Đang quét [{idx:>2}/{len(combinations)} tổ hợp] | WR={m.win_rate:>5.1f}% | PF={m.profit_factor:>4.2f} | MaxDD={m.max_drawdown_pct:>4.1f}% | Điểm Quant={score:>6.1f}")
 
         results.sort(key=lambda x: x["score"], reverse=True)
         best = results[0]

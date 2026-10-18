@@ -132,28 +132,30 @@ class M1TradingWindowCache:
 
         session_map: Dict[str, List[Candle]] = {}
         with open(fpath, "r", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
+            reader = csv.reader(f)
+            _ = next(reader, None)  # Bỏ qua header
             for row in reader:
                 try:
-                    ts = int(row["timestamp"])
+                    ts = int(row[0])
+                    # Lọc nhanh siêu tốc: Giờ VN (UTC+7) trong khung 10:00 (36,000s) đến 14:15 (51,300s)
+                    sec_in_day = ((ts // 1000) + 25200) % 86400
+                    if not (36000 <= sec_in_day <= 51300):
+                        continue
+
                     dt_utc = datetime.fromtimestamp(ts / 1000.0, tz=timezone.utc)
                     dt_vn = dt_utc.astimezone(VN_TZ)
+                    d_str = dt_vn.strftime("%Y-%m-%d")
 
-                    h = dt_vn.hour
-                    m = dt_vn.minute
-                    # Lưu nến từ 10:00 đến 14:15 VN
-                    if (10 <= h < 14) or (h == 14 and m <= 15):
-                        d_str = dt_vn.strftime("%Y-%m-%d")
-                        c = Candle(
-                            timestamp=ts,
-                            dt_vn=dt_vn,
-                            open=round(float(row["open"]), 3),
-                            high=round(float(row["high"]), 3),
-                            low=round(float(row["low"]), 3),
-                            close=round(float(row["close"]), 3),
-                            volume=float(row.get("volume", 0.0))
-                        )
-                        session_map.setdefault(d_str, []).append(c)
+                    c = Candle(
+                        timestamp=ts,
+                        dt_vn=dt_vn,
+                        open=round(float(row[1]), 3),
+                        high=round(float(row[2]), 3),
+                        low=round(float(row[3]), 3),
+                        close=round(float(row[4]), 3),
+                        volume=float(row[5]) if len(row) > 5 else 0.0
+                    )
+                    session_map.setdefault(d_str, []).append(c)
                 except Exception:
                     continue
 
