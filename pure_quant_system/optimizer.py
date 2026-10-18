@@ -12,7 +12,7 @@ Bộ máy Quant Grid Search tối ưu hóa tham số toán học trên 2011-2020
 import itertools
 import json
 import os
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional
 from pure_quant_system.models import Candle, SessionData
 from pure_quant_system.execution_engine import PureQuantExecutionEngine
 from pure_quant_system.metrics import calculate_metrics
